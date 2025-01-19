@@ -35,6 +35,7 @@ import ko from '@/translations/translation.ko.json';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import ExamplePage from './pages/ExamplePage';
 
 declare global {
   interface Window {
@@ -143,6 +144,8 @@ const router = createBrowserRouter([
         element: <DictionaryPage />,
       },
       { path: 'timetable', element: <TimetablePage /> },
+
+      { path: 'example', element: <ExamplePage /> },
       { path: 'timetable/syllabus', element: <SyllabusPage /> },
       { path: 'write-reviews', element: <WriteReviewsPage /> },
       { path: 'planner', element: <PlannerPage /> },
