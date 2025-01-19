@@ -61,7 +61,7 @@ const TimeWrapper = styled.div`
   line-height: 11px;
 `;
 
-const ExamplePage: React.FC<GridProps> = ({
+const When2MeetPage: React.FC<GridProps> = ({
   startDate = new Date('2025-01-20'),
   endDate = new Date('2025-01-24'),
   startTime = 8,
@@ -153,4 +153,4 @@ const ExamplePage: React.FC<GridProps> = ({
   );
 };
 
-export default ExamplePage;
+export default When2MeetPage;
