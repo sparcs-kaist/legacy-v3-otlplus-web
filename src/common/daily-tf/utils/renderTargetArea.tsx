@@ -39,6 +39,7 @@ const renderTargetArea = (
                 backgroundColor: color,
                 pointerEvents: 'none',
                 borderRadius: '5px',
+                zIndex: idx ? 0 : 1,
               }}
             />,
           );
@@ -62,6 +63,7 @@ const renderTargetArea = (
             top: top,
             width: width,
             height: height,
+            zIndex: idx ? 0 : 1,
             backgroundColor: color,
             pointerEvents: 'none',
             borderRadius: '5px',

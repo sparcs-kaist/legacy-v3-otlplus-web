@@ -136,7 +136,7 @@ const GroupTimeGrid: React.FC<GridProps> = ({
           </div>,
           document.body,
         )}
-      {renderGrid(null, n, m, cellWidth, cellHeight, colPadding)}
+      {renderGrid(n, m, cellWidth, cellHeight, colPadding)}
       {renderTargetArea(
         true,
         myArea,

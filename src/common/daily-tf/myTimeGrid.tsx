@@ -49,6 +49,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
   const [dragging, setDragging] = useState<boolean>(false);
   const [lastGridId, setLastGridId] = useState<string | null>(null);
   const [startGridId, setStartGridId] = useState<string | null>(null);
+  const [isIndisabled, setIsIndisabled] = useState<boolean>(false);
 
   const [index, setIndex] = useState<boolean>(true);
 
@@ -62,13 +63,14 @@ const MyTimeGrid: React.FC<GridProps> = ({
     endRow: number,
     endCol: number,
     index: boolean,
+    disabledArea: Map<number, boolean[]> = randomDisabledArea,
   ): Map<number, boolean[]> => {
     const result = new Map(
       Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(null)]),
     );
     for (let i = startCol; i < endCol + 1; i++) {
       for (let j = startRow; j < endRow + 1; j++) {
-        if (randomDisabledArea.get(i)![j] == false) {
+        if (disabledArea.get(i)![j] == false) {
           result.get(i)![j] = !index;
         } else {
           result.get(i)![j] = null;
@@ -82,6 +84,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
   const compareArea = (
     target: Map<number, boolean[]>,
     newValue: Map<number, boolean[]>,
+    disabledArea: Map<number, boolean[]> = randomDisabledArea,
   ): Map<number, boolean[]> => {
     const result = new Map(
       Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)]),
@@ -89,7 +92,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
 
     target.forEach((value1, key) => {
       const value2 = newValue.get(key);
-      const disabled = randomDisabledArea.get(key);
+      const disabled = disabledArea.get(key);
       for (let i = 0; i < n; i++) {
         if (disabled![i] == true) {
           result.get(key)![i] = null;
@@ -113,12 +116,12 @@ const MyTimeGrid: React.FC<GridProps> = ({
       const row = Math.floor(mouseY / cellHeight);
       const col = Math.floor(mouseX / (cellWidth + colPadding));
       if (row >= 0 && row < n && col >= 0 && col < m) {
+        setDragging(true);
         const gridId = `${row * m + col}`;
-        if (randomDisabledArea.get(col)![row] == false) {
-          setDragging(true);
-          setStartGridId(gridId);
-          setLastGridId(gridId);
-        }
+        setStartGridId(gridId);
+        setLastGridId(gridId);
+        const isDisabled: boolean = randomDisabledArea.get(col)![row] == true;
+        setIsIndisabled(isDisabled);
       }
     }
   };
@@ -156,16 +159,37 @@ const MyTimeGrid: React.FC<GridProps> = ({
         const _startCol = Math.min(startCol, endCol);
         const _endCol = Math.max(startCol, endCol);
 
-        const targetArea = getArea(_startRow, _startCol, _endRow, _endCol, index);
+        if (!isIndisabled) {
+          const targetArea = getArea(_startRow, _startCol, _endRow, _endCol, index);
+          setDraggingArea(targetArea);
+        } else {
+          const targetArea = getArea(
+            _startRow,
+            _startCol,
+            _endRow,
+            _endCol,
+            index,
+            new Map(Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)])),
+          );
+          setDraggingArea(targetArea);
+        }
         setIndex(!index);
-        setDraggingArea(targetArea);
       }
     }
   }, [lastGridId, startGridId]);
 
   const handleMouseUp = () => {
-    const updatedArea = compareArea(selectedArea, draggingArea);
-    setSelectedArea(updatedArea);
+    if (!isIndisabled) {
+      const updatedArea = compareArea(selectedArea, draggingArea);
+      setSelectedArea(updatedArea);
+    } else {
+      const updatedArea = compareArea(
+        selectedArea,
+        draggingArea,
+        new Map(Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)])),
+      );
+      setSelectedArea(updatedArea);
+    }
     setDraggingArea(
       new Map(Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(null)])),
     );
@@ -187,7 +211,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}>
-      {renderGrid(randomDisabledArea, n, m, cellWidth, cellHeight, colPadding)}
+      {renderGrid(n, m, cellWidth, cellHeight, colPadding)}
       {renderTargetArea(
         true,
         randomDisabledArea,
@@ -200,7 +224,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
       {renderTargetArea(
         index,
         draggingArea,
-        `${index ? 'rgba(255, 0, 0, 0.5)' : 'rgba(255, 255, 0, 0.5)'}`,
+        `${index ? 'rgba(255, 0, 0, 0.5)' : 'rgba(255, 255, 255, 1)'}`,
         cellHeight,
         cellWidth,
         rowPadding,
