@@ -12,46 +12,17 @@ const PageWrapper = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  min-width: 100vw;
   gap: 12px;
   padding: 100px;
   overflow: auto;
   position: relative;
 `;
 
-const Wrapper = styled.div`
-  overflow: scroll;
-  flex-direction: column;
-  height: 300px;
-  display: flex;
-  position: absolute;
-  width: 100px;
-`;
-
-const OptionScroll = styled.div<{ top: number; left: number; width: number }>`
-  display: flex;
-  flex-direction: column;
-  height: 100px;
-  z-index: 9999;
-  width: ${(props) => `${props.width}px`};
-  position: absolute;
-  top: ${(props) => `${props.top + 36}px`};
-  left: ${(props) => `${props.left}px`};
-  overflow: scroll;
-`;
-
-const Grid = styled.div`
-  height: 200px;
-  background-color: aqua;
-  border: 1px solid black;
-`;
-
-const ExamplePage: React.FC = () => {
+const EditModalBody: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date[]>([]);
   const [startTime, setStartTime] = useState<number>(0);
-  const [endTime, setEndTime] = useState<number>(18);
+  const [endTime, setEndTime] = useState<number>(0);
 
   const [name, setName] = useState('hi');
 
@@ -78,24 +49,15 @@ const ExamplePage: React.FC = () => {
         <h2>Modal Title</h2>
         <p>This is the modal content.</p>
         <TextInput placeholder={''} value={name} handleChange={handleChange}></TextInput>
-        <TextInput placeholder={''} value={name} handleChange={handleChange}></TextInput>
         <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate}></Calendar>
         <Dropdown
           options={timeArray}
           zindex={20}
-          disabledOptions={Array.from({ length: 19 - endTime }, (_, i) => 19 - i)}
-          selectedOption={startTime}
-          setSelectedOption={setStartTime}
-        />
-        <Dropdown
-          options={timeArray}
-          disabledOptions={Array.from({ length: startTime }, (_, i) => i)}
-          selectedOption={endTime}
-          setSelectedOption={setEndTime}
-        />
+          disabledOptions={Array.from({ length: 19 - endTime }, (_, i) => 19 - i)}></Dropdown>
+        <Dropdown options={timeArray}></Dropdown>
       </Modal>
     </PageWrapper>
   );
 };
 
-export default ExamplePage;
+export default EditModalBody;

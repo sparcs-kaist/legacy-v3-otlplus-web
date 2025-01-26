@@ -6,7 +6,10 @@ import { IconButton } from '@mui/material';
 
 interface DropdownProps {
   options?: string[];
-  defaultIndex?: number;
+  zindex?: number;
+  disabledOptions?: number[];
+  setSelectedOption: React.Dispatch<React.SetStateAction<number>>;
+  selectedOption: number;
 }
 
 const SelectedWrapper = styled.div`
@@ -23,22 +26,19 @@ const SelectedWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const OptionCard = styled.div`
+const OptionCard = styled.div<{ disabled: boolean }>`
   display: flex;
   padding: 8px 12px;
   color: rgba(51, 51, 51, 1);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 17.5;
   background-color: white;
   height: 36px;
   align-items: center;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
+  pointer-events: ${(props) => (props.disabled ? 'none' : 'all')};
   &:hover {
     background-color: rgba(245, 245, 245, 1);
   }
 `;
-
 const DropdownWrapper = styled.div<{ isExpand: boolean }>`
   width: 100%;
   display: flex;
@@ -47,23 +47,33 @@ const DropdownWrapper = styled.div<{ isExpand: boolean }>`
   overflow: hidden;
 `;
 
-const OptionScroll = styled.div<{ top: number; left: number; width: number; maxHeight: number }>`
+const OptionScroll = styled.div<{ top: number; left: number; width: number; zindex: number }>`
   display: flex;
   flex-direction: column;
   height: 100px;
-  z-index: 9999;
+  z-index: ${(props) => `${props.zindex}`};
   width: ${(props) => `${props.width}px`};
   position: absolute;
   top: ${(props) => `${props.top + 36}px`};
   left: ${(props) => `${props.left}px`};
-  overflow: auto;
+  overflow: scroll;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+`;
+
+const TextWrapper = styled.div<{ disabled: boolean }>`
+  line-height: 17.5px;
+  font-size: 14px;
+  color: ${(props) => (props.disabled ? 'rgba(170, 170, 170, 1)' : 'rgba(51, 51, 51, 1)')};
 `;
 
 const Dropdown: React.FC<DropdownProps> = ({
   options = ['option1', 'option2', 'option3'],
-  defaultIndex = 0,
+  zindex = 10,
+  disabledOptions = [],
+  setSelectedOption,
+  selectedOption,
 }) => {
-  const [selectedOption, setSelectedOption] = useState(defaultIndex);
   const [isExpand, setIsExpand] = useState(false);
 
   // SelectedWrapper 위치를 참조할 ref
@@ -76,23 +86,23 @@ const Dropdown: React.FC<DropdownProps> = ({
     width: 0,
   });
 
-  const [maxHeight, setMaxHeight] = useState<number>(250);
-
   useEffect(() => {
-    if (selectedWrapperRef.current) {
-      const rect = selectedWrapperRef.current.getBoundingClientRect();
-      setPosition({
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-      });
-    }
+    const updatePosition = () => {
+      if (selectedWrapperRef.current) {
+        const rect = selectedWrapperRef.current.getBoundingClientRect();
+        setPosition({
+          top: rect.top,
+          left: rect.left,
+          width: rect.width,
+        });
+      }
+    };
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    return () => {
+      window.removeEventListener('resize', updatePosition);
+    };
   }, [isExpand]);
-
-  useEffect(() => {
-    // OptionScroll의 maxHeight를 각 OptionCard의 높이에 맞춰 계산 (최대 250px)
-    setMaxHeight(Math.min(options.length * 36, 250)); // 옵션 수에 따라 높이 조정
-  }, [options]);
 
   return (
     <DropdownWrapper isExpand={isExpand}>
@@ -114,15 +124,18 @@ const Dropdown: React.FC<DropdownProps> = ({
           top={position.top}
           left={position.left}
           width={position.width}
-          maxHeight={maxHeight}>
+          zindex={zindex}>
           {options.map((option, index) => {
+            const disabled = disabledOptions.includes(index);
             return (
               <OptionCard
                 key={index}
                 onClick={() => {
                   setSelectedOption(index);
-                }}>
-                {option}
+                  setIsExpand(false);
+                }}
+                disabled={disabled}>
+                <TextWrapper disabled={disabled}>{option}</TextWrapper>
               </OptionCard>
             );
           })}
