@@ -26,6 +26,7 @@ import EventBannerPage from '@/pages/EventBannerPage';
 import CreditPage from '@/pages/CreditPage';
 import LicensePage from '@/pages/LicensePage';
 import PrivacyPage from '@/pages/PrivacyPage';
+import ExamplePage from '@/pages/ExamplePage';
 import TestPage from '@/pages/TestPage';
 import ErrorPage from '@/pages/ErrorPage';
 import rootReducer from '@/redux';
@@ -155,6 +156,7 @@ const router = createBrowserRouter([
       { path: 'licenses', element: <LicensePage /> },
       { path: 'privacy', element: <PrivacyPage /> },
       { path: 'test', element: <TestPage /> },
+      { path: 'example', element: <ExamplePage /> },
       { path: 'error/:message', element: <ErrorPage /> },
       { path: '*', element: <Navigate to="/" /> },
     ],

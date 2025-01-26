@@ -22,8 +22,10 @@ const renderGrid = (
             display: 'inline-block',
             textAlign: 'center',
             cursor: 'pointer',
-            borderTop: `${i % 2 == 0 ? '1px solid grey' : '1px dashed grey'}`,
-            borderBottom: `${i == n - 1 ? '1px solid grey' : '0px'}`,
+            borderTop: `${
+              i % 2 == 0 ? '1px solid rgba(232, 232, 232, 1)' : '1px dashed rgba(232, 232, 232, 1)'
+            }`,
+            borderBottom: `${i == n - 1 ? '1px solid rgba(232, 232, 232, 1)' : '0px'}`,
             marginRight: `${j < m - 1 ? `${colPadding}px` : '0px'}`,
           }}
         />

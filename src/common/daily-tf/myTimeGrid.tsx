@@ -12,6 +12,7 @@ interface GridProps {
   colPadding?: number;
   selectedArea: Map<number, boolean[]>;
   setSelectedArea: React.Dispatch<React.SetStateAction<Map<number, boolean[]>>>;
+  isModal?: boolean;
 }
 
 const MyTimeGrid: React.FC<GridProps> = ({
@@ -23,6 +24,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
   colPadding = 10,
   selectedArea,
   setSelectedArea,
+  isModal = false,
 }) => {
   /* TODO : API로 disabledArea 받아오기 */
   // test
@@ -117,19 +119,21 @@ const MyTimeGrid: React.FC<GridProps> = ({
   };
 
   const handleMouseDown = (event: React.MouseEvent) => {
-    if (gridRef.current) {
-      const gridRect = gridRef.current.getBoundingClientRect();
-      const mouseX = event.clientX - gridRect.left;
-      const mouseY = event.clientY - gridRect.top;
-      const row = Math.floor(mouseY / cellHeight);
-      const col = Math.floor(mouseX / (cellWidth + colPadding));
-      if (row >= 0 && row < n && col >= 0 && col < m) {
-        setDragging(true);
-        const gridId = `${row * m + col}`;
-        setStartGridId(gridId);
-        setLastGridId(gridId);
-        const isDisabled: boolean = randomDisabledArea.get(col)![row] == true;
-        setIsIndisabled(isDisabled);
+    if (!isModal) {
+      if (gridRef.current) {
+        const gridRect = gridRef.current.getBoundingClientRect();
+        const mouseX = event.clientX - gridRect.left;
+        const mouseY = event.clientY - gridRect.top;
+        const row = Math.floor(mouseY / cellHeight);
+        const col = Math.floor(mouseX / (cellWidth + colPadding));
+        if (row >= 0 && row < n && col >= 0 && col < m) {
+          setDragging(true);
+          const gridId = `${row * m + col}`;
+          setStartGridId(gridId);
+          setLastGridId(gridId);
+          const isDisabled: boolean = randomDisabledArea.get(col)![row] == true;
+          setIsIndisabled(isDisabled);
+        }
       }
     }
   };
@@ -223,7 +227,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
       {renderTargetArea(
         true,
         randomDisabledArea,
-        'rgba(0, 0, 0, 0.5)',
+        'rgba(214, 214, 214, 1)',
         cellHeight,
         cellWidth,
         rowPadding,
@@ -232,7 +236,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
       {renderTargetArea(
         index,
         draggingArea,
-        `${index ? 'rgba(255, 0, 0, 0.5)' : 'rgba(255, 255, 255, 1)'}`,
+        `${index ? 'rgba(237, 140, 156, 0.5)' : 'rgba(255, 255, 255, 1)'}`,
         cellHeight,
         cellWidth,
         rowPadding,
@@ -241,7 +245,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
       {renderTargetArea(
         true,
         selectedArea,
-        'rgba(0, 0, 255, 0.5)',
+        'rgba(237, 140, 156, 0.5)',
         cellHeight,
         cellWidth,
         rowPadding,

@@ -13,6 +13,7 @@ interface GridProps {
   colPadding?: number;
   myArea: Map<number, boolean[]>;
   coworkerArea?: Map<string, Map<number, boolean[]>>;
+  isModal?: boolean;
 }
 
 // test
@@ -28,6 +29,7 @@ const GroupTimeGrid: React.FC<GridProps> = ({
   colPadding = 10,
   myArea,
   coworkerArea = mockCoworker,
+  isModal = false,
 }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const worker = [...coworkerArea.keys(), myName];
@@ -39,29 +41,31 @@ const GroupTimeGrid: React.FC<GridProps> = ({
   const [ableWorker, setAbleWorker] = useState<string[]>([]);
 
   const handleMouseMove = (event: MouseEvent) => {
-    const mouseX = event.clientX;
-    const mouseY = event.clientY;
-    setMousePosition({ x: mouseX, y: mouseY });
+    if (!isModal) {
+      const mouseX = event.clientX;
+      const mouseY = event.clientY;
+      setMousePosition({ x: mouseX, y: mouseY });
 
-    if (gridRef.current) {
-      const gridRect = gridRef.current.getBoundingClientRect();
-      const isInside =
-        mouseX >= gridRect.left &&
-        mouseX <= gridRect.left + gridRect.width &&
-        mouseY >= gridRect.top &&
-        mouseY <= gridRect.top + gridRect.height;
+      if (gridRef.current) {
+        const gridRect = gridRef.current.getBoundingClientRect();
+        const isInside =
+          mouseX >= gridRect.left &&
+          mouseX <= gridRect.left + gridRect.width &&
+          mouseY >= gridRect.top &&
+          mouseY <= gridRect.top + gridRect.height;
 
-      setIsMouseInsideGrid(isInside);
+        setIsMouseInsideGrid(isInside);
 
-      if (isInside) {
-        const X = mouseX - gridRect.left;
-        const Y = mouseY - gridRect.top;
-        const row = Math.floor(Y / cellHeight);
-        const col = Math.floor(X / (cellWidth + colPadding));
-        if (row >= 0 && row < n && col >= 0 && col < m) {
-          const gridId = `${row * m + col}`;
-          if (gridId !== hoverGridID) {
-            setHoverGridID(gridId);
+        if (isInside) {
+          const X = mouseX - gridRect.left;
+          const Y = mouseY - gridRect.top;
+          const row = Math.floor(Y / cellHeight);
+          const col = Math.floor(X / (cellWidth + colPadding));
+          if (row >= 0 && row < n && col >= 0 && col < m) {
+            const gridId = `${row * m + col}`;
+            if (gridId !== hoverGridID) {
+              setHoverGridID(gridId);
+            }
           }
         }
       }
@@ -69,12 +73,14 @@ const GroupTimeGrid: React.FC<GridProps> = ({
   };
 
   useEffect(() => {
-    document.addEventListener('mousemove', handleMouseMove);
+    if (!isModal) {
+      document.addEventListener('mousemove', handleMouseMove);
 
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [hoverGridID]);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+      };
+    }
+  }, [hoverGridID, isModal]);
 
   useEffect(() => {
     const res: string[] = [];
@@ -140,7 +146,7 @@ const GroupTimeGrid: React.FC<GridProps> = ({
       {renderTargetArea(
         true,
         myArea,
-        `rgba(255,0,0,${scale})`,
+        `rgba(229, 76, 101,${scale})`,
         cellHeight,
         cellWidth,
         rowPadding,
@@ -152,7 +158,7 @@ const GroupTimeGrid: React.FC<GridProps> = ({
             {renderTargetArea(
               true,
               area,
-              `rgba(255,0,0,${scale})`,
+              `rgba(229, 76, 101,${scale})`,
               cellHeight,
               cellWidth,
               rowPadding,
