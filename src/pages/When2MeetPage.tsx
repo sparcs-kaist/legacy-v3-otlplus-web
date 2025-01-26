@@ -65,7 +65,7 @@ const When2MeetPage: React.FC<GridProps> = ({
   startDate = new Date('2025-01-20'),
   endDate = new Date('2025-01-24'),
   startTime = 8,
-  endTime = 24,
+  endTime = 15,
 }) => {
   function getDateDifference(startDate: Date, endDate: Date): number {
     const differenceInMilliseconds = endDate.getTime() - startDate.getTime();

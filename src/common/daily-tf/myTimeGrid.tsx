@@ -37,6 +37,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
           } else {
             return false;
           }
+          // return false;
         }),
       ]),
     );
@@ -93,15 +94,22 @@ const MyTimeGrid: React.FC<GridProps> = ({
     target.forEach((value1, key) => {
       const value2 = newValue.get(key);
       const disabled = disabledArea.get(key);
+      // for (let i = 0; i < n; i++) {
+      //   if (disabled![i] == true) {
+      //     result.get(key)![i] = null;
+      //   } else {
+      //     if (value2![i] == null) {
+      //       result.get(key)![i] = value1[i];
+      //     } else {
+      //       result.get(key)![i] = value2![i];
+      //     }
+      //   }
+      // }
       for (let i = 0; i < n; i++) {
-        if (disabled![i] == true) {
-          result.get(key)![i] = null;
+        if (value2![i] == null) {
+          result.get(key)![i] = value1[i];
         } else {
-          if (value2![i] == null) {
-            result.get(key)![i] = value1[i];
-          } else {
-            result.get(key)![i] = value2![i];
-          }
+          result.get(key)![i] = value2![i];
         }
       }
     });
