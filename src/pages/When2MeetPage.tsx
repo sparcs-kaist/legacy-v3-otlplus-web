@@ -82,6 +82,9 @@ const When2MeetPage: React.FC<GridProps> = ({
   groupName = '익명의 그룹',
   members = 5,
 }) => {
+  // 이전 값을 저장해둔다
+
+  const [prevSelectedDate, setPrevSelectedDate] = useState<Map<Date, number[]>>(new Map());
   const defaultGroupInfo: GridProps = {
     groupName: groupName,
     members: members,
@@ -107,11 +110,15 @@ const When2MeetPage: React.FC<GridProps> = ({
 
       if (nextDate.getTime() - currentDate.getTime() > 86400000) {
         result.push(placeholderDate);
-        placeholderIndex.push(i + 1);
-        i++;
       }
     }
     result.push(dates[dates.length - 1]);
+
+    for (let i = 0; i < result.length; i++) {
+      if (result[i] === placeholderDate) {
+        placeholderIndex.push(i);
+      }
+    }
 
     return result;
   }
@@ -130,11 +137,44 @@ const When2MeetPage: React.FC<GridProps> = ({
   );
 
   useEffect(() => {
-    const newSelectedArea = new Map(
+    const res = new Map(
       Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)]),
     );
-    setSelectedArea(newSelectedArea);
+    for (let i = 0; i < m; i++) {
+      const date = tunedDateArray[i];
+      if (date !== placeholderDate) {
+        const prevSelected = prevSelectedDate.has(date) ? prevSelectedDate.get(date) : [];
+        for (let j = 0; j < n; j++) {
+          const prevIndex = j + (groupInfo.startTime - 8) * 2;
+          if (prevSelected?.includes(prevIndex)) {
+            const currentRow = res.get(i) || Array(n).fill(false);
+            currentRow[j] = true;
+            res.set(i, currentRow);
+          }
+        }
+      }
+    }
+
+    setSelectedArea(res);
   }, [groupInfo]);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      const prev = new Map();
+      selectedArea.forEach((value, key) => {
+        const date = tunedDateArray[key];
+        if (date !== placeholderDate) {
+          const selectedList = value
+            .map((_value, _index) => (_value ? _index + (groupInfo.startTime - 8) * 2 : -1))
+            .filter((i) => i !== -1);
+          if (selectedList.length > 0) {
+            prev.set(date, selectedList);
+          }
+        }
+      });
+      setPrevSelectedDate(prev);
+    }
+  }, [isModalOpen]);
 
   const getFormattedDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = {
@@ -160,7 +200,12 @@ const When2MeetPage: React.FC<GridProps> = ({
   return (
     <PageWrapper>
       <AreaWrapper>
-        <button onClick={() => setIsModalOpen(true)}>Open Modal</button>
+        <button
+          onClick={() => {
+            setIsModalOpen(true);
+          }}>
+          Open Modal
+        </button>
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="일정 편집">
           <EditModalBody groupInfo={groupInfo} setGroupInfo={setGroupInfo} />
         </Modal>
