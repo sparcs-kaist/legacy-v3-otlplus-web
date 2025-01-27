@@ -130,6 +130,7 @@ const When2MeetPage: React.FC<GridProps> = ({
   const n: number = (groupInfo.endTime - groupInfo.startTime) * 2;
 
   const [page, setPage] = useState<number>(0);
+  const [maxPage, setMaxPage] = useState<number>(1);
   const [pageStart, setPageStart] = useState<number>(0);
   const [pageEnd, setPageEnd] = useState<number>(m - 1);
 
@@ -149,6 +150,8 @@ const When2MeetPage: React.FC<GridProps> = ({
 
   useEffect(() => {
     setPage(0);
+
+    setMaxPage(Math.ceil(groupInfo.dateArray.length / 7) - 1);
   }, [groupInfo]);
 
   const generateDates = () => {
@@ -189,7 +192,7 @@ const When2MeetPage: React.FC<GridProps> = ({
     if (placeholderIndex.includes(endIndex)) {
       endIndex++;
     }
-    setPageEnd(endIndex);
+    setPageEnd(Math.min(endIndex, m - 1));
   }, [page, groupInfo]);
 
   useEffect(() => {
@@ -218,13 +221,17 @@ const When2MeetPage: React.FC<GridProps> = ({
         <SectionWrapper>
           <button
             onClick={() => {
-              setPage(page + 1);
+              if (maxPage >= page + 1) {
+                setPage(page + 1);
+              }
             }}>
             next
           </button>
           <button
             onClick={() => {
-              setPage(page - 1);
+              if (page > 0) {
+                setPage(page - 1);
+              }
             }}>
             prev
           </button>
