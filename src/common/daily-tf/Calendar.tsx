@@ -1,18 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { IconButton } from '@mui/material';
+import { IconButton, Typography } from '@mui/material';
 
 interface CalendarProps {
   selectedDate: Date[];
   setSelectedDate: React.Dispatch<React.SetStateAction<Date[]>>;
 }
 
+function getWeeksInMonth(year: number, month: number): number {
+  const firstDayOfMonth = new Date(year, month, 1);
+  const lastDayOfMonth = new Date(year, month + 1, 0);
+  const firstDayWeekday = firstDayOfMonth.getDay();
+  const lastDate = lastDayOfMonth.getDate();
+
+  const weeks = Math.ceil((lastDate + firstDayWeekday) / 7);
+  return weeks;
+}
+
 const CalendarWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: fit-content;
 `;
 
 const Header = styled.div`
@@ -37,10 +48,10 @@ const DaysOfWeek = styled.div`
   gap: 2px;
 `;
 
-const DayGrid = styled.div`
+const DayGrid = styled.div<{ gridRows: number }>`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-rows: ${(props) => `repeat(${props.gridRows}, 1fr)`};
   gap: 2px;
   width: fit-content;
   height: fit-content;
@@ -61,7 +72,9 @@ const DayCell = styled.div<{ isCurrentMonth: boolean; isSelected: boolean }>`
   height: 30px;
   border-radius: 6px;
 
-  background-color: ${(props) => (props.isSelected ? 'rgba(229, 76, 101, 1)' : 'transparent')};
+  background-color: ${(props) =>
+    props.isSelected ? props.theme.colors.Highlight.default : 'transparent'};
+
   color: ${(props) => (props.isSelected ? 'white' : 'rgba(51, 51, 51, 1)')};
 
   &:hover {
@@ -85,6 +98,7 @@ const DayWrapper = styled.div`
 
 const Calendar: React.FC<CalendarProps> = ({ selectedDate, setSelectedDate }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [weeksInMonth, setWeeksInMonth] = useState(0);
 
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
@@ -94,7 +108,12 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, setSelectedDate }) =>
   const firstDayWeekday = firstDayOfMonth.getDay();
   const lastDate = lastDayOfMonth.getDate();
 
-  const daysArray = Array.from({ length: 42 }, (_, i) => {
+  useEffect(() => {
+    const weeks = getWeeksInMonth(currentYear, currentMonth);
+    setWeeksInMonth(weeks);
+  }, [currentYear, currentMonth]);
+
+  const daysArray = Array.from({ length: weeksInMonth * 7 }, (_, i) => {
     const dayNumber = i - firstDayWeekday + 1;
     return dayNumber > 0 && dayNumber <= lastDate ? dayNumber : null;
   });
@@ -155,7 +174,7 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, setSelectedDate }) =>
         <DayWrapper>금</DayWrapper>
         <DayWrapper>토</DayWrapper>
       </DaysOfWeek>
-      <DayGrid>
+      <DayGrid gridRows={weeksInMonth}>
         {daysArray.map((day, index) => (
           <DayCell
             key={index}

@@ -7,8 +7,6 @@ import Modal from '@/common/daily-tf/Modal';
 
 /* TODO: 그리드 크기 default 값 설정 */
 interface GridProps {
-  //n?: number; // 세로 크기
-  //m?: number; // 가로 크기
   startDate?: Date;
   endDate?: Date;
   startTime?: number;

@@ -4,6 +4,8 @@ import Modal from '@/common/daily-tf/Modal';
 import Calendar from '@/common/daily-tf/Calendar';
 import TextInput from '@/common/daily-tf/TextInputArea';
 import Dropdown from '@/common/daily-tf/Dropdown';
+import EditModalBody from '@/common/daily-tf/EditModalBody';
+import Button from '@/common/daily-tf/Button';
 
 /* TODO: 그리드 크기 default 값 설정 */
 
@@ -75,7 +77,7 @@ const ExamplePage: React.FC = () => {
     <PageWrapper>
       <button onClick={() => setIsModalOpen(true)}>Open Modal</button>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="일정 편집">
-        <h2>Modal Title</h2>
+        {/* <h2>Modal Title</h2>
         <p>This is the modal content.</p>
         <TextInput placeholder={''} value={name} handleChange={handleChange}></TextInput>
         <TextInput placeholder={''} value={name} handleChange={handleChange}></TextInput>
@@ -92,7 +94,8 @@ const ExamplePage: React.FC = () => {
           disabledOptions={Array.from({ length: startTime }, (_, i) => i)}
           selectedOption={endTime}
           setSelectedOption={setEndTime}
-        />
+        /> */}
+        <EditModalBody />
       </Modal>
     </PageWrapper>
   );

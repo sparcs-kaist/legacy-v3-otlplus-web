@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import CloseIcon from '@mui/icons-material/Close';
+import Typography from './Typography';
 
 interface ModalProps {
   isOpen: boolean;
@@ -28,6 +29,7 @@ const ModalContainer = styled.div`
   background: white;
   border-radius: 12px;
   min-width: 400px;
+  width: auto;
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -48,7 +50,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title = '' }) 
     <Overlay>
       <ModalContainer onClick={(e) => e.stopPropagation()}>
         <HeaderWrapper>
-          <div style={{ fontSize: '16px', lineHeight: '20px', fontWeight: 'bold' }}>{title}</div>
+          <Typography type="BigBold">{title}</Typography>
           <IconButton
             onClick={onClose}
             style={{ color: 'rgba(170, 170, 170, 1)', width: '16px', height: '18px' }}>
