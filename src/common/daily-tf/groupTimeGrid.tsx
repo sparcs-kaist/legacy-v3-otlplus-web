@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import mockCoworker from './mock/mockCoworker';
 import getColumnIndex from './utils/getColumnIndex';
+import filterMapByRange from './utils/filterMapByRange';
 
 interface GridProps {
   n?: number; // 세로 크기
@@ -136,8 +137,6 @@ const GroupTimeGrid: React.FC<GridProps> = ({
         userSelect: 'none',
         cursor: 'pointer',
       }}>
-      <div>{pageStart}</div>
-      <div>{pageEnd}</div>
       {isMouseInsideGrid &&
         ableWorker.length > 0 &&
         ReactDOM.createPortal(
@@ -174,7 +173,7 @@ const GroupTimeGrid: React.FC<GridProps> = ({
       )}
       {renderTargetArea(
         true,
-        myArea,
+        filterMapByRange(myArea, pageStart, pageEnd),
         `rgba(229, 76, 101,${scale})`,
         cellHeight,
         cellWidth,
@@ -189,7 +188,7 @@ const GroupTimeGrid: React.FC<GridProps> = ({
           <React.Fragment key={coworkerName}>
             {renderTargetArea(
               true,
-              area,
+              filterMapByRange(area, pageStart, pageEnd),
               `rgba(229, 76, 101,${scale})`,
               cellHeight,
               cellWidth,

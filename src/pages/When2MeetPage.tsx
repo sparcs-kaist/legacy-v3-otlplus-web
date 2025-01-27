@@ -133,6 +133,8 @@ const When2MeetPage: React.FC<GridProps> = ({
   const [pageStart, setPageStart] = useState<number>(0);
   const [pageEnd, setPageEnd] = useState<number>(m - 1);
 
+  const [dateHeader, setDateHeader] = useState<string[]>([]);
+
   /* TODO : 백엔드에서 저장값 가져와서 저장값 = 초기값 */
   const [selectedArea, setSelectedArea] = useState<Map<number, boolean[]>>(
     new Map(Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)])),
@@ -146,11 +148,36 @@ const When2MeetPage: React.FC<GridProps> = ({
   }, [groupInfo]);
 
   useEffect(() => {
+    setPage(0);
+  }, [groupInfo]);
+
+  const generateDates = () => {
+    const dates: string[] = [];
+    for (let i = pageStart; i <= pageEnd; i++) {
+      const date = tunedDateArray[i];
+      if (date == undefined) {
+        dates.push('none');
+      } else {
+        if (date == placeholderDate) {
+          dates.push('');
+        } else {
+          dates.push(getFormattedDate(date));
+        }
+      }
+    }
+    return dates;
+  };
+
+  useEffect(() => {
     const start = page * 7;
     const end = Math.min((page + 1) * 7 - 1, m - 1);
     setPageStart(start);
     setPageEnd(end);
   }, [page, groupInfo]);
+
+  useEffect(() => {
+    setDateHeader(generateDates());
+  }, [pageStart, pageEnd, groupInfo]);
 
   const getFormattedDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = {
@@ -161,24 +188,16 @@ const When2MeetPage: React.FC<GridProps> = ({
     return date.toLocaleDateString('ko-KR', options).replace(',', '');
   };
 
-  const generateDates = () => {
-    const dates: string[] = [];
-
-    for (let i = pageStart; i <= pageEnd; i++) {
-      const date = tunedDateArray[i];
-      if (date == placeholderDate) {
-        dates.push('');
-      } else {
-        dates.push(getFormattedDate(date));
-      }
-    }
-    return dates;
-  };
-
   return (
     <PageWrapper>
       <AreaWrapper>
-        <button onClick={() => setIsModalOpen(true)}>Open Modal</button>
+        <button
+          onClick={() => {
+            setIsModalOpen(true);
+            setPage(0);
+          }}>
+          Open Modal
+        </button>
         <SectionWrapper>
           <button
             onClick={() => {
@@ -211,11 +230,14 @@ const When2MeetPage: React.FC<GridProps> = ({
           </TimeWrapper>
           <GridWrapper>
             <DateHeader>
-              {generateDates().map((date, index) => (
-                <DateWrapper key={index} width={date == '' ? 10 : cellWidth}>
-                  {date}
-                </DateWrapper>
-              ))}
+              {dateHeader.map(
+                (date, index) =>
+                  date != 'none' && (
+                    <DateWrapper key={index} width={date == '' ? 10 : cellWidth}>
+                      {date}
+                    </DateWrapper>
+                  ),
+              )}
             </DateHeader>
             <MyTimeGrid
               selectedArea={selectedArea}
@@ -245,23 +267,26 @@ const When2MeetPage: React.FC<GridProps> = ({
           </TimeWrapper>
           <GridWrapper>
             <DateHeader>
-              {generateDates().map((date, index) => (
-                <DateWrapper key={index} width={date == '' ? 10 : cellWidth}>
-                  {date}
-                </DateWrapper>
-              ))}
+              {dateHeader.map(
+                (date, index) =>
+                  date != 'none' && (
+                    <DateWrapper key={index} width={date == '' ? 10 : cellWidth}>
+                      {date}
+                    </DateWrapper>
+                  ),
+              )}
             </DateHeader>
-            {/* <GroupTimeGrid
+            <GroupTimeGrid
               myArea={selectedArea}
               n={n}
-              m={m}
+              m={pageEnd - pageStart + 1}
               cellHeight={cellHeight}
               cellWidth={cellWidth}
               isModal={isModalOpen}
               placeholderIndex={placeholderIndex}
               pageStart={pageStart}
               pageEnd={pageEnd}
-            /> */}
+            />
           </GridWrapper>
         </SectionWrapper>
       </AreaWrapper>
