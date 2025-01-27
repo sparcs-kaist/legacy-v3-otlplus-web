@@ -70,7 +70,7 @@ const AreaWrapper = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 12px;
-  width: 630px;
+  width: 800px;
   height: calc(100vh - 200px);
 `;
 
@@ -107,11 +107,15 @@ const When2MeetPage: React.FC<GridProps> = ({
 
       if (nextDate.getTime() - currentDate.getTime() > 86400000) {
         result.push(placeholderDate);
-        placeholderIndex.push(i + 1);
-        i++;
       }
     }
     result.push(dates[dates.length - 1]);
+
+    for (let i = 0; i < result.length; i++) {
+      if (result[i] === placeholderDate) {
+        placeholderIndex.push(i);
+      }
+    }
 
     return result;
   }
