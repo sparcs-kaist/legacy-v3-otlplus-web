@@ -128,6 +128,10 @@ const When2MeetPage: React.FC<GridProps> = ({
   const m: number = tunedDateArray.length;
   const n: number = (groupInfo.endTime - groupInfo.startTime) * 2;
 
+  const [page, setPage] = useState<number>(0);
+  const [pageStart, setPageStart] = useState<number>(0);
+  const [pageEnd, setPageEnd] = useState<number>(m - 1);
+
   /* TODO : 백엔드에서 저장값 가져와서 저장값 = 초기값 */
   const [selectedArea, setSelectedArea] = useState<Map<number, boolean[]>>(
     new Map(Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)])),
@@ -139,6 +143,13 @@ const When2MeetPage: React.FC<GridProps> = ({
     );
     setSelectedArea(newSelectedArea);
   }, [groupInfo]);
+
+  useEffect(() => {
+    const start = page * 7;
+    const end = Math.min((page + 1) * 7 - 1, m - 1);
+    setPageStart(start);
+    setPageEnd(end);
+  }, [page, groupInfo]);
 
   const getFormattedDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = {
@@ -165,6 +176,23 @@ const When2MeetPage: React.FC<GridProps> = ({
     <PageWrapper>
       <AreaWrapper>
         <button onClick={() => setIsModalOpen(true)}>Open Modal</button>
+        <SectionWrapper>
+          <button
+            onClick={() => {
+              setPage(page + 1);
+            }}>
+            next
+          </button>
+          <button
+            onClick={() => {
+              setPage(page - 1);
+            }}>
+            prev
+          </button>
+          <div>{page}</div>
+          <div>{pageStart}</div>
+          <div>{pageEnd}</div>
+        </SectionWrapper>
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="일정 편집">
           <EditModalBody groupInfo={groupInfo} setGroupInfo={setGroupInfo} />
         </Modal>
