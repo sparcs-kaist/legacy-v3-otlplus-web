@@ -5,6 +5,7 @@ import GroupTimeGrid from '@/common/daily-tf/groupTimeGrid';
 import TextInput from '@/common/daily-tf/TextInputArea';
 import Modal from '@/common/daily-tf/Modal';
 import EditModalBody from '@/common/daily-tf/EditModalBody';
+import filterMapByRange from '@/common/daily-tf/utils/filterMapByRange';
 
 /* TODO: 그리드 크기 default 값 설정 */
 export interface GridProps {
@@ -162,13 +163,15 @@ const When2MeetPage: React.FC<GridProps> = ({
 
   const generateDates = () => {
     const dates: string[] = [];
-    tunedDateArray.forEach((date) => {
+
+    for (let i = pageStart; i <= pageEnd; i++) {
+      const date = tunedDateArray[i];
       if (date == placeholderDate) {
         dates.push('');
       } else {
         dates.push(getFormattedDate(date));
       }
-    });
+    }
     return dates;
   };
 
@@ -218,11 +221,14 @@ const When2MeetPage: React.FC<GridProps> = ({
               selectedArea={selectedArea}
               setSelectedArea={setSelectedArea}
               n={n}
-              m={m}
+              m={pageEnd - pageStart + 1}
               cellHeight={cellHeight}
               cellWidth={cellWidth}
               isModal={isModalOpen}
               placeholderIndex={placeholderIndex}
+              pageEnd={pageEnd}
+              pageStart={pageStart}
+              fullLength={tunedDateArray.length}
             />
           </GridWrapper>
         </SectionWrapper>
@@ -245,7 +251,7 @@ const When2MeetPage: React.FC<GridProps> = ({
                 </DateWrapper>
               ))}
             </DateHeader>
-            <GroupTimeGrid
+            {/* <GroupTimeGrid
               myArea={selectedArea}
               n={n}
               m={m}
@@ -253,7 +259,9 @@ const When2MeetPage: React.FC<GridProps> = ({
               cellWidth={cellWidth}
               isModal={isModalOpen}
               placeholderIndex={placeholderIndex}
-            />
+              pageStart={pageStart}
+              pageEnd={pageEnd}
+            /> */}
           </GridWrapper>
         </SectionWrapper>
       </AreaWrapper>

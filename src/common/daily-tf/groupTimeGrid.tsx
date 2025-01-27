@@ -17,6 +17,8 @@ interface GridProps {
   isModal?: boolean;
   placeholderIndex?: number[];
   placeholderWidth?: number;
+  pageStart?: number;
+  pageEnd?: number;
 }
 
 // test
@@ -35,6 +37,8 @@ const GroupTimeGrid: React.FC<GridProps> = ({
   isModal = false,
   placeholderIndex = [],
   placeholderWidth = 10,
+  pageStart = 0,
+  pageEnd = 6,
 }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const worker = [...coworkerArea.keys(), myName];
@@ -72,6 +76,7 @@ const GroupTimeGrid: React.FC<GridProps> = ({
             placeholderWidth,
             cellWidth,
             colPadding,
+            pageStart,
           );
           if (row >= 0 && row < n && col >= 0 && col < m) {
             const gridId = `${row * m + col}`;
@@ -131,6 +136,8 @@ const GroupTimeGrid: React.FC<GridProps> = ({
         userSelect: 'none',
         cursor: 'pointer',
       }}>
+      <div>{pageStart}</div>
+      <div>{pageEnd}</div>
       {isMouseInsideGrid &&
         ableWorker.length > 0 &&
         ReactDOM.createPortal(
@@ -155,7 +162,16 @@ const GroupTimeGrid: React.FC<GridProps> = ({
           </div>,
           document.body,
         )}
-      {renderGrid(n, m, cellWidth, cellHeight, colPadding, placeholderIndex, placeholderWidth)}
+      {renderGrid(
+        n,
+        m,
+        cellWidth,
+        cellHeight,
+        colPadding,
+        placeholderIndex,
+        placeholderWidth,
+        pageStart,
+      )}
       {renderTargetArea(
         true,
         myArea,
@@ -166,6 +182,7 @@ const GroupTimeGrid: React.FC<GridProps> = ({
         colPadding,
         placeholderIndex,
         placeholderWidth,
+        pageStart,
       )}
       {coworkerArea &&
         Array.from(coworkerArea.entries()).map(([coworkerName, area]) => (
@@ -180,6 +197,7 @@ const GroupTimeGrid: React.FC<GridProps> = ({
               colPadding,
               placeholderIndex,
               placeholderWidth,
+              pageStart,
             )}
           </React.Fragment>
         ))}

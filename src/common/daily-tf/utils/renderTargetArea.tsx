@@ -5,11 +5,12 @@ const calcLeft = (
   placeholderIndex: number[],
   cellWidth: number,
   placeholderWidth: number,
+  pageStart: number,
 ) => {
   let res: number = 0;
 
   for (let i = 0; i < index; i++) {
-    if (placeholderIndex.includes(i)) {
+    if (placeholderIndex.includes(i + pageStart)) {
       res += placeholderWidth;
     } else {
       res += cellWidth;
@@ -30,11 +31,11 @@ const renderTargetArea = (
   colPadding: number,
   placeholderIndex: number[],
   placeholderWidth: number,
+  pageStart: number,
 ) => {
   const rectangles: JSX.Element[] = [];
-
   targetArea.forEach((value, key) => {
-    if (!placeholderIndex.includes(key)) {
+    if (!placeholderIndex.includes(key + pageStart)) {
       let startIndex: number | null = null;
       value.forEach((val, index) => {
         if (val == idx) {
@@ -46,7 +47,8 @@ const renderTargetArea = (
           if (startIndex !== null) {
             const top = startIndex * cellHeight + rowPadding;
             const left =
-              calcLeft(key, placeholderIndex, cellWidth, placeholderWidth) + colPadding * key;
+              calcLeft(key, placeholderIndex, cellWidth, placeholderWidth, pageStart) +
+              colPadding * key;
             const height = (index - startIndex) * cellHeight - rowPadding * 2;
             const width = cellWidth;
 
@@ -74,7 +76,8 @@ const renderTargetArea = (
       if (startIndex !== null) {
         const top = startIndex * cellHeight + rowPadding;
         const left =
-          calcLeft(key, placeholderIndex, cellWidth, placeholderWidth) + colPadding * key;
+          calcLeft(key, placeholderIndex, cellWidth, placeholderWidth, pageStart) +
+          colPadding * key;
         const height = (value.length - startIndex) * cellHeight - rowPadding * 2;
         const width = cellWidth;
 

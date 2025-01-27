@@ -8,13 +8,14 @@ const renderGrid = (
   colPadding: number,
   placeholderIndex: number[],
   placeholderWidth: number,
+  pageStart: number,
 ) => {
   const grid: JSX.Element[] = [];
   for (let i = 0; i < n; i++) {
     const row: JSX.Element[] = [];
     for (let j = 0; j < m; j++) {
       const uniqueId = `${i * m + j}`;
-      const isShown = !placeholderIndex.includes(j);
+      const isShown = !placeholderIndex.includes(j + pageStart);
       const newRec = (
         <div
           key={uniqueId}

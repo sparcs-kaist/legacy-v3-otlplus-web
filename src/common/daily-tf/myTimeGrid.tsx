@@ -1,8 +1,9 @@
 /* TODO: 코드 정리 - 중복되는 거 밖으로 빼던가 해야지,,*/
 import renderGrid from '@/common/daily-tf/utils/renderGrid';
 import renderTargetArea from '@/common/daily-tf/utils/renderTargetArea';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import getColumnIndex from './utils/getColumnIndex';
+import filterMapByRange from './utils/filterMapByRange';
 
 interface GridProps {
   n?: number; // 세로 크기
@@ -16,6 +17,9 @@ interface GridProps {
   isModal?: boolean;
   placeholderIndex?: number[];
   placeholderWidth?: number;
+  pageStart?: number;
+  pageEnd?: number;
+  fullLength?: number;
 }
 
 const MyTimeGrid: React.FC<GridProps> = ({
@@ -30,6 +34,9 @@ const MyTimeGrid: React.FC<GridProps> = ({
   isModal = false,
   placeholderIndex = [],
   placeholderWidth = 10,
+  pageStart = 0,
+  pageEnd = 6,
+  fullLength = 7,
 }) => {
   /* TODO : API로 disabledArea 받아오기 */
   // test
@@ -94,19 +101,26 @@ const MyTimeGrid: React.FC<GridProps> = ({
     newValue: Map<number, boolean[]>,
   ): Map<number, boolean[]> => {
     const result = new Map(
-      Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)]),
+      Array.from({ length: fullLength }, (_, rowIndex) => [rowIndex, Array(n).fill(false)]),
     );
 
     target.forEach((value1, key) => {
-      const value2 = newValue.get(key);
-      for (let i = 0; i < n; i++) {
-        if (value2![i] == null) {
+      if (key >= pageStart && key <= pageEnd) {
+        const value2 = newValue.get(key - pageStart);
+        for (let i = 0; i < n; i++) {
+          if (value2![i] == null) {
+            result.get(key)![i] = value1[i];
+          } else {
+            result.get(key)![i] = value2![i];
+          }
+        }
+      } else {
+        for (let i = 0; i < n; i++) {
           result.get(key)![i] = value1[i];
-        } else {
-          result.get(key)![i] = value2![i];
         }
       }
     });
+
     return result;
   };
 
@@ -124,6 +138,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
           placeholderWidth,
           cellWidth,
           colPadding,
+          pageStart,
         );
         if (row >= 0 && row < n && col >= 0 && col < m) {
           setDragging(true);
@@ -150,6 +165,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
         placeholderWidth,
         cellWidth,
         colPadding,
+        pageStart,
       );
       if (row >= 0 && row < n && col >= 0 && col < m) {
         const gridId = `${row * m + col}`;
@@ -170,7 +186,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
         const startCol = startId % m;
         const endRow = Math.floor(endId / m);
         const endCol = endId % m;
-        const index = selectedArea.get(startCol)?.[startRow] || false;
+        const index = selectedArea.get(startCol + pageStart)?.[startRow] || false;
 
         const _startRow = Math.min(startRow, endRow);
         const _endRow = Math.max(startRow, endRow);
@@ -225,7 +241,16 @@ const MyTimeGrid: React.FC<GridProps> = ({
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}>
-      {renderGrid(n, m, cellWidth, cellHeight, colPadding, placeholderIndex, placeholderWidth)}
+      {renderGrid(
+        n,
+        m,
+        cellWidth,
+        cellHeight,
+        colPadding,
+        placeholderIndex,
+        placeholderWidth,
+        pageStart,
+      )}
       {renderTargetArea(
         true,
         randomDisabledArea,
@@ -236,6 +261,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
         colPadding,
         placeholderIndex,
         placeholderWidth,
+        pageStart,
       )}
       {renderTargetArea(
         index,
@@ -247,10 +273,11 @@ const MyTimeGrid: React.FC<GridProps> = ({
         colPadding,
         placeholderIndex,
         placeholderWidth,
+        pageStart,
       )}
       {renderTargetArea(
         true,
-        selectedArea,
+        filterMapByRange(selectedArea, pageStart, pageEnd),
         'rgba(237, 140, 156, 0.5)',
         cellHeight,
         cellWidth,
@@ -258,6 +285,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
         colPadding,
         placeholderIndex,
         placeholderWidth,
+        pageStart,
       )}
     </div>
   );

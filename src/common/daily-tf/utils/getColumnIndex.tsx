@@ -4,12 +4,13 @@ const generateColumnBoundary = (
   placeholderWidth: number,
   cellWidth: number,
   colPadding: number,
+  pageStart: number,
 ) => {
   const res: number[] = [0];
   let prev = 0;
 
   for (let i = 0; i < m; i++) {
-    if (placeholderIndex.includes(i)) {
+    if (placeholderIndex.includes(i + pageStart)) {
       prev += placeholderWidth + colPadding;
       res.push(prev);
     } else {
@@ -28,6 +29,7 @@ const getColumnIndex = (
   placeholderWidth: number,
   cellWidth: number,
   colPadding: number,
+  pageStart: number,
 ) => {
   const columnBoundary = generateColumnBoundary(
     m,
@@ -35,6 +37,7 @@ const getColumnIndex = (
     placeholderWidth,
     cellWidth,
     colPadding,
+    pageStart,
   );
   for (let i = 0; i < m + 1; i++) {
     if (columnBoundary[i] > mouseX) {
