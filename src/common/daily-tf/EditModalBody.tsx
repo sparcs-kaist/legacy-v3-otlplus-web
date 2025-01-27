@@ -7,14 +7,13 @@ import Dropdown from '@/common/daily-tf/Dropdown';
 import Typography from './Typography';
 import { Info } from '@mui/icons-material';
 import Button from './Button';
+import { GridProps } from '@/pages/When2MeetPage';
 
 /* TODO: 그리드 크기 default 값 설정 */
 
 interface EditModalBodyProps {
-  defaultName?: string;
-  defaultSelectedDate?: Date[];
-  defaultStartTime?: number;
-  defaultEndTime?: number;
+  groupInfo: GridProps;
+  setGroupInfo: React.Dispatch<GridProps>;
 }
 
 const PageWrapper = styled.div`
@@ -79,22 +78,17 @@ const SelectItem = styled.div`
   display: flex;
 `;
 
-const EditModalBody: React.FC<EditModalBodyProps> = ({
-  defaultName = '',
-  defaultSelectedDate = [],
-  defaultEndTime = 18,
-  defaultStartTime = 0,
-}) => {
-  const [selectedDate, setSelectedDate] = useState<Date[]>(defaultSelectedDate);
-  const [startTime, setStartTime] = useState<number>(defaultStartTime);
-  const [endTime, setEndTime] = useState<number>(defaultEndTime);
+const EditModalBody: React.FC<EditModalBodyProps> = ({ groupInfo, setGroupInfo }) => {
+  const [selectedDate, setSelectedDate] = useState<Date[]>(groupInfo.dateArray!);
+  const [startTime, setStartTime] = useState<number>(groupInfo.startTime! - 8);
+  const [endTime, setEndTime] = useState<number>(groupInfo.endTime! - 8);
 
   const [isFirstOption, setIsFirstOption] = useState<boolean>(true);
 
   // TODO : 숫자만 가능하도록 추가
-  const [member, setMember] = useState('0');
+  const [member, setMember] = useState(`${groupInfo.members}`);
 
-  const [name, setName] = useState(defaultName);
+  const [name, setName] = useState(groupInfo.groupName);
 
   const handleChange = (newValue: string) => {
     setName(newValue);
@@ -104,17 +98,28 @@ const EditModalBody: React.FC<EditModalBodyProps> = ({
     setMember(newValue);
   };
 
+  const handleSubmit = () => {
+    const groupInfo: GridProps = {
+      members: parseInt(member, 10),
+      startTime: startTime + 8,
+      endTime: endTime + 8,
+      groupName: name,
+      dateArray: selectedDate.sort((a, b) => a.getTime() - b.getTime()),
+    };
+    setGroupInfo(groupInfo);
+  };
+
   const TimeIndex = (index: number) => {
-    if (index >= 0 && index <= 3) {
-      return `오전 ${index + 9}시`;
-    } else if (index >= 4 && index <= 15) {
-      return `오후 ${index - 3}시`;
-    } else if (index >= 16 && index <= 18) {
-      return `오전 ${index - 15}시`;
+    if (index >= 0 && index <= 4) {
+      return `오전 ${index + 8}시`;
+    } else if (index >= 5 && index <= 16) {
+      return `오후 ${index - 4}시`;
+    } else if (index >= 17 && index <= 19) {
+      return `오전 ${index - 16}시`;
     }
     return '';
   };
-  const timeArray = Array.from({ length: 19 }, (_, index) => TimeIndex(index));
+  const timeArray = Array.from({ length: 20 }, (_, index) => TimeIndex(index));
 
   return (
     <PageWrapper>
@@ -178,7 +183,9 @@ const EditModalBody: React.FC<EditModalBodyProps> = ({
             <Typography type="Big">명</Typography>
           </InfoWrapper>
           <ButtonWrapper>
-            <Button type="selected">확인</Button>
+            <Button type="selected" onClick={handleSubmit}>
+              확인
+            </Button>
           </ButtonWrapper>
         </ColumnWrapper>
       </RowWrapper>

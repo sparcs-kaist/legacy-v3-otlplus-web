@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MyTimeGrid from '@/common/daily-tf/myTimeGrid';
 import styled from 'styled-components';
 import GroupTimeGrid from '@/common/daily-tf/groupTimeGrid';
 import TextInput from '@/common/daily-tf/TextInputArea';
 import Modal from '@/common/daily-tf/Modal';
+import EditModalBody from '@/common/daily-tf/EditModalBody';
 
 /* TODO: 그리드 크기 default 값 설정 */
-interface GridProps {
-  startDate?: Date;
-  endDate?: Date;
-  startTime?: number;
-  endTime?: number;
-  groupName?: string;
-  members?: number;
+export interface GridProps {
+  dateArray: Date[];
+  startTime: number;
+  endTime: number;
+  groupName: string;
+  members: number;
 }
 
 const PageWrapper = styled.div`
@@ -57,7 +57,7 @@ const TimeWrapper = styled.div`
   margin-top: 15px;
   display: flex;
   flex-direction: column;
-  gap: 29px;
+  gap: 37px;
   font-size: 8px;
   line-height: 11px;
 `;
@@ -70,59 +70,90 @@ const AreaWrapper = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 12px;
+  width: 630px;
+  height: calc(100vh - 200px);
 `;
 
 const When2MeetPage: React.FC<GridProps> = ({
-  startDate = new Date('2025-01-20'),
-  endDate = new Date('2025-01-24'),
+  // 테스트 용으로 그냥 넣어둔 값이에용
+  dateArray = [new Date('2025-01-24'), new Date('2025-01-25'), new Date('2025-01-28')],
   startTime = 8,
   endTime = 15,
   groupName = '익명의 그룹',
   members = 5,
 }) => {
-  function getDateDifference(startDate: Date, endDate: Date): number {
-    const differenceInMilliseconds = endDate.getTime() - startDate.getTime();
-    const differenceInDays = differenceInMilliseconds / (1000 * 3600 * 24);
-    return differenceInDays;
-  }
-
   const defaultGroupInfo: GridProps = {
     groupName: groupName,
     members: members,
+    dateArray: dateArray,
+    startTime: startTime,
+    endTime: endTime,
   };
 
   const cellHeight = 24;
-  const cellWidth = 114;
+  const cellWidth = 80;
+
+  const placeholderDate = new Date('2005-11-21');
+
+  const placeholderIndex: number[] = [];
+
+  function insertMissingDates(dates: Date[]) {
+    const result = [];
+
+    for (let i = 0; i < dates.length - 1; i++) {
+      const currentDate: Date = dates[i];
+      const nextDate: Date = dates[i + 1];
+      result.push(currentDate);
+
+      if (nextDate.getTime() - currentDate.getTime() > 86400000) {
+        result.push(placeholderDate);
+        placeholderIndex.push(i + 1);
+        i++;
+      }
+    }
+    result.push(dates[dates.length - 1]);
+
+    return result;
+  }
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [groupInfo, setGroupInfo] = useState<GridProps>(defaultGroupInfo);
 
-  const m: number = getDateDifference(startDate, endDate) + 1;
-  const n: number = (endTime - startTime) * 2;
+  const tunedDateArray = insertMissingDates(groupInfo.dateArray);
+
+  const m: number = tunedDateArray.length;
+  const n: number = (groupInfo.endTime - groupInfo.startTime) * 2;
 
   /* TODO : 백엔드에서 저장값 가져와서 저장값 = 초기값 */
   const [selectedArea, setSelectedArea] = useState<Map<number, boolean[]>>(
     new Map(Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)])),
   );
 
-  // 위에 헤더 로딩
+  useEffect(() => {
+    const newSelectedArea = new Map(
+      Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)]),
+    );
+    setSelectedArea(newSelectedArea);
+  }, [groupInfo]);
+
   const getFormattedDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = {
-      weekday: 'long', // 요일을 줄여서 표시 (예: 월, 화)
-      day: '2-digit', // 두 자릿수로 날짜 표시 (예: 01, 02)
-      month: '2-digit', // 두 자릿수로 월 표시 (예: 01, 02)
+      weekday: 'long',
+      day: '2-digit',
+      month: '2-digit',
     };
-    // 한국어 형식으로 변환
-    return date.toLocaleDateString('ko-KR', options).replace(',', ''); // xx.xx 요일 형식으로 변환
+    return date.toLocaleDateString('ko-KR', options).replace(',', '');
   };
 
   const generateDates = () => {
     const dates: string[] = [];
-    const currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
-      dates.push(getFormattedDate(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1); // 하루씩 증가
-    }
+    tunedDateArray.forEach((date) => {
+      if (date == placeholderDate) {
+        dates.push('');
+      } else {
+        dates.push(getFormattedDate(date));
+      }
+    });
     return dates;
   };
 
@@ -131,22 +162,22 @@ const When2MeetPage: React.FC<GridProps> = ({
       <AreaWrapper>
         <button onClick={() => setIsModalOpen(true)}>Open Modal</button>
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="일정 편집">
-          <h2>Modal Title</h2>
-          <p>This is the modal content.</p>
+          <EditModalBody groupInfo={groupInfo} setGroupInfo={setGroupInfo} />
         </Modal>
         <div>{groupInfo.groupName}</div>
         <SectionWrapper>
           <TimeWrapper>
-            {Array.from({ length: endTime - startTime + 1 }, (_, index) => index + startTime).map(
-              (number) => (
-                <div key={number}>{number % 12 || 12}</div>
-              ),
-            )}
+            {Array.from(
+              { length: groupInfo.endTime - groupInfo.startTime + 1 },
+              (_, index) => index + groupInfo.startTime,
+            ).map((number) => (
+              <div key={number}>{number % 12 || 12}</div>
+            ))}
           </TimeWrapper>
           <GridWrapper>
             <DateHeader>
               {generateDates().map((date, index) => (
-                <DateWrapper key={index} width={cellWidth}>
+                <DateWrapper key={index} width={date == '' ? 10 : cellWidth}>
                   {date}
                 </DateWrapper>
               ))}
@@ -159,6 +190,7 @@ const When2MeetPage: React.FC<GridProps> = ({
               cellHeight={cellHeight}
               cellWidth={cellWidth}
               isModal={isModalOpen}
+              placeholderIndex={placeholderIndex}
             />
           </GridWrapper>
         </SectionWrapper>
@@ -166,16 +198,17 @@ const When2MeetPage: React.FC<GridProps> = ({
       <AreaWrapper>
         <SectionWrapper>
           <TimeWrapper>
-            {Array.from({ length: endTime - startTime + 1 }, (_, index) => index + startTime).map(
-              (number) => (
-                <div key={number}>{number % 12 || 12}</div>
-              ),
-            )}
+            {Array.from(
+              { length: groupInfo.endTime - groupInfo.startTime + 1 },
+              (_, index) => index + groupInfo.startTime,
+            ).map((number) => (
+              <div key={number}>{number % 12 || 12}</div>
+            ))}
           </TimeWrapper>
           <GridWrapper>
             <DateHeader>
               {generateDates().map((date, index) => (
-                <DateWrapper key={index} width={cellWidth}>
+                <DateWrapper key={index} width={date == '' ? 10 : cellWidth}>
                   {date}
                 </DateWrapper>
               ))}
@@ -187,6 +220,7 @@ const When2MeetPage: React.FC<GridProps> = ({
               cellHeight={cellHeight}
               cellWidth={cellWidth}
               isModal={isModalOpen}
+              placeholderIndex={placeholderIndex}
             />
           </GridWrapper>
         </SectionWrapper>

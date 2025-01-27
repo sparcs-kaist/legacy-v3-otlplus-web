@@ -134,7 +134,9 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, setSelectedDate }) =>
   };
 
   const getDateFromDay = (day: number): Date => {
-    return new Date(currentYear, currentMonth, day);
+    const date = new Date(currentYear, currentMonth, day);
+    // 09:00:00으로 시간 통일 (GMT +0900)
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 9, 0, 0, 0);
   };
 
   const handleDateClick = (day: number) => {

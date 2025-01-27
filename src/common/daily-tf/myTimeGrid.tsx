@@ -2,6 +2,7 @@
 import renderGrid from '@/common/daily-tf/utils/renderGrid';
 import renderTargetArea from '@/common/daily-tf/utils/renderTargetArea';
 import React, { useLayoutEffect, useRef, useState } from 'react';
+import getColumnIndex from './utils/getColumnIndex';
 
 interface GridProps {
   n?: number; // 세로 크기
@@ -13,6 +14,8 @@ interface GridProps {
   selectedArea: Map<number, boolean[]>;
   setSelectedArea: React.Dispatch<React.SetStateAction<Map<number, boolean[]>>>;
   isModal?: boolean;
+  placeholderIndex?: number[];
+  placeholderWidth?: number;
 }
 
 const MyTimeGrid: React.FC<GridProps> = ({
@@ -25,6 +28,8 @@ const MyTimeGrid: React.FC<GridProps> = ({
   selectedArea,
   setSelectedArea,
   isModal = false,
+  placeholderIndex = [],
+  placeholderWidth = 10,
 }) => {
   /* TODO : API로 disabledArea 받아오기 */
   // test
@@ -87,7 +92,6 @@ const MyTimeGrid: React.FC<GridProps> = ({
   const compareArea = (
     target: Map<number, boolean[]>,
     newValue: Map<number, boolean[]>,
-    disabledArea: Map<number, boolean[]> = randomDisabledArea,
   ): Map<number, boolean[]> => {
     const result = new Map(
       Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)]),
@@ -95,18 +99,6 @@ const MyTimeGrid: React.FC<GridProps> = ({
 
     target.forEach((value1, key) => {
       const value2 = newValue.get(key);
-      const disabled = disabledArea.get(key);
-      // for (let i = 0; i < n; i++) {
-      //   if (disabled![i] == true) {
-      //     result.get(key)![i] = null;
-      //   } else {
-      //     if (value2![i] == null) {
-      //       result.get(key)![i] = value1[i];
-      //     } else {
-      //       result.get(key)![i] = value2![i];
-      //     }
-      //   }
-      // }
       for (let i = 0; i < n; i++) {
         if (value2![i] == null) {
           result.get(key)![i] = value1[i];
@@ -125,7 +117,14 @@ const MyTimeGrid: React.FC<GridProps> = ({
         const mouseX = event.clientX - gridRect.left;
         const mouseY = event.clientY - gridRect.top;
         const row = Math.floor(mouseY / cellHeight);
-        const col = Math.floor(mouseX / (cellWidth + colPadding));
+        const col = getColumnIndex(
+          mouseX,
+          m,
+          placeholderIndex,
+          placeholderWidth,
+          cellWidth,
+          colPadding,
+        );
         if (row >= 0 && row < n && col >= 0 && col < m) {
           setDragging(true);
           const gridId = `${row * m + col}`;
@@ -144,7 +143,14 @@ const MyTimeGrid: React.FC<GridProps> = ({
       const mouseX = event.clientX - gridRect.left;
       const mouseY = event.clientY - gridRect.top;
       const row = Math.floor(mouseY / cellHeight);
-      const col = Math.floor(mouseX / (cellWidth + colPadding));
+      const col = getColumnIndex(
+        mouseX,
+        m,
+        placeholderIndex,
+        placeholderWidth,
+        cellWidth,
+        colPadding,
+      );
       if (row >= 0 && row < n && col >= 0 && col < m) {
         const gridId = `${row * m + col}`;
         if (gridId !== lastGridId) {
@@ -195,11 +201,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
       const updatedArea = compareArea(selectedArea, draggingArea);
       setSelectedArea(updatedArea);
     } else {
-      const updatedArea = compareArea(
-        selectedArea,
-        draggingArea,
-        new Map(Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)])),
-      );
+      const updatedArea = compareArea(selectedArea, draggingArea);
       setSelectedArea(updatedArea);
     }
     setDraggingArea(
@@ -223,7 +225,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}>
-      {renderGrid(n, m, cellWidth, cellHeight, colPadding)}
+      {renderGrid(n, m, cellWidth, cellHeight, colPadding, placeholderIndex, placeholderWidth)}
       {renderTargetArea(
         true,
         randomDisabledArea,
@@ -232,6 +234,8 @@ const MyTimeGrid: React.FC<GridProps> = ({
         cellWidth,
         rowPadding,
         colPadding,
+        placeholderIndex,
+        placeholderWidth,
       )}
       {renderTargetArea(
         index,
@@ -241,6 +245,8 @@ const MyTimeGrid: React.FC<GridProps> = ({
         cellWidth,
         rowPadding,
         colPadding,
+        placeholderIndex,
+        placeholderWidth,
       )}
       {renderTargetArea(
         true,
@@ -250,6 +256,8 @@ const MyTimeGrid: React.FC<GridProps> = ({
         cellWidth,
         rowPadding,
         colPadding,
+        placeholderIndex,
+        placeholderWidth,
       )}
     </div>
   );

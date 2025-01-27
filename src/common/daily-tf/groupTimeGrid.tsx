@@ -3,6 +3,7 @@ import renderTargetArea from '@/common/daily-tf/utils/renderTargetArea';
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import mockCoworker from './mock/mockCoworker';
+import getColumnIndex from './utils/getColumnIndex';
 
 interface GridProps {
   n?: number; // 세로 크기
@@ -14,6 +15,8 @@ interface GridProps {
   myArea: Map<number, boolean[]>;
   coworkerArea?: Map<string, Map<number, boolean[]>>;
   isModal?: boolean;
+  placeholderIndex?: number[];
+  placeholderWidth?: number;
 }
 
 // test
@@ -30,6 +33,8 @@ const GroupTimeGrid: React.FC<GridProps> = ({
   myArea,
   coworkerArea = mockCoworker,
   isModal = false,
+  placeholderIndex = [],
+  placeholderWidth = 10,
 }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const worker = [...coworkerArea.keys(), myName];
@@ -60,7 +65,14 @@ const GroupTimeGrid: React.FC<GridProps> = ({
           const X = mouseX - gridRect.left;
           const Y = mouseY - gridRect.top;
           const row = Math.floor(Y / cellHeight);
-          const col = Math.floor(X / (cellWidth + colPadding));
+          const col = getColumnIndex(
+            X,
+            m,
+            placeholderIndex,
+            placeholderWidth,
+            cellWidth,
+            colPadding,
+          );
           if (row >= 0 && row < n && col >= 0 && col < m) {
             const gridId = `${row * m + col}`;
             if (gridId !== hoverGridID) {
@@ -88,17 +100,18 @@ const GroupTimeGrid: React.FC<GridProps> = ({
       const hoverID = parseInt(hoverGridID, 10);
       const row = Math.floor(hoverID / m);
       const col = hoverID % m;
+      if (!placeholderIndex.includes(col)) {
+        coworkerArea.forEach((value, key) => {
+          const able = value.get(col)![row];
+          if (able === true) {
+            res.push(key);
+          }
+        });
 
-      coworkerArea.forEach((value, key) => {
-        const able = value.get(col)![row];
-        if (able === true) {
-          res.push(key);
+        const myAble = myArea.get(col)![row];
+        if (myAble === true) {
+          res.push(myName);
         }
-      });
-
-      const myAble = myArea.get(col)![row];
-      if (myAble === true) {
-        res.push(myName);
       }
     }
     setAbleWorker(res);
@@ -142,7 +155,7 @@ const GroupTimeGrid: React.FC<GridProps> = ({
           </div>,
           document.body,
         )}
-      {renderGrid(n, m, cellWidth, cellHeight, colPadding)}
+      {renderGrid(n, m, cellWidth, cellHeight, colPadding, placeholderIndex, placeholderWidth)}
       {renderTargetArea(
         true,
         myArea,
@@ -151,6 +164,8 @@ const GroupTimeGrid: React.FC<GridProps> = ({
         cellWidth,
         rowPadding,
         colPadding,
+        placeholderIndex,
+        placeholderWidth,
       )}
       {coworkerArea &&
         Array.from(coworkerArea.entries()).map(([coworkerName, area]) => (
@@ -163,6 +178,8 @@ const GroupTimeGrid: React.FC<GridProps> = ({
               cellWidth,
               rowPadding,
               colPadding,
+              placeholderIndex,
+              placeholderWidth,
             )}
           </React.Fragment>
         ))}
