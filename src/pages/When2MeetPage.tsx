@@ -169,10 +169,27 @@ const When2MeetPage: React.FC<GridProps> = ({
   };
 
   useEffect(() => {
-    const start = page * 7;
-    const end = Math.min((page + 1) * 7 - 1, m - 1);
-    setPageStart(start);
-    setPageEnd(end);
+    let contents = 0;
+    let startIndex = 0;
+    while (contents < page * 7) {
+      if (!placeholderIndex.includes(startIndex)) {
+        contents++;
+      }
+      startIndex++;
+    }
+    setPageStart(startIndex);
+    let endIndex = startIndex;
+
+    while (contents < (page + 1) * 7 - 1 && endIndex < m - 1) {
+      if (!placeholderIndex.includes(endIndex)) {
+        contents++;
+      }
+      endIndex++;
+    }
+    if (placeholderIndex.includes(endIndex)) {
+      endIndex++;
+    }
+    setPageEnd(endIndex);
   }, [page, groupInfo]);
 
   useEffect(() => {
