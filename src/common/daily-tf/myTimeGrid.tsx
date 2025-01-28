@@ -7,6 +7,8 @@ import filterMapByRange from './utils/filterMapByRange';
 import ReactDOM from 'react-dom';
 import getFormattedDate from './utils/getFormattedDate';
 import HoverContainer from './HoverContainer';
+import { DisabledAreaType } from './utils/disabledAreaType';
+import renderDisabledArea from './utils/renderDisabledArea';
 
 interface GridProps {
   n?: number; // 세로 크기
@@ -24,6 +26,8 @@ interface GridProps {
   pageEnd?: number;
   tunedDateArray?: Date[];
   startTime?: number;
+  disabledArea?: Map<number, DisabledAreaType[]>;
+  formattedDisabledArea?: Map<number, boolean[]>;
 }
 
 const MyTimeGrid: React.FC<GridProps> = ({
@@ -31,8 +35,8 @@ const MyTimeGrid: React.FC<GridProps> = ({
   m = 5,
   cellHeight = 50,
   cellWidth = 100,
-  rowPadding = 5,
-  colPadding = 10,
+  rowPadding = 2,
+  colPadding = 5,
   selectedArea,
   setSelectedArea,
   isModal = false,
@@ -42,29 +46,12 @@ const MyTimeGrid: React.FC<GridProps> = ({
   pageEnd = 6,
   tunedDateArray = [],
   startTime = 8,
+  disabledArea = new Map(),
+  formattedDisabledArea = new Map(),
 }) => {
   /* TODO : API로 disabledArea 받아오기 */
+  /* 밖으로 빼서 처리해야 함 (랜더링 될 때마다 호출 xx) */
   // test
-
-  const fillDisabledMock = (m: number, n: number) => {
-    const disabledArea = new Map(
-      Array.from({ length: m }, (_, rowIndex) => [
-        rowIndex,
-        Array.from({ length: n }, (_, index) => {
-          if ((rowIndex * n + index) % 3 == 0 || (rowIndex * n + index) % 5 == 2) {
-            return true;
-          } else {
-            return false;
-          }
-          // return false;
-        }),
-      ]),
-    );
-
-    return disabledArea;
-  };
-
-  const randomDisabledArea = fillDisabledMock(m, n);
   const gridRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<boolean>(false);
   const [lastGridId, setLastGridId] = useState<string | null>(null);
@@ -87,7 +74,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
     endRow: number,
     endCol: number,
     index: boolean,
-    disabledArea: Map<number, boolean[]> = randomDisabledArea,
+    disabledArea: Map<number, boolean[]>,
   ): Map<number, boolean[]> => {
     const result = new Map(
       Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(null)]),
@@ -157,7 +144,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
           const gridId = `${row * m + col}`;
           setStartGridId(gridId);
           setLastGridId(gridId);
-          const isDisabled: boolean = randomDisabledArea.get(col)![row] == true;
+          const isDisabled: boolean = formattedDisabledArea.get(col + pageStart)![row] == true;
           setIsIndisabled(isDisabled);
         }
       }
@@ -221,7 +208,14 @@ const MyTimeGrid: React.FC<GridProps> = ({
         const _endCol = Math.max(startCol, endCol);
 
         if (!isIndisabled) {
-          const targetArea = getArea(_startRow, _startCol, _endRow, _endCol, index);
+          const targetArea = getArea(
+            _startRow,
+            _startCol,
+            _endRow,
+            _endCol,
+            index,
+            formattedDisabledArea,
+          );
           setDraggingArea(targetArea);
         } else {
           const targetArea = getArea(
@@ -342,10 +336,8 @@ const MyTimeGrid: React.FC<GridProps> = ({
         placeholderWidth,
         pageStart,
       )}
-      {renderTargetArea(
-        true,
-        randomDisabledArea,
-        'rgba(214, 214, 214, 1)',
+      {renderDisabledArea(
+        filterMapByRange(disabledArea, pageStart, pageEnd),
         cellHeight,
         cellWidth,
         rowPadding,

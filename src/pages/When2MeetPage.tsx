@@ -11,6 +11,9 @@ import Typography from '@/common/daily-tf/Typography';
 import TextInput from '@/common/daily-tf/TextInputArea';
 import getFormattedDate from '@/common/daily-tf/utils/getFormattedDate';
 import generateMockCoworkerList from '@/common/daily-tf/mock/mockCoworker';
+import { DisabledAreaType } from '@/common/daily-tf/utils/disabledAreaType';
+import generateMockDisabledArea from '@/common/daily-tf/mock/mockDisabledArea';
+import { formatDisabledArea } from '@/common/daily-tf/utils/formatDisabledArea';
 
 /* TODO: 코드 정리 */
 
@@ -67,7 +70,8 @@ const DateWrapper = styled.div<{ width: number }>`
 `;
 
 const DateHeader = styled.div`
-  gap: 10px;
+  //colPadding 값이랑 맞추기
+  gap: 5px;
   display: flex;
   flex-direction: row;
 `;
@@ -302,6 +306,12 @@ const When2MeetPage: React.FC<GridProps> = ({
   const [dateHeader, setDateHeader] = useState<string[]>([]);
 
   const [mockCoworker, setMockCoworker] = useState<Map<string, Map<number, boolean[]>>>(new Map());
+  const [mockDisabledArea, setMockDisabledArea] = useState<Map<number, DisabledAreaType[]>>(
+    new Map(),
+  );
+  const [formattedDisabledArea, setFormattedDisabledArea] = useState<Map<number, boolean[]>>(
+    new Map(),
+  );
 
   /* TODO : 백엔드에서 저장값 가져와서 저장값 = 초기값 */
   const [selectedArea, setSelectedArea] = useState<Map<number, boolean[]>>(
@@ -315,6 +325,13 @@ const When2MeetPage: React.FC<GridProps> = ({
     setSelectedArea(newSelectedArea);
     const mockCoworker = generateMockCoworkerList(groupInfo.members, m, n);
     setMockCoworker(mockCoworker);
+    const mockDisabledArea = generateMockDisabledArea(
+      tunedDateArray.length,
+      groupInfo.endTime - groupInfo.startTime + 1,
+    );
+    setMockDisabledArea(mockDisabledArea);
+    const formattedDisabledArea = formatDisabledArea(mockDisabledArea, m, n);
+    setFormattedDisabledArea(formattedDisabledArea);
   }, [groupInfo]);
 
   useEffect(() => {
@@ -460,6 +477,8 @@ const When2MeetPage: React.FC<GridProps> = ({
                 pageStart={pageStart}
                 tunedDateArray={tunedDateArray}
                 startTime={groupInfo.startTime}
+                disabledArea={mockDisabledArea}
+                formattedDisabledArea={formattedDisabledArea}
               />
             </GridWrapper>
           </SectionWrapper>
