@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { IconButton, Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
 
 interface CalendarProps {
   selectedDate: Date[];

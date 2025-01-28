@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import getColumnIndex from './utils/getColumnIndex';
 import filterMapByRange from './utils/filterMapByRange';
-import generateMockCoworkerList from './mock/mockCoworker';
 import HoverContainer from './HoverContainer';
 import Typography from './Typography';
 

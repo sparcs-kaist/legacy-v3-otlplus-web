@@ -23,6 +23,14 @@ export interface GridProps {
   members: number;
 }
 
+const ArrowGrid = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
 const Divider = styled.div`
   width: 100%;
   height: 1px;
@@ -408,57 +416,63 @@ const When2MeetPage: React.FC<GridProps> = ({
             onClose={handelModalClose}
           />
         </Modal>
-        <SectionWrapper>
-          {page > 0 && (
+        <ArrowGrid>
+          {page > 0 ? (
             <Arrow
               handleOnClick={() => {
                 setPage(page - 1);
               }}
               isForward={false}
             />
+          ) : (
+            <div style={{ display: 'flex', width: '24px' }} />
           )}
-          <TimeWrapper>
-            {Array.from(
-              { length: groupInfo.endTime - groupInfo.startTime + 1 },
-              (_, index) => index + groupInfo.startTime,
-            ).map((number) => (
-              <div key={number}>{number % 12 || 12}</div>
-            ))}
-          </TimeWrapper>
-          <GridWrapper>
-            <DateHeader>
-              {dateHeader.map(
-                (date, index) =>
-                  date != 'none' && (
-                    <DateWrapper key={index} width={date == '' ? 10 : cellWidth}>
-                      {date}
-                    </DateWrapper>
-                  ),
-              )}
-            </DateHeader>
-            <MyTimeGrid
-              selectedArea={selectedArea}
-              setSelectedArea={setSelectedArea}
-              n={n}
-              m={pageEnd - pageStart + 1}
-              cellHeight={cellHeight}
-              cellWidth={cellWidth}
-              isModal={isModalOpen}
-              placeholderIndex={placeholderIndex}
-              pageEnd={pageEnd}
-              pageStart={pageStart}
-              tunedDateArray={tunedDateArray}
-              startTime={groupInfo.startTime}
-            />
-          </GridWrapper>
-          {maxPage >= page + 1 && (
+          <SectionWrapper>
+            <TimeWrapper>
+              {Array.from(
+                { length: groupInfo.endTime - groupInfo.startTime + 1 },
+                (_, index) => index + groupInfo.startTime,
+              ).map((number) => (
+                <div key={number}>{number % 12 || 12}</div>
+              ))}
+            </TimeWrapper>
+            <GridWrapper>
+              <DateHeader>
+                {dateHeader.map(
+                  (date, index) =>
+                    date != 'none' && (
+                      <DateWrapper key={index} width={date == '' ? 10 : cellWidth}>
+                        {date}
+                      </DateWrapper>
+                    ),
+                )}
+              </DateHeader>
+              <MyTimeGrid
+                selectedArea={selectedArea}
+                setSelectedArea={setSelectedArea}
+                n={n}
+                m={pageEnd - pageStart + 1}
+                cellHeight={cellHeight}
+                cellWidth={cellWidth}
+                isModal={isModalOpen}
+                placeholderIndex={placeholderIndex}
+                pageEnd={pageEnd}
+                pageStart={pageStart}
+                tunedDateArray={tunedDateArray}
+                startTime={groupInfo.startTime}
+              />
+            </GridWrapper>
+          </SectionWrapper>
+          {maxPage >= page + 1 ? (
             <Arrow
               handleOnClick={() => {
                 setPage(page + 1);
               }}
             />
+          ) : (
+            <div style={{ display: 'flex', width: '24px' }} />
           )}
-        </SectionWrapper>
+        </ArrowGrid>
       </MyAreaWrapper>
       <GroupAreaWrapper>
         <TilteWrapper>
@@ -468,55 +482,61 @@ const When2MeetPage: React.FC<GridProps> = ({
           </Button>
         </TilteWrapper>
         <ColorScale count={groupInfo.members}></ColorScale>
-        <SectionWrapper>
-          {page > 0 && (
+        <ArrowGrid>
+          {page > 0 ? (
             <Arrow
               handleOnClick={() => {
                 setPage(page - 1);
               }}
               isForward={false}
             />
+          ) : (
+            <div style={{ display: 'flex', width: '24px' }} />
           )}
-          <TimeWrapper>
-            {Array.from(
-              { length: groupInfo.endTime - groupInfo.startTime + 1 },
-              (_, index) => index + groupInfo.startTime,
-            ).map((number) => (
-              <div key={number}>{number % 12 || 12}</div>
-            ))}
-          </TimeWrapper>
-          <GridWrapper>
-            <DateHeader>
-              {dateHeader.map(
-                (date, index) =>
-                  date != 'none' && (
-                    <DateWrapper key={index} width={date == '' ? 10 : cellWidth}>
-                      {date}
-                    </DateWrapper>
-                  ),
-              )}
-            </DateHeader>
-            <GroupTimeGrid
-              myArea={selectedArea}
-              n={n}
-              m={pageEnd - pageStart + 1}
-              cellHeight={cellHeight}
-              cellWidth={cellWidth}
-              isModal={isModalOpen}
-              placeholderIndex={placeholderIndex}
-              pageStart={pageStart}
-              pageEnd={pageEnd}
-              coworkerArea={mockCoworker}
-            />
-          </GridWrapper>
-          {maxPage >= page + 1 && (
+          <SectionWrapper>
+            <TimeWrapper>
+              {Array.from(
+                { length: groupInfo.endTime - groupInfo.startTime + 1 },
+                (_, index) => index + groupInfo.startTime,
+              ).map((number) => (
+                <div key={number}>{number % 12 || 12}</div>
+              ))}
+            </TimeWrapper>
+            <GridWrapper>
+              <DateHeader>
+                {dateHeader.map(
+                  (date, index) =>
+                    date != 'none' && (
+                      <DateWrapper key={index} width={date == '' ? 10 : cellWidth}>
+                        {date}
+                      </DateWrapper>
+                    ),
+                )}
+              </DateHeader>
+              <GroupTimeGrid
+                myArea={selectedArea}
+                n={n}
+                m={pageEnd - pageStart + 1}
+                cellHeight={cellHeight}
+                cellWidth={cellWidth}
+                isModal={isModalOpen}
+                placeholderIndex={placeholderIndex}
+                pageStart={pageStart}
+                pageEnd={pageEnd}
+                coworkerArea={mockCoworker}
+              />
+            </GridWrapper>
+          </SectionWrapper>
+          {maxPage >= page + 1 ? (
             <Arrow
               handleOnClick={() => {
                 setPage(page + 1);
               }}
             />
+          ) : (
+            <div style={{ display: 'flex', width: '24px' }} />
           )}
-        </SectionWrapper>
+        </ArrowGrid>
       </GroupAreaWrapper>
     </PageWrapper>
   );

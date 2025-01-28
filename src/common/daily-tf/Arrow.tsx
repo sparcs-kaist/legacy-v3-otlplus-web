@@ -10,6 +10,7 @@ interface ArrowProps {
 }
 
 const ArrowWrapper = styled.div`
+  display: flex;
   width: 24px;
   height: 24px;
   color: ${({ theme }) => theme.colors.Highlight.default};
