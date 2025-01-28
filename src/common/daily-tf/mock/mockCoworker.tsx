@@ -1,49 +1,31 @@
-const mockCoworker: Map<string, Map<number, boolean[]>> = new Map([
-  [
-    'gimme',
-    new Map(
-      Array.from({ length: 10 }, (_, rowIndex) => [
-        rowIndex,
-        Array.from({ length: 14 }, (_, index) => {
-          if ((rowIndex * 10 + index) % 3 === 0 || (rowIndex * 10 + index) % 5 === 2) {
-            return true;
-          } else {
-            return false;
-          }
-        }),
-      ]),
-    ),
-  ],
-  [
-    'gb',
-    new Map(
-      Array.from({ length: 10 }, (_, rowIndex) => [
-        rowIndex,
-        Array.from({ length: 14 }, (_, index) => {
-          if ((rowIndex * 10 + index) % 7 === 0 || (rowIndex * 10 + index) % 6 === 1) {
-            return true;
-          } else {
-            return false;
-          }
-        }),
-      ]),
-    ),
-  ],
-  [
-    'lorem',
-    new Map(
-      Array.from({ length: 10 }, (_, rowIndex) => [
-        rowIndex,
-        Array.from({ length: 14 }, (_, index) => {
-          if ((rowIndex * 10 + index) % 11 === 5 || (rowIndex * 10 + index) % 9 === 4) {
-            return true;
-          } else {
-            return false;
-          }
-        }),
-      ]),
-    ),
-  ],
-]);
+interface GenerateMockCoworkerParams {
+  rows: number;
+  columns: number;
+}
 
-export default mockCoworker;
+function generateMockCoworker(params: GenerateMockCoworkerParams): Map<number, boolean[]> {
+  const { rows, columns } = params;
+
+  return new Map(
+    Array.from({ length: rows }, (_, rowIndex) => [
+      rowIndex,
+      Array.from({ length: columns }, (_, colIndex) => Math.random() > 0.8),
+    ]),
+  );
+}
+
+function generateMockCoworkerList(
+  member: number,
+  row: number,
+  column: number,
+): Map<string, Map<number, boolean[]>> {
+  const result = new Map();
+  for (let i = 0; i < member; i++) {
+    const name = `lorem${i + 1}`;
+    const available = generateMockCoworker({ rows: row, columns: column });
+    result.set(name, available);
+  }
+  return result;
+}
+
+export default generateMockCoworkerList;

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Modal from '@/common/daily-tf/Modal';
 import Calendar from '@/common/daily-tf/Calendar';
 import TextInput from '@/common/daily-tf/TextInputArea';
-import Dropdown from '@/common/daily-tf/Dropdown';
+import ScrollableDropdown from '@/common/daily-tf/ScrollableDropdown';
 import Typography from './Typography';
 import { Info } from '@mui/icons-material';
 import Button from './Button';
@@ -154,7 +154,7 @@ const EditModalBody: React.FC<EditModalBodyProps> = ({ groupInfo, setGroupInfo, 
             <Typography type="Big">가능시간</Typography>
             <InfoWrapper>
               <DropdownWrapper>
-                <Dropdown
+                <ScrollableDropdown
                   options={timeArray}
                   zindex={20}
                   disabledOptions={Array.from({ length: 19 - endTime }, (_, i) => 19 - i)}
@@ -166,7 +166,7 @@ const EditModalBody: React.FC<EditModalBodyProps> = ({ groupInfo, setGroupInfo, 
             </InfoWrapper>
             <InfoWrapper>
               <DropdownWrapper>
-                <Dropdown
+                <ScrollableDropdown
                   options={timeArray}
                   disabledOptions={Array.from({ length: startTime }, (_, i) => i)}
                   selectedOption={endTime}

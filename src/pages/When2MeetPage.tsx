@@ -10,6 +10,7 @@ import Button from '@/common/daily-tf/Button';
 import Typography from '@/common/daily-tf/Typography';
 import TextInput from '@/common/daily-tf/TextInputArea';
 import getFormattedDate from '@/common/daily-tf/utils/getFormattedDate';
+import generateMockCoworkerList from '@/common/daily-tf/mock/mockCoworker';
 
 /* TODO: 코드 정리 */
 
@@ -73,6 +74,7 @@ const SectionWrapper = styled.div`
   flex-direction: row;
   gap: 5px;
   align-items: center;
+  overflow: visible;
 `;
 
 const TimeWrapper = styled.div`
@@ -291,6 +293,8 @@ const When2MeetPage: React.FC<GridProps> = ({
 
   const [dateHeader, setDateHeader] = useState<string[]>([]);
 
+  const [mockCoworker, setMockCoworker] = useState<Map<string, Map<number, boolean[]>>>(new Map());
+
   /* TODO : 백엔드에서 저장값 가져와서 저장값 = 초기값 */
   const [selectedArea, setSelectedArea] = useState<Map<number, boolean[]>>(
     new Map(Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)])),
@@ -301,6 +305,8 @@ const When2MeetPage: React.FC<GridProps> = ({
       Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)]),
     );
     setSelectedArea(newSelectedArea);
+    const mockCoworker = generateMockCoworkerList(groupInfo.members, m, n);
+    setMockCoworker(mockCoworker);
   }, [groupInfo]);
 
   useEffect(() => {
@@ -500,6 +506,7 @@ const When2MeetPage: React.FC<GridProps> = ({
               placeholderIndex={placeholderIndex}
               pageStart={pageStart}
               pageEnd={pageEnd}
+              coworkerArea={mockCoworker}
             />
           </GridWrapper>
           {maxPage >= page + 1 && (

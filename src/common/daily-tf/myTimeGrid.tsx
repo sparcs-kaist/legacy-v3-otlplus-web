@@ -6,6 +6,7 @@ import getColumnIndex from './utils/getColumnIndex';
 import filterMapByRange from './utils/filterMapByRange';
 import ReactDOM from 'react-dom';
 import getFormattedDate from './utils/getFormattedDate';
+import HoverContainer from './HoverContainer';
 
 interface GridProps {
   n?: number; // 세로 크기
@@ -324,25 +325,11 @@ const MyTimeGrid: React.FC<GridProps> = ({
       {isMouseInsideGrid &&
         hoverGridID &&
         ReactDOM.createPortal(
-          <div
-            style={{
-              position: 'absolute',
-              top: mousePosition.y + 10,
-              left: mousePosition.x + 10,
-              backgroundColor: 'white',
-              border: '1px solid #ccc',
-              padding: '10px',
-              borderRadius: '4px',
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-              pointerEvents: 'none',
-              width: 'auto',
-              height: 'auto',
-              overflow: 'auto',
-            }}>
+          <HoverContainer top={mousePosition.y + 10} left={mousePosition.x + 10}>
             {`${getFormattedDate(
               tunedDateArray[(parseInt(hoverGridID, 10) % m) + pageStart],
             )}  ${getTimefromRow(Math.floor(parseInt(hoverGridID, 10) / m))}`}
-          </div>,
+          </HoverContainer>,
           document.body,
         )}
       {renderGrid(

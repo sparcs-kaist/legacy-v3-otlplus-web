@@ -2,9 +2,11 @@ import renderGrid from '@/common/daily-tf/utils/renderGrid';
 import renderTargetArea from '@/common/daily-tf/utils/renderTargetArea';
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
-import mockCoworker from './mock/mockCoworker';
 import getColumnIndex from './utils/getColumnIndex';
 import filterMapByRange from './utils/filterMapByRange';
+import generateMockCoworkerList from './mock/mockCoworker';
+import HoverContainer from './HoverContainer';
+import Typography from './Typography';
 
 interface GridProps {
   n?: number; // 세로 크기
@@ -14,12 +16,13 @@ interface GridProps {
   rowPadding?: number;
   colPadding?: number;
   myArea: Map<number, boolean[]>;
-  coworkerArea?: Map<string, Map<number, boolean[]>>;
   isModal?: boolean;
   placeholderIndex?: number[];
   placeholderWidth?: number;
   pageStart?: number;
   pageEnd?: number;
+  // mockCoworker generate를 위해 추가한 변수, API 연결 후 삭제 예정.
+  coworkerArea: Map<string, Map<number, boolean[]>>;
 }
 
 // test
@@ -34,7 +37,7 @@ const GroupTimeGrid: React.FC<GridProps> = ({
   rowPadding = 5,
   colPadding = 10,
   myArea,
-  coworkerArea = mockCoworker,
+  coworkerArea,
   isModal = false,
   placeholderIndex = [],
   placeholderWidth = 10,
@@ -50,7 +53,7 @@ const GroupTimeGrid: React.FC<GridProps> = ({
   const [isMouseInsideGrid, setIsMouseInsideGrid] = useState<boolean>(false);
   const [ableWorker, setAbleWorker] = useState<string[]>([]);
 
-  const handleMouseMove = (event: MouseEvent) => {
+  const handleMouseMoveGroup = (event: MouseEvent) => {
     if (!isModal) {
       const mouseX = event.clientX;
       const mouseY = event.clientY;
@@ -92,10 +95,10 @@ const GroupTimeGrid: React.FC<GridProps> = ({
 
   useEffect(() => {
     if (!isModal) {
-      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mousemove', handleMouseMoveGroup);
 
       return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mousemove', handleMouseMoveGroup);
       };
     }
   }, [hoverGridID, isModal]);
@@ -106,15 +109,15 @@ const GroupTimeGrid: React.FC<GridProps> = ({
       const hoverID = parseInt(hoverGridID, 10);
       const row = Math.floor(hoverID / m);
       const col = hoverID % m;
-      if (!placeholderIndex.includes(col)) {
+      if (!placeholderIndex.includes(col + pageStart)) {
         coworkerArea.forEach((value, key) => {
-          const able = value.get(col)![row];
+          const able = value.get(col + pageStart)![row];
           if (able === true) {
             res.push(key);
           }
         });
 
-        const myAble = myArea.get(col)![row];
+        const myAble = myArea.get(col + pageStart)![row];
         if (myAble === true) {
           res.push(myName);
         }
@@ -140,25 +143,16 @@ const GroupTimeGrid: React.FC<GridProps> = ({
       {isMouseInsideGrid &&
         ableWorker.length > 0 &&
         ReactDOM.createPortal(
-          <div
-            style={{
-              position: 'absolute',
-              top: mousePosition.y + 10,
-              left: mousePosition.x + 10,
-              backgroundColor: 'white',
-              border: '1px solid #ccc',
-              padding: '10px',
-              borderRadius: '4px',
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-              pointerEvents: 'none',
-              width: 'auto',
-              height: 'auto',
-              overflow: 'auto',
-            }}>
-            {`able : ${ableWorker}`}
+          <HoverContainer
+            top={mousePosition.y + 10}
+            left={mousePosition.x + 10}
+            width={cellWidth * 2}>
+            <Typography type="SmallBold">{`가능 (${ableWorker.length}명)`}</Typography>
+            <Typography>{ableWorker.join(', ')}</Typography>
             <br />
-            {`unable : ${getUnableWorker()}`}
-          </div>,
+            <Typography type="SmallBold">{`불가능 (${getUnableWorker().length}명)`}</Typography>
+            <Typography>{getUnableWorker().join(', ')}</Typography>
+          </HoverContainer>,
           document.body,
         )}
       {renderGrid(

@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useEffect, useRef, useState } from 'react';
-import Typography from './Typography';
 import ReactDOM from 'react-dom';
 
 interface ArrowProps {
@@ -16,24 +15,44 @@ const ArrowWrapper = styled.div`
   color: ${({ theme }) => theme.colors.Highlight.default};
   position: relative;
   overflow: visible;
+  display: inline-block;
 
   &:hover {
     cursor: pointer;
   }
 `;
 
-const HoverWrapper = styled.div`
-  position: absolute;
-  transform: translateX(-50%);
-  width: auto;
-  display: flex;
-  padding: 12px;
-  flex-direction: row;
-  align-items: center;
+const Triangle = styled.div`
+  width: 0;
+  height: 0;
+  border-left: 4.5px solid transparent;
+  border-right: 4.5px solid transparent;
+  border-top: 15px solid rgba(229, 76, 101, 0.8);
+`;
+
+const HoverTextWrapper = styled.div`
   background-color: rgba(229, 76, 101, 0.8);
   color: white;
-  writing-mode: horizontal-tb;
-  z-index: 10; /* HoverWrapper가 다른 요소 위에 표시되도록 설정 */
+  font-size: 12px;
+  line-height: 15px;
+  font-weight: 400;
+  padding: 10px;
+  white-space: nowrap;
+  border-radius: 2px;
+`;
+
+const HoverWrapper = styled.div<{ top: number; left: number }>`
+  position: absolute;
+  top: ${(props) => props.top - 5}px;
+  left: ${(props) => props.left}px;
+  transform: translateX(-50%) translateY(-50%);
+  pointer-events: none;
+  width: fit-content;
+  height: auto;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Arrow: React.FC<ArrowProps> = ({ handleOnClick, isForward = true }) => {
@@ -46,11 +65,11 @@ const Arrow: React.FC<ArrowProps> = ({ handleOnClick, isForward = true }) => {
     if (arrowRef.current) {
       const rect = arrowRef.current.getBoundingClientRect();
       setPosition({
-        top: rect.top - 20, // 부모 컨테이너에서의 위치 + 조정값
-        left: rect.left + rect.width / 2, // 가로 중앙에 위치하도록 설정
+        top: rect.top - 20,
+        left: rect.left + rect.width / 2,
       });
     }
-  }, [isHovered]); // Hover 상태가 변경될 때마다 위치를 재계산
+  }, [isHovered]);
 
   return (
     <ArrowWrapper
@@ -60,24 +79,10 @@ const Arrow: React.FC<ArrowProps> = ({ handleOnClick, isForward = true }) => {
       ref={arrowRef}>
       {isHovered &&
         ReactDOM.createPortal(
-          <div
-            style={{
-              position: 'absolute',
-              top: position.top - 5,
-              left: position.left,
-              transform: 'translateX(-50%) translateY(-50%)',
-              backgroundColor: 'white',
-              border: '1px solid #ccc',
-              padding: '10px',
-              borderRadius: '4px',
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-              pointerEvents: 'none',
-              width: 'auto',
-              height: 'auto',
-              overflow: 'auto',
-            }}>
-            표시되지 않은 값이 있어요
-          </div>,
+          <HoverWrapper top={position.top} left={position.left}>
+            <HoverTextWrapper>표시되지 않은 날짜가 있어요!</HoverTextWrapper>
+            <Triangle />
+          </HoverWrapper>,
           document.body,
         )}
       {isForward ? <ArrowForwardIosIcon /> : <ArrowBackIosNewIcon />}

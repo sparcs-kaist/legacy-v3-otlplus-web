@@ -4,7 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { IconButton } from '@mui/material';
 
-interface DropdownProps {
+interface ScrollableDropdownProps {
   options?: string[];
   zindex?: number;
   disabledOptions?: number[];
@@ -16,7 +16,7 @@ const SelectedWrapper = styled.div`
   display: flex;
   flex-direction: row;
   padding: 8px 12px;
-  color: rgba(170, 170, 170, 1);
+  color: ${(props) => props.theme.colors.Text.default};
   font-size: 14px;
   font-weight: 400;
   line-height: 17.5;
@@ -29,16 +29,16 @@ const SelectedWrapper = styled.div`
 const OptionCard = styled.div<{ disabled: boolean }>`
   display: flex;
   padding: 8px 12px;
-  color: rgba(51, 51, 51, 1);
   background-color: white;
   height: 36px;
   align-items: center;
-  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
+  cursor: 'pointer';
   pointer-events: ${(props) => (props.disabled ? 'none' : 'all')};
   &:hover {
     background-color: rgba(245, 245, 245, 1);
   }
 `;
+
 const DropdownWrapper = styled.div<{ isExpand: boolean }>`
   width: 100%;
   display: flex;
@@ -59,15 +59,23 @@ const OptionScroll = styled.div<{ top: number; left: number; width: number; zind
   overflow: scroll;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
+  border-left: 1px solid ${(props) => props.theme.colors.Line.default};
+  border-right: 1px solid ${(props) => props.theme.colors.Line.default};
+  border-bottom: 1px solid ${(props) => props.theme.colors.Line.default};
 `;
 
-const TextWrapper = styled.div<{ disabled: boolean }>`
+const TextWrapper = styled.div<{ disabled: boolean; selected: boolean }>`
   line-height: 17.5px;
   font-size: 14px;
-  color: ${(props) => (props.disabled ? 'rgba(170, 170, 170, 1)' : 'rgba(51, 51, 51, 1)')};
+  color: ${(props) =>
+    props.disabled
+      ? 'rgba(170, 170, 170, 1)'
+      : props.selected
+      ? props.theme.colors.Highlight.default
+      : 'rgba(51, 51, 51, 1)'};
 `;
 
-const Dropdown: React.FC<DropdownProps> = ({
+const ScrollableDropdown: React.FC<ScrollableDropdownProps> = ({
   options = ['option1', 'option2', 'option3'],
   zindex = 10,
   disabledOptions = [],
@@ -76,15 +84,15 @@ const Dropdown: React.FC<DropdownProps> = ({
 }) => {
   const [isExpand, setIsExpand] = useState(false);
 
-  // SelectedWrapper 위치를 참조할 ref
   const selectedWrapperRef = useRef<HTMLDivElement>(null);
 
-  // SelectedWrapper의 위치를 추적할 상태 변수
   const [position, setPosition] = useState<{ top: number; left: number; width: number }>({
     top: 0,
     left: 0,
     width: 0,
   });
+
+  const optionScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const updatePosition = () => {
@@ -97,6 +105,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         });
       }
     };
+
     updatePosition();
     window.addEventListener('resize', updatePosition);
     return () => {
@@ -104,10 +113,24 @@ const Dropdown: React.FC<DropdownProps> = ({
     };
   }, [isExpand]);
 
+  // 처음 창을 켰을 때 scroll이 selectedOption부터 시작하도록
+  useEffect(() => {
+    if (optionScrollRef.current && options.length > 0 && selectedOption >= 0) {
+      const selectedOptionElement = optionScrollRef.current.children[selectedOption] as HTMLElement;
+      if (selectedOptionElement) {
+        const offsetTop = selectedOptionElement.getBoundingClientRect().top;
+        const scrollOffset = offsetTop - optionScrollRef.current.getBoundingClientRect().top;
+        if (optionScrollRef.current) {
+          optionScrollRef.current.scrollTop = scrollOffset;
+        }
+      }
+    }
+  }, [selectedOption, isExpand, options]);
+
   return (
     <DropdownWrapper isExpand={isExpand}>
       <SelectedWrapper
-        ref={selectedWrapperRef} // ref를 SelectedWrapper에 추가
+        ref={selectedWrapperRef}
         onClick={() => {
           setIsExpand(!isExpand);
         }}>
@@ -121,12 +144,14 @@ const Dropdown: React.FC<DropdownProps> = ({
       </SelectedWrapper>
       {isExpand && (
         <OptionScroll
+          ref={optionScrollRef}
           top={position.top}
           left={position.left}
           width={position.width}
           zindex={zindex}>
           {options.map((option, index) => {
             const disabled = disabledOptions.includes(index);
+            const selected = selectedOption == index;
             return (
               <OptionCard
                 key={index}
@@ -135,7 +160,9 @@ const Dropdown: React.FC<DropdownProps> = ({
                   setIsExpand(false);
                 }}
                 disabled={disabled}>
-                <TextWrapper disabled={disabled}>{option}</TextWrapper>
+                <TextWrapper disabled={disabled} selected={selected}>
+                  {option}
+                </TextWrapper>
               </OptionCard>
             );
           })}
@@ -145,4 +172,4 @@ const Dropdown: React.FC<DropdownProps> = ({
   );
 };
 
-export default Dropdown;
+export default ScrollableDropdown;

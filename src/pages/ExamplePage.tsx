@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Modal from '@/common/daily-tf/Modal';
 import Calendar from '@/common/daily-tf/Calendar';
 import TextInput from '@/common/daily-tf/TextInputArea';
-import Dropdown from '@/common/daily-tf/Dropdown';
+import ScrollableDropdown from '@/common/daily-tf/ScrollableDropdown';
 import EditModalBody from '@/common/daily-tf/EditModalBody';
 import Button from '@/common/daily-tf/Button';
 
