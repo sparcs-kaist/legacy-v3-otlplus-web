@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import MyTimeGrid from '@/common/daily-tf/myTimeGrid';
 import styled from 'styled-components';
 import GroupTimeGrid from '@/common/daily-tf/groupTimeGrid';
@@ -15,6 +15,7 @@ import { DisabledAreaType } from '@/common/daily-tf/utils/disabledAreaType';
 import generateMockDisabledArea from '@/common/daily-tf/mock/mockDisabledArea';
 import { formatDisabledArea } from '@/common/daily-tf/utils/formatDisabledArea';
 import { checkIfAnyTrue } from '@/common/daily-tf/utils/checkIfAnyTrue';
+import MemberChipWrapper from '@/common/daily-tf/MemberChip';
 
 /* TODO: 코드 정리 */
 
@@ -140,6 +141,7 @@ const InfoContent = styled.div`
 
 const TilteWrapper = styled.div`
   display: flex;
+  position: relative;
   flex-direction: row;
   width: 100%;
   justify-content: space-between;
@@ -316,6 +318,22 @@ const When2MeetPage: React.FC<GridProps> = ({
   const [partInfo, setPartInfo] = useState<Map<string, boolean>>(new Map());
   const [partCount, setPartCount] = useState<number>(0);
 
+  const parentRef = useRef<HTMLDivElement>(null);
+  const [parentSize, setParentSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const updateParentWidth = () => {
+      if (parentRef.current) {
+        const rect = parentRef.current.getBoundingClientRect();
+        setParentSize({ width: rect.width, height: rect.height }); // 부모의 width 값을 state로 저장
+      }
+    };
+
+    updateParentWidth();
+    window.addEventListener('resize', updateParentWidth);
+    return () => window.removeEventListener('resize', updateParentWidth);
+  }, []);
+
   /* TODO : 백엔드에서 저장값 가져와서 저장값 = 초기값 */
   const [selectedArea, setSelectedArea] = useState<Map<number, boolean[]>>(
     new Map(Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)])),
@@ -337,10 +355,9 @@ const When2MeetPage: React.FC<GridProps> = ({
     setFormattedDisabledArea(formattedDisabledArea);
 
     const partInfo = new Map<string, boolean>();
-    let partCount = 1;
+    let partCount = 0;
 
     // 로그인 되어 있는지 여부에 따라서 다르게 보여줘야 함
-    partInfo.set('casio', true);
     mockCoworker.forEach((value, key) => {
       const part = checkIfAnyTrue(value);
       partInfo.set(key, part);
@@ -349,8 +366,18 @@ const When2MeetPage: React.FC<GridProps> = ({
       }
     });
 
+    const sortedPartInfo = [...partInfo];
+    sortedPartInfo.sort((a, b) => {
+      if (a[1] !== b[1]) {
+        return b[1] === true ? 1 : -1;
+      }
+      return a[0].localeCompare(b[0]);
+    });
+
+    const sortedMap = new Map(sortedPartInfo);
+    setPartInfo(sortedMap);
+
     setPartCount(partCount);
-    setPartInfo(partInfo);
   }, [groupInfo]);
 
   useEffect(() => {
@@ -407,7 +434,7 @@ const When2MeetPage: React.FC<GridProps> = ({
   return (
     <PageWrapper>
       <MyAreaWrapper>
-        <TilteWrapper>
+        <TilteWrapper ref={parentRef}>
           <TitleTextWrapper>
             {groupInfo.groupName}
             <EditButtonWrapper
@@ -420,6 +447,12 @@ const When2MeetPage: React.FC<GridProps> = ({
             </EditButtonWrapper>
           </TitleTextWrapper>
           {/* TODO: 여기에 member chip */}
+          <MemberChipWrapper
+            width={parentSize.width}
+            height={parentSize.height}
+            partInfo={partInfo}
+            partCount={partCount}
+          />
         </TilteWrapper>
         <Divider />
         <InfoWrapper>
