@@ -14,6 +14,7 @@ import { GridProps } from '@/pages/When2MeetPage';
 interface EditModalBodyProps {
   groupInfo: GridProps;
   setGroupInfo: React.Dispatch<GridProps>;
+  onClose: () => void;
 }
 
 const PageWrapper = styled.div`
@@ -78,7 +79,7 @@ const SelectItem = styled.div`
   display: flex;
 `;
 
-const EditModalBody: React.FC<EditModalBodyProps> = ({ groupInfo, setGroupInfo }) => {
+const EditModalBody: React.FC<EditModalBodyProps> = ({ groupInfo, setGroupInfo, onClose }) => {
   const [selectedDate, setSelectedDate] = useState<Date[]>(groupInfo.dateArray!);
   const [startTime, setStartTime] = useState<number>(groupInfo.startTime! - 8);
   const [endTime, setEndTime] = useState<number>(groupInfo.endTime! - 8);
@@ -183,7 +184,12 @@ const EditModalBody: React.FC<EditModalBodyProps> = ({ groupInfo, setGroupInfo }
             <Typography type="Big">명</Typography>
           </InfoWrapper>
           <ButtonWrapper>
-            <Button type="selected" onClick={handleSubmit}>
+            <Button
+              type="selected"
+              onClick={() => {
+                handleSubmit();
+                onClose();
+              }}>
               확인
             </Button>
           </ButtonWrapper>

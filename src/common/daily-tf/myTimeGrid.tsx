@@ -1,9 +1,11 @@
 /* TODO: 코드 정리 - 중복되는 거 밖으로 빼던가 해야지,,*/
 import renderGrid from '@/common/daily-tf/utils/renderGrid';
 import renderTargetArea from '@/common/daily-tf/utils/renderTargetArea';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import getColumnIndex from './utils/getColumnIndex';
 import filterMapByRange from './utils/filterMapByRange';
+import ReactDOM from 'react-dom';
+import getFormattedDate from './utils/getFormattedDate';
 
 interface GridProps {
   n?: number; // 세로 크기
@@ -19,7 +21,8 @@ interface GridProps {
   placeholderWidth?: number;
   pageStart?: number;
   pageEnd?: number;
-  fullLength?: number;
+  tunedDateArray?: Date[];
+  startTime?: number;
 }
 
 const MyTimeGrid: React.FC<GridProps> = ({
@@ -36,7 +39,8 @@ const MyTimeGrid: React.FC<GridProps> = ({
   placeholderWidth = 10,
   pageStart = 0,
   pageEnd = 6,
-  fullLength = 7,
+  tunedDateArray = [],
+  startTime = 8,
 }) => {
   /* TODO : API로 disabledArea 받아오기 */
   // test
@@ -72,6 +76,10 @@ const MyTimeGrid: React.FC<GridProps> = ({
     new Map(Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(null)])),
   );
 
+  const [hoverGridID, setHoverGridID] = useState<string | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isMouseInsideGrid, setIsMouseInsideGrid] = useState<boolean>(false);
+
   const getArea = (
     startRow: number,
     startCol: number,
@@ -101,7 +109,10 @@ const MyTimeGrid: React.FC<GridProps> = ({
     newValue: Map<number, boolean[]>,
   ): Map<number, boolean[]> => {
     const result = new Map(
-      Array.from({ length: fullLength }, (_, rowIndex) => [rowIndex, Array(n).fill(false)]),
+      Array.from({ length: tunedDateArray.length }, (_, rowIndex) => [
+        rowIndex,
+        Array(n).fill(false),
+      ]),
     );
 
     target.forEach((value1, key) => {
@@ -148,6 +159,21 @@ const MyTimeGrid: React.FC<GridProps> = ({
           const isDisabled: boolean = randomDisabledArea.get(col)![row] == true;
           setIsIndisabled(isDisabled);
         }
+      }
+    }
+  };
+
+  const getTimefromRow = (row: number) => {
+    const generalIndex = row + startTime * 2;
+    const hour = Math.floor(generalIndex / 2);
+    const minute = (generalIndex % 2) * 30;
+    if (hour <= 12) {
+      return `오전 ${hour}시 ${minute != 0 ? '30분' : ''}`;
+    } else {
+      if (hour <= 24) {
+        return `오후 ${hour - 12}시 ${minute != 0 ? '30분' : ''}`;
+      } else {
+        return `오전 ${hour - 24}시 ${minute != 0 ? '30분' : ''}`;
       }
     }
   };
@@ -228,6 +254,60 @@ const MyTimeGrid: React.FC<GridProps> = ({
     setDragging(false);
   };
 
+  const handleMouseHover = (event: MouseEvent) => {
+    if (!isModal) {
+      const mouseX = event.clientX;
+      const mouseY = event.clientY;
+      setMousePosition({ x: mouseX, y: mouseY });
+
+      if (gridRef.current) {
+        const gridRect = gridRef.current.getBoundingClientRect();
+        const isInside =
+          mouseX >= gridRect.left &&
+          mouseX <= gridRect.left + gridRect.width &&
+          mouseY >= gridRect.top &&
+          mouseY <= gridRect.top + gridRect.height;
+
+        setIsMouseInsideGrid(isInside);
+
+        if (isInside) {
+          const X = mouseX - gridRect.left;
+          const Y = mouseY - gridRect.top;
+          const row = Math.floor(Y / cellHeight);
+          const col = getColumnIndex(
+            X,
+            m,
+            placeholderIndex,
+            placeholderWidth,
+            cellWidth,
+            colPadding,
+            pageStart,
+          );
+          if (row >= 0 && row < n && col >= 0 && col < m) {
+            const gridId = `${row * m + col}`;
+            if (gridId !== hoverGridID) {
+              if (!placeholderIndex.includes(col)) {
+                setHoverGridID(gridId);
+              } else {
+                setHoverGridID(null);
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!isModal) {
+      document.addEventListener('mousemove', handleMouseHover);
+
+      return () => {
+        document.removeEventListener('mousemove', handleMouseHover);
+      };
+    }
+  }, [hoverGridID, isModal]);
+
   return (
     <div
       ref={gridRef}
@@ -241,6 +321,30 @@ const MyTimeGrid: React.FC<GridProps> = ({
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}>
+      {isMouseInsideGrid &&
+        hoverGridID &&
+        ReactDOM.createPortal(
+          <div
+            style={{
+              position: 'absolute',
+              top: mousePosition.y + 10,
+              left: mousePosition.x + 10,
+              backgroundColor: 'white',
+              border: '1px solid #ccc',
+              padding: '10px',
+              borderRadius: '4px',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+              pointerEvents: 'none',
+              width: 'auto',
+              height: 'auto',
+              overflow: 'auto',
+            }}>
+            {`${getFormattedDate(
+              tunedDateArray[(parseInt(hoverGridID, 10) % m) + pageStart],
+            )}  ${getTimefromRow(Math.floor(parseInt(hoverGridID, 10) / m))}`}
+          </div>,
+          document.body,
+        )}
       {renderGrid(
         n,
         m,

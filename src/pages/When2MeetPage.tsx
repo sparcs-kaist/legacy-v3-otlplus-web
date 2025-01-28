@@ -9,6 +9,7 @@ import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutl
 import Button from '@/common/daily-tf/Button';
 import Typography from '@/common/daily-tf/Typography';
 import TextInput from '@/common/daily-tf/TextInputArea';
+import getFormattedDate from '@/common/daily-tf/utils/getFormattedDate';
 
 /* TODO: 코드 정리 */
 
@@ -44,7 +45,7 @@ const PageWrapper = styled.div`
   align-items: center;
   gap: 12px;
   padding: 100px;
-  overflow: auto;
+  overflow: hidden;
 `;
 
 const DateWrapper = styled.div<{ width: number }>`
@@ -93,7 +94,7 @@ const MyAreaWrapper = styled.div`
   border-radius: 12px;
   width: 800px;
   // height 제대로 고치기..
-  height: calc(100vh - 500px);
+  min-height: 100vh;
   align-items: center;
 `;
 
@@ -139,7 +140,7 @@ const GroupAreaWrapper = styled.div`
   flex-direction: column;
   border-radius: 16px;
   width: 800px;
-  height: calc(100vh - 500px);
+  min-height: 100vh;
   align-items: center;
 `;
 
@@ -181,6 +182,22 @@ const ColorCard = styled.div<{ index: number; total: number }>`
       : `rgba(229, 76, 101, ${(1 / total) * index} )`};
   border-radius: 4px;
 `;
+
+const disableScroll = () => {
+  document.body.style.overflow = 'hidden';
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${window.scrollY}px`;
+};
+
+const enableScroll = () => {
+  // 스크롤 허용
+  document.body.style.overflow = 'auto';
+  const scrollY = document.body.style.top;
+  document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.top = '';
+  window.scrollTo(0, parseInt(scrollY || '0') * -1); // 저장된 위치로 이동
+};
 
 const ColorScale: React.FC<ColorScaleProps> = ({ count }) => {
   return (
@@ -255,6 +272,11 @@ const When2MeetPage: React.FC<GridProps> = ({
   }
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handelModalClose = () => {
+    setIsModalOpen(false);
+    enableScroll();
+  };
   const [groupInfo, setGroupInfo] = useState<GridProps>(defaultGroupInfo);
 
   const tunedDateArray = insertMissingDates(groupInfo.dateArray);
@@ -332,15 +354,6 @@ const When2MeetPage: React.FC<GridProps> = ({
     setDateHeader(generateDates());
   }, [pageStart, pageEnd, groupInfo]);
 
-  const getFormattedDate = (date: Date): string => {
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: 'long',
-      day: '2-digit',
-      month: '2-digit',
-    };
-    return date.toLocaleDateString('ko-KR', options).replace(',', '');
-  };
-
   return (
     <PageWrapper>
       <MyAreaWrapper>
@@ -350,6 +363,7 @@ const When2MeetPage: React.FC<GridProps> = ({
             <EditButtonWrapper
               onClick={() => {
                 setIsModalOpen(true);
+                disableScroll();
                 setPage(0);
               }}>
               <ModeEditOutlineOutlinedIcon />
@@ -381,8 +395,12 @@ const When2MeetPage: React.FC<GridProps> = ({
             조회
           </Button>
         </InfoWrapper>
-        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="일정 편집">
-          <EditModalBody groupInfo={groupInfo} setGroupInfo={setGroupInfo} />
+        <Modal isOpen={isModalOpen} onClose={handelModalClose} title="일정 편집">
+          <EditModalBody
+            groupInfo={groupInfo}
+            setGroupInfo={setGroupInfo}
+            onClose={handelModalClose}
+          />
         </Modal>
         <SectionWrapper>
           {page > 0 && (
@@ -423,7 +441,8 @@ const When2MeetPage: React.FC<GridProps> = ({
               placeholderIndex={placeholderIndex}
               pageEnd={pageEnd}
               pageStart={pageStart}
-              fullLength={tunedDateArray.length}
+              tunedDateArray={tunedDateArray}
+              startTime={groupInfo.startTime}
             />
           </GridWrapper>
           {maxPage >= page + 1 && (
