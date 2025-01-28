@@ -14,6 +14,8 @@ import generateMockCoworkerList from '@/common/daily-tf/mock/mockCoworker';
 import { DisabledAreaType } from '@/common/daily-tf/utils/disabledAreaType';
 import generateMockDisabledArea from '@/common/daily-tf/mock/mockDisabledArea';
 import { formatDisabledArea } from '@/common/daily-tf/utils/formatDisabledArea';
+import MemberChip from '@/common/daily-tf/MemberChip';
+import { checkIfAnyTrue } from '@/common/daily-tf/utils/checkIfAnyTrue';
 
 /* TODO: 코드 정리 */
 
@@ -312,6 +314,8 @@ const When2MeetPage: React.FC<GridProps> = ({
   const [formattedDisabledArea, setFormattedDisabledArea] = useState<Map<number, boolean[]>>(
     new Map(),
   );
+  const [partInfo, setPartInfo] = useState<Map<string, boolean>>(new Map());
+  const [partCount, setPartCount] = useState<number>(0);
 
   /* TODO : 백엔드에서 저장값 가져와서 저장값 = 초기값 */
   const [selectedArea, setSelectedArea] = useState<Map<number, boolean[]>>(
@@ -332,6 +336,22 @@ const When2MeetPage: React.FC<GridProps> = ({
     setMockDisabledArea(mockDisabledArea);
     const formattedDisabledArea = formatDisabledArea(mockDisabledArea, m, n);
     setFormattedDisabledArea(formattedDisabledArea);
+
+    const partInfo = new Map<string, boolean>();
+    let partCount = 1;
+
+    // 로그인 되어 있는지 여부에 따라서 다르게 보여줘야 함
+    partInfo.set('casio', true);
+    mockCoworker.forEach((value, key) => {
+      const part = checkIfAnyTrue(value);
+      partInfo.set(key, part);
+      if (part) {
+        partCount++;
+      }
+    });
+
+    setPartCount(partCount);
+    setPartInfo(partInfo);
   }, [groupInfo]);
 
   useEffect(() => {
@@ -400,6 +420,8 @@ const When2MeetPage: React.FC<GridProps> = ({
               <ModeEditOutlineOutlinedIcon />
             </EditButtonWrapper>
           </TitleTextWrapper>
+          {/* TODO: API 연결 시 얘도 groupInfo에서 불러오게 바꾸기 */}
+          <MemberChip partInfo={partInfo} partCount={partCount} />
         </TilteWrapper>
         <Divider />
         <InfoWrapper>

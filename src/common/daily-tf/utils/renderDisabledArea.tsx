@@ -35,7 +35,7 @@ const renderDisabledArea = (
 ) => {
   const rectangles: JSX.Element[] = [];
   disabledArea.forEach((value, key) => {
-    if (!placeholderIndex.includes(key)) {
+    if (!placeholderIndex.includes(key + pageStart)) {
       value.map((val, index) => {
         const startIndex = val.startIndex;
         const endIndex = val.endIndex;
