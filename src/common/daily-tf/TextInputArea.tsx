@@ -33,7 +33,7 @@ const Input = styled.input.attrs<TextInputProps>(({ area }) => ({
 }))<TextInputProps & { hasError: boolean }>`
   display: block;
   width: 100%;
-  padding: 8px 12px 8px 12px;
+  padding: 12px 16px;
   outline: none;
   border-radius: 4px;
   gap: 8px;

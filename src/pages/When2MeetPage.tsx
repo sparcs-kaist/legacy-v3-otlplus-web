@@ -2,10 +2,15 @@ import React, { useEffect, useState } from 'react';
 import MyTimeGrid from '@/common/daily-tf/myTimeGrid';
 import styled from 'styled-components';
 import GroupTimeGrid from '@/common/daily-tf/groupTimeGrid';
-import TextInput from '@/common/daily-tf/TextInputArea';
 import Modal from '@/common/daily-tf/Modal';
 import EditModalBody from '@/common/daily-tf/EditModalBody';
-import filterMapByRange from '@/common/daily-tf/utils/filterMapByRange';
+import Arrow from '@/common/daily-tf/Arrow';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import Button from '@/common/daily-tf/Button';
+import Typography from '@/common/daily-tf/Typography';
+import TextInput from '@/common/daily-tf/TextInputArea';
+
+/* TODO: 코드 정리 */
 
 /* TODO: 그리드 크기 default 값 설정 */
 export interface GridProps {
@@ -16,13 +21,27 @@ export interface GridProps {
   members: number;
 }
 
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${({ theme }) => theme.colors.Line.divider};
+`;
+
+const EditButtonWrapper = styled.div`
+  width: 20px;
+  height: 20px;
+  color: ${({ theme }) => theme.colors.Text.placeholder};
+
+  :hover {
+    color: ${({ theme }) => theme.colors.Text.default};
+  }
+`;
+
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  min-width: 100vw;
   gap: 12px;
   padding: 100px;
   overflow: auto;
@@ -52,6 +71,7 @@ const SectionWrapper = styled.div`
   display: flex;
   flex-direction: row;
   gap: 5px;
+  align-items: center;
 `;
 
 const TimeWrapper = styled.div`
@@ -63,17 +83,118 @@ const TimeWrapper = styled.div`
   line-height: 11px;
 `;
 
-const AreaWrapper = styled.div`
+const MyAreaWrapper = styled.div`
   background-color: white;
   gap: 20px;
   padding-top: 64px !important;
-  padding: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   border-radius: 12px;
   width: 800px;
-  height: calc(100vh - 200px);
+  // height 제대로 고치기..
+  height: calc(100vh - 500px);
+  align-items: center;
 `;
+
+const TitleTextWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  font-size: 23px;
+  line-height: 25px;
+  font-weight: 700;
+`;
+
+const InfoWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  width: 100%;
+  justify-content: space-between;
+`;
+
+const InfoContent = styled.div`
+  flex-grow: 1;
+  display: flex;
+  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const TilteWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const GroupAreaWrapper = styled.div`
+  background-color: white;
+  gap: 40px;
+  padding-top: 64px !important;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  width: 800px;
+  height: calc(100vh - 500px);
+  align-items: center;
+`;
+
+const TextInputWrapper = styled.div`
+  display: flex;
+  flex-grow: 1;
+`;
+
+interface ColorScaleProps {
+  count: number;
+}
+
+const ColorScaleWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 0px 80px;
+  gap: 20px;
+  flex-direction: row;
+  align-items: center;
+  height: 20px;
+`;
+
+const ChartWrapper = styled.div`
+  display: flex;
+  flex-grow: 1;
+  gap: 5px;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 100%;
+`;
+
+const ColorCard = styled.div<{ index: number; total: number }>`
+  display: flex;
+  flex-grow: 1;
+  height: 100%;
+  background-color: ${({ index, total, theme }) =>
+    index == 0
+      ? theme.colors.Background.Block.default
+      : `rgba(229, 76, 101, ${(1 / total) * index} )`};
+  border-radius: 4px;
+`;
+
+const ColorScale: React.FC<ColorScaleProps> = ({ count }) => {
+  return (
+    <ColorScaleWrapper>
+      <Typography type="Normal">{`0명/${count}명 참여`}</Typography>
+      <ChartWrapper>
+        {Array.from({ length: count + 1 }, (_, i) => (
+          <ColorCard key={i} index={i} total={count} />
+        ))}
+      </ChartWrapper>
+      <Typography type="Normal">{`${count}명/${count}명 참여`}</Typography>
+    </ColorScaleWrapper>
+  );
+};
 
 const When2MeetPage: React.FC<GridProps> = ({
   // 테스트 용으로 그냥 넣어둔 값이에용
@@ -97,6 +218,18 @@ const When2MeetPage: React.FC<GridProps> = ({
   const placeholderDate = new Date('2005-11-21');
 
   const placeholderIndex: number[] = [];
+
+  // TODO : 로그인 되어 있으면 기본으로 가져오기?
+  const [myName, setMyName] = useState<string>('');
+  const [myStudentId, setMyStudentId] = useState<string>('');
+
+  const handleChangeName = (newValue: string) => {
+    setMyName(newValue);
+  };
+
+  const handleChangeId = (newValue: string) => {
+    setMyStudentId(newValue);
+  };
 
   function insertMissingDates(dates: Date[]) {
     const result = [];
@@ -210,40 +343,56 @@ const When2MeetPage: React.FC<GridProps> = ({
 
   return (
     <PageWrapper>
-      <AreaWrapper>
-        <button
-          onClick={() => {
-            setIsModalOpen(true);
-            setPage(0);
-          }}>
-          Open Modal
-        </button>
-        <SectionWrapper>
-          <button
-            onClick={() => {
-              if (maxPage >= page + 1) {
-                setPage(page + 1);
-              }
-            }}>
-            next
-          </button>
-          <button
-            onClick={() => {
-              if (page > 0) {
-                setPage(page - 1);
-              }
-            }}>
-            prev
-          </button>
-          <div>{page}</div>
-          <div>{pageStart}</div>
-          <div>{pageEnd}</div>
-        </SectionWrapper>
+      <MyAreaWrapper>
+        <TilteWrapper>
+          <TitleTextWrapper>
+            {groupInfo.groupName}
+            <EditButtonWrapper
+              onClick={() => {
+                setIsModalOpen(true);
+                setPage(0);
+              }}>
+              <ModeEditOutlineOutlinedIcon />
+            </EditButtonWrapper>
+          </TitleTextWrapper>
+        </TilteWrapper>
+        <Divider />
+        <InfoWrapper>
+          <InfoContent>
+            <Typography type="Big">학번</Typography>
+            <TextInputWrapper>
+              <TextInput
+                placeholder={'학번을 입력하세요'}
+                value={myStudentId}
+                handleChange={handleChangeId}></TextInput>
+            </TextInputWrapper>
+          </InfoContent>
+          <InfoContent>
+            <Typography type="Big">이름</Typography>
+            <TextInputWrapper>
+              <TextInput
+                placeholder={'이름을 입력하세요'}
+                value={myName}
+                handleChange={handleChangeName}></TextInput>
+            </TextInputWrapper>
+          </InfoContent>
+          <Button type="selected" isFlexColumn={false} isFlexRow={false}>
+            {/* TODO : 로그인 되어 있으면 disabled, 확인 버튼 클릭 시 API 보내서 시간표 조회 */}
+            조회
+          </Button>
+        </InfoWrapper>
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="일정 편집">
           <EditModalBody groupInfo={groupInfo} setGroupInfo={setGroupInfo} />
         </Modal>
-        <div>{groupInfo.groupName}</div>
         <SectionWrapper>
+          {page > 0 && (
+            <Arrow
+              handleOnClick={() => {
+                setPage(page - 1);
+              }}
+              isForward={false}
+            />
+          )}
           <TimeWrapper>
             {Array.from(
               { length: groupInfo.endTime - groupInfo.startTime + 1 },
@@ -277,10 +426,32 @@ const When2MeetPage: React.FC<GridProps> = ({
               fullLength={tunedDateArray.length}
             />
           </GridWrapper>
+          {maxPage >= page + 1 && (
+            <Arrow
+              handleOnClick={() => {
+                setPage(page + 1);
+              }}
+            />
+          )}
         </SectionWrapper>
-      </AreaWrapper>
-      <AreaWrapper>
+      </MyAreaWrapper>
+      <GroupAreaWrapper>
+        <TilteWrapper>
+          <TitleTextWrapper>Group’s Availibility</TitleTextWrapper>
+          <Button isFlexRow={false} type="selected">
+            일정 확정
+          </Button>
+        </TilteWrapper>
+        <ColorScale count={groupInfo.members}></ColorScale>
         <SectionWrapper>
+          {page > 0 && (
+            <Arrow
+              handleOnClick={() => {
+                setPage(page - 1);
+              }}
+              isForward={false}
+            />
+          )}
           <TimeWrapper>
             {Array.from(
               { length: groupInfo.endTime - groupInfo.startTime + 1 },
@@ -312,8 +483,15 @@ const When2MeetPage: React.FC<GridProps> = ({
               pageEnd={pageEnd}
             />
           </GridWrapper>
+          {maxPage >= page + 1 && (
+            <Arrow
+              handleOnClick={() => {
+                setPage(page + 1);
+              }}
+            />
+          )}
         </SectionWrapper>
-      </AreaWrapper>
+      </GroupAreaWrapper>
     </PageWrapper>
   );
 };

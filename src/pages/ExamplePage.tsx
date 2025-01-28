@@ -95,7 +95,8 @@ const ExamplePage: React.FC = () => {
           selectedOption={endTime}
           setSelectedOption={setEndTime}
         /> */}
-        <EditModalBody />
+        {/* <EditModalBody /> */}
+        hello
       </Modal>
     </PageWrapper>
   );

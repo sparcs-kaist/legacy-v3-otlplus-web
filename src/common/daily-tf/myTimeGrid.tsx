@@ -1,7 +1,7 @@
 /* TODO: 코드 정리 - 중복되는 거 밖으로 빼던가 해야지,,*/
 import renderGrid from '@/common/daily-tf/utils/renderGrid';
 import renderTargetArea from '@/common/daily-tf/utils/renderTargetArea';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import getColumnIndex from './utils/getColumnIndex';
 import filterMapByRange from './utils/filterMapByRange';
 
