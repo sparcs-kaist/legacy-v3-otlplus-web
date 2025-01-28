@@ -14,7 +14,6 @@ import generateMockCoworkerList from '@/common/daily-tf/mock/mockCoworker';
 import { DisabledAreaType } from '@/common/daily-tf/utils/disabledAreaType';
 import generateMockDisabledArea from '@/common/daily-tf/mock/mockDisabledArea';
 import { formatDisabledArea } from '@/common/daily-tf/utils/formatDisabledArea';
-import MemberChip from '@/common/daily-tf/MemberChip';
 import { checkIfAnyTrue } from '@/common/daily-tf/utils/checkIfAnyTrue';
 
 /* TODO: 코드 정리 */
@@ -420,8 +419,7 @@ const When2MeetPage: React.FC<GridProps> = ({
               <ModeEditOutlineOutlinedIcon />
             </EditButtonWrapper>
           </TitleTextWrapper>
-          {/* TODO: API 연결 시 얘도 groupInfo에서 불러오게 바꾸기 */}
-          <MemberChip partInfo={partInfo} partCount={partCount} />
+          {/* TODO: 여기에 member chip */}
         </TilteWrapper>
         <Divider />
         <InfoWrapper>
