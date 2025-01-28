@@ -52,6 +52,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
   /* TODO : API로 disabledArea 받아오기 */
   /* 밖으로 빼서 처리해야 함 (랜더링 될 때마다 호출 xx) */
   // test
+
   const gridRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<boolean>(false);
   const [lastGridId, setLastGridId] = useState<string | null>(null);
@@ -81,7 +82,7 @@ const MyTimeGrid: React.FC<GridProps> = ({
     );
     for (let i = startCol; i < endCol + 1; i++) {
       for (let j = startRow; j < endRow + 1; j++) {
-        if (disabledArea.get(i)![j] == false) {
+        if (disabledArea.get(i + pageStart)![j] == false) {
           result.get(i)![j] = !index;
         } else {
           result.get(i)![j] = null;
@@ -224,7 +225,12 @@ const MyTimeGrid: React.FC<GridProps> = ({
             _endRow,
             _endCol,
             index,
-            new Map(Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)])),
+            new Map(
+              Array.from({ length: tunedDateArray.length }, (_, rowIndex) => [
+                rowIndex,
+                Array(n).fill(false),
+              ]),
+            ),
           );
           setDraggingArea(targetArea);
         }

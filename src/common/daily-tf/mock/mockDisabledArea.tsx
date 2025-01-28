@@ -1,7 +1,7 @@
 import { DisabledAreaType } from '../utils/disabledAreaType';
 
 const getRandomInt = (idx: number): number => {
-  return Math.floor(Math.random() * idx);
+  return Math.floor(Math.random() * (idx - 1));
 };
 
 function generateMockDisabledArea(
