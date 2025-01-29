@@ -238,6 +238,7 @@ const When2MeetPage: React.FC<GridProps> = ({
   groupName = '익명의 그룹',
   members = 5,
 }) => {
+  const [prevSelectedDate, setPrevSelectedDate] = useState<Map<Date, number[]>>(new Map());
   const defaultGroupInfo: GridProps = {
     groupName: groupName,
     members: members,
@@ -340,10 +341,26 @@ const When2MeetPage: React.FC<GridProps> = ({
   );
 
   useEffect(() => {
-    const newSelectedArea = new Map(
+    const res = new Map(
       Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(false)]),
     );
-    setSelectedArea(newSelectedArea);
+
+    for (let i = 0; i < m; i++) {
+      const date = tunedDateArray[i];
+      if (date !== placeholderDate) {
+        const prevSelected = prevSelectedDate.has(date) ? prevSelectedDate.get(date) : [];
+        for (let j = 0; j < n; j++) {
+          const prevIndex = j + (groupInfo.startTime - 8) * 2;
+          if (prevSelected?.includes(prevIndex)) {
+            const currentRow = res.get(i) || Array(n).fill(false);
+            currentRow[j] = true;
+            res.set(i, currentRow);
+          }
+        }
+      }
+    }
+    setSelectedArea(res);
+
     const mockCoworker = generateMockCoworkerList(groupInfo.members, m, n);
     setMockCoworker(mockCoworker);
     const mockDisabledArea = generateMockDisabledArea(
@@ -379,6 +396,24 @@ const When2MeetPage: React.FC<GridProps> = ({
 
     setPartCount(partCount);
   }, [groupInfo]);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      const prev = new Map();
+      selectedArea.forEach((value, key) => {
+        const date = tunedDateArray[key];
+        if (date !== placeholderDate) {
+          const selectedList = value
+            .map((_value, _index) => (_value ? _index + (groupInfo.startTime - 8) * 2 : -1))
+            .filter((i) => i !== -1);
+          if (selectedList.length > 0) {
+            prev.set(date, selectedList);
+          }
+        }
+      });
+      setPrevSelectedDate(prev);
+    }
+  }, [isModalOpen]);
 
   useEffect(() => {
     setPage(0);
