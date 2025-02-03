@@ -17,6 +17,8 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@mui/icons-material": "^6.4.2",
+    "@mui/material": "^6.4.2",
     "@tanstack/react-query": "^5.36.2",
     "@tanstack/react-query-devtools": "^5.36.2",
     "axios": "^0.21.2",
@@ -44,6 +46,7 @@
     "react-slick": "^0.29.0",
     "redux": "^4.0.0",
     "slick-carousel": "^1.8.1",
+    "styled-components": "^6.1.14",
     "zabo-embed": "^0.0.7"
   },
   "devDependencies": {

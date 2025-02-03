@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import axios from 'axios';
+import Chip from '@/common/redesign/components/Chip';
 
 class TestPage extends Component {
   componentDidMount() {
