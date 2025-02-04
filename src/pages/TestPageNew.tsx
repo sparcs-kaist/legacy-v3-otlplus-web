@@ -1,19 +1,25 @@
-// Search Area
-
+/* eslint-disable no-console */
+import Button from '@/common/redesign/components/Button';
 import Chip from '@/common/redesign/components/Chip';
 import Icon from '@/common/redesign/components/Icon';
 import OptionChipGrid from '@/common/redesign/components/Search/util/generateChips';
 import TextInput from '@/common/redesign/components/TextInput';
 import { Icon as MUIIcon } from '@mui/material';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+
+export type OptionProps = {
+  nameList: string[];
+  selectedList: boolean[];
+  setSelectedList: Dispatch<SetStateAction<boolean[]>>;
+};
 
 const SearchInputAreaWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
   gap: 8px;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 const PageWrapper = styled.div`
@@ -23,8 +29,37 @@ const PageWrapper = styled.div`
   gap: 20px;
 `;
 
+const ButtonArea = styled.div`
+  display: inline-flex;
+  width: 100%;
+  flex-wrap: wrap;
+  overflow: hidden;
+  justify-content: flex-end;
+  gap: 6px;
+`;
+
+const OptionAreaWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 10px;
+  line-height: 12.5px;
+  font-weight: 700;
+`;
+
+const SearchParamWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 17.5px;
+`;
+
 const TestPage = () => {
+  const [open, setOpen] = useState<boolean>(false);
   const [value, setValue] = useState<string>('');
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const gradeList = ['100번대', '200번대', '300번대', '400번대'];
   const [gradeSelect, setGrade] = useState<boolean[]>(Array(gradeList.length).fill(false));
@@ -68,13 +103,22 @@ const TestPage = () => {
   ];
   const [majorSelect, setMajor] = useState<boolean[]>(Array(majorList.length).fill(false));
 
-  const handleSubmit = () => {
-    // console.log(value);
-  };
+  const OptionMap: Map<string, OptionProps> = new Map([
+    ['분류', { nameList: divisionList, selectedList: divisionSelect, setSelectedList: setDivison }],
+    ['학년', { nameList: gradeList, selectedList: gradeSelect, setSelectedList: setGrade }],
+    ['학과', { nameList: majorList, selectedList: majorSelect, setSelectedList: setMajor }],
+  ]);
+
+  const isEmpty = () =>
+    value == '' &&
+    !divisionSelect.includes(true) &&
+    !gradeSelect.includes(true) &&
+    !majorSelect.includes(true);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       handleSubmit();
+      setOpen(false);
     }
   };
 
@@ -92,54 +136,145 @@ const TestPage = () => {
     setList(Array(targetList.length).fill(false));
   };
 
+  const handleReset = () => {
+    setValue('');
+    setOpen(false);
+    handleSelectAll(divisionSelect, setDivison);
+    handleSelectAll(majorSelect, setMajor);
+    handleSelectAll(gradeSelect, setGrade);
+  };
+
+  const handleSubmit = () => {
+    console.log('필터 결과');
+    divisionSelect.map((val, index) => {
+      if (val == true) {
+        console.log(divisionList[index]);
+      }
+    });
+    majorSelect.map((val, index) => {
+      if (val == true) {
+        console.log(majorList[index]);
+      }
+    });
+    gradeSelect.map((val, index) => {
+      if (val == true) {
+        console.log(gradeList[index]);
+      }
+    });
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    if (open && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [open]);
+
+  function getOptionList(key: string) {
+    let res: string = '';
+    const option = OptionMap.get(key)!;
+
+    option.selectedList.forEach((val, idx) => {
+      if (val) {
+        res += `${option.nameList[idx]} `;
+      }
+    });
+
+    if (res.endsWith(' ')) {
+      res = res.slice(0, -1);
+    }
+
+    if (res.length <= 0) {
+      return res;
+    }
+
+    return `(${key} : ${res})`;
+  }
+
   return (
-    <div style={{ padding: '100px' }}>
+    <div style={{ padding: '100px', backgroundColor: 'white' }}>
       <PageWrapper>
         {/* 위쪽 검색어 입력 부분 */}
-        <SearchInputAreaWrapper>
-          <Icon type="Search" size={13} color="#E54C65" />
-          <TextInput
-            placeholder={''}
-            value={value}
-            handleChange={(newValue) => {
-              setValue(newValue);
-            }}
-            onKeyDown={handleKeyDown}
-          />
+        <SearchInputAreaWrapper
+          onClick={() => {
+            if (!open) {
+              setOpen(true);
+            }
+          }}>
+          <Icon type="Search" size={17.5} color="#E54C65" />
+          <SearchParamWrapper>
+            {open ? (
+              <TextInput
+                ref={inputRef}
+                placeholder={'검색'}
+                value={value}
+                handleChange={(newValue) => {
+                  setValue(newValue);
+                }}
+                onKeyDown={handleKeyDown}
+              />
+            ) : (
+              value
+            )}
+            <div
+              style={{
+                display: 'inline-block',
+                flexShrink: 1,
+                overflow: 'hidden',
+                whiteSpace: 'normal',
+                wordBreak: 'keep-all',
+                gap: '4px',
+                color: '#555555',
+                fontSize: '12px',
+                lineHeight: '15px',
+              }}>
+              {`${getOptionList('분류')} ${getOptionList('학과')} ${getOptionList('학년')}`}
+            </div>
+          </SearchParamWrapper>
         </SearchInputAreaWrapper>
-        <OptionChipGrid
-          nameList={divisionList}
-          chosenList={divisionSelect}
-          handleOptionClick={(idx: number) => {
-            handleOptionClick(idx, divisionSelect, setDivison);
-          }}
-          handleSelectAllClick={() => {
-            handleSelectAll(divisionSelect, setDivison);
-          }}
-          selectedAll={!divisionSelect.includes(true)}
-        />
-        <OptionChipGrid
-          nameList={majorList}
-          chosenList={majorSelect}
-          handleOptionClick={(idx: number) => {
-            handleOptionClick(idx, majorSelect, setMajor);
-          }}
-          handleSelectAllClick={() => {
-            handleSelectAll(majorSelect, setMajor);
-          }}
-          selectedAll={!majorSelect.includes(true)}
-        />
-        <OptionChipGrid
-          nameList={gradeList}
-          chosenList={gradeSelect}
-          handleOptionClick={(idx: number) => {
-            handleOptionClick(idx, gradeSelect, setGrade);
-          }}
-          handleSelectAllClick={() => {
-            handleSelectAll(gradeSelect, setGrade);
-          }}
-          selectedAll={!gradeSelect.includes(true)}
-        />
+        {open && (
+          <>
+            {[...OptionMap.entries()].map(([key, value]) => (
+              <OptionAreaWrapper key={key}>
+                {key}
+                <OptionChipGrid
+                  nameList={value.nameList}
+                  chosenList={value.selectedList}
+                  handleOptionClick={(idx: number) => {
+                    handleOptionClick(idx, value.selectedList, value.setSelectedList);
+                  }}
+                  handleSelectAllClick={() => {
+                    handleSelectAll(value.selectedList, value.setSelectedList);
+                  }}
+                  selectedAll={!value.selectedList.includes(true)}
+                />
+              </OptionAreaWrapper>
+            ))}
+            {/* TODO: 드래그해서 시간대 선택하게 */}
+            <OptionAreaWrapper>
+              시간
+              <div
+                style={{
+                  backgroundColor: '#F5F5F5',
+                  color: '#555555',
+                  padding: '7px 10px',
+                  fontSize: '14px',
+                  fontWeight: '400',
+                  lineHeight: '17.5px',
+                }}>
+                클릭 후 시간표에서 드래그하여 선택
+              </div>
+            </OptionAreaWrapper>
+            <ButtonArea>
+              <Button paddingLeft={10} paddingTop={7} onClick={handleReset}>
+                취소
+              </Button>
+              <Button type="selected" paddingLeft={10} paddingTop={7} onClick={handleSubmit}>
+                검색
+              </Button>
+            </ButtonArea>
+          </>
+        )}
       </PageWrapper>
     </div>
   );

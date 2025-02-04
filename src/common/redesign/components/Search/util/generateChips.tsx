@@ -17,7 +17,6 @@ const OptionChipWrapper = styled.div`
   flex-direction: row;
   gap: 8px;
   width: 100%;
-  background-color: aliceblue;
   flex-wrap: wrap;
   overflow: hidden;
 `;
@@ -28,6 +27,9 @@ const OptionChipGrid: React.FC<OptionChipGridProps> = ({
   handleSelectAllClick = () => {},
   selectedAll,
 }) => {
+  if (!chosenList.includes(false)) {
+    handleSelectAllClick();
+  }
   return (
     <OptionChipWrapper>
       <Chip selected={selectedAll} chipText="전체" onClick={handleSelectAllClick} />

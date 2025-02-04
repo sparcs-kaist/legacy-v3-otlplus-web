@@ -1,13 +1,9 @@
-import React, { ChangeEvent, InputHTMLAttributes, useEffect } from 'react';
+import React, { ChangeEvent, InputHTMLAttributes, useEffect, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
-
-// PhoneInput, RentalInput에서 사용하기 위해 export
-export interface TextInputProps
-  extends InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
+export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   placeholder: string;
   errorMessage?: string;
-  area?: boolean;
   disabled?: boolean;
   value?: string;
   handleChange?: (value: string) => void;
@@ -22,26 +18,20 @@ const disabledStyle = css`
   background-color: rgba(245, 245, 245, 1);
 `;
 
-const areaInputStyle = css`
-  height: 100px;
-  resize: none;
-  overflow: auto;
-`;
-
-const Input = styled.input.attrs<TextInputProps>(({ area }) => ({
-  as: area ? 'textarea' : 'input',
-}))<TextInputProps & { hasError: boolean }>`
+const Input = styled.input<TextInputProps & { hasError: boolean }>`
   display: block;
   width: 100%;
   outline: none;
   border-radius: 4px;
-  gap: 8px;
   font-size: 14px;
   line-height: 17.5px;
   color: rgba(51, 51, 51, 1);
+  &::placeholder {
+    color: #aaaaaa;
+  }
+
   ${({ disabled }) => disabled && disabledStyle}
   ${({ hasError }) => hasError && errorBorderStyle}
-  ${({ area }) => area && areaInputStyle} // TextAreaInput
 `;
 
 const InputWrapper = styled.div`
@@ -58,44 +48,47 @@ const InputContainer = styled.div`
   align-items: center;
 `;
 
-// Component
-const TextInput: React.FC<TextInputProps> = ({
-  placeholder,
-  errorMessage = '',
-  area = false,
-  disabled = false,
-  value = '',
-  handleChange = () => {},
-  setErrorStatus = () => {},
-  ...props
-}) => {
-  const handleValueChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    handleChange(inputValue);
-  };
+const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
+  (
+    {
+      placeholder,
+      errorMessage = '',
+      disabled = false,
+      value = '',
+      handleChange = () => {},
+      setErrorStatus = () => {},
+      ...props
+    },
+    ref,
+  ) => {
+    const handleValueChange = (e: ChangeEvent<HTMLInputElement>) => {
+      handleChange(e.target.value);
+    };
 
-  useEffect(() => {
-    const hasError = !!errorMessage;
-    if (setErrorStatus) {
-      setErrorStatus(hasError);
-    }
-  }, [errorMessage, setErrorStatus]);
+    useEffect(() => {
+      if (setErrorStatus) {
+        setErrorStatus(!!errorMessage);
+      }
+    }, [errorMessage, setErrorStatus]);
 
-  return (
-    <InputWrapper>
-      <InputContainer>
-        <Input
-          placeholder={placeholder}
-          hasError={!!errorMessage}
-          area={area}
-          disabled={disabled}
-          value={value}
-          onChange={handleValueChange}
-          {...props}
-        />
-      </InputContainer>
-    </InputWrapper>
-  );
-};
+    return (
+      <InputWrapper>
+        <InputContainer>
+          <Input
+            ref={ref}
+            placeholder={placeholder}
+            hasError={!!errorMessage}
+            disabled={disabled}
+            value={value}
+            onChange={handleValueChange}
+            {...props}
+          />
+        </InputContainer>
+      </InputWrapper>
+    );
+  },
+);
+
+TextInput.displayName = 'TextInput';
 
 export default TextInput;
