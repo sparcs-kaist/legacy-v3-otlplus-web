@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import LectureGroupSubSectionTop, { ContentsTypeInner } from './LectureGroupSubSectionTop';
 import LectureGroupSubSectionContents from './LectureGroupSubSectionContents';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { LectureProps } from '@/pages/TestPageNew';
 
@@ -20,6 +20,7 @@ const CardWrapper = styled(motion.div)<{ isSelected: boolean }>`
   flex-direction: column;
   border-radius: 6px;
   overflow: hidden;
+  position: relative;
   box-shadow: ${(props) => (props.isSelected ? '2px 3px 8px -2px rgba(0, 0, 0, 0.2)' : 'none')};
   transition: box-shadow 0.2s ease-out;
 `;
@@ -40,43 +41,74 @@ const LectureGroupSubSection: React.FC<LectureGroupSubSectionProps> = ({
 
   // 전체 과목 선택 시, 교수 코드가 '0'으로 들어감
   const [professorCode, setProfessorCode] = useState<null | string>(null);
+  const [isSelected, setIsSelected] = useState<boolean>(false);
 
-  const [isSelected, setIsSelected] = useState<boolean>(selected?.code != code);
-
-  useEffect(() => {
-    setIsSelected(selected?.code == code && selected.professorCode == professorCode);
-    if (professorCode == null) {
-      setLectureCode(null);
-    } else {
-      setLectureCode({ code: code, professorCode: professorCode });
-    }
-  }, [professorCode]);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    setIsSelected(selected?.code === code);
+
     if (selected?.code != code) {
       setProfessorCode(null);
     }
   }, [selected]);
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+      setIsSelected(false);
+      setProfessorCode(null);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleContentsClick = (_code: string) => {
+    if (_code == professorCode) {
+      setProfessorCode(null);
+      setLectureCode(null);
+    } else {
+      setLectureCode({ code: code, professorCode: _code });
+      setProfessorCode(_code);
+    }
+  };
+
   return (
-    <CardWrapper isSelected={isSelected}>
-      <LectureGroupSubSectionTop
-        name={name}
-        code={code}
-        division={division}
-        setProfessorCode={setProfessorCode}
-        selected={professorCode}
-        type={`${type}`}
-      />
-      {[...professorName].map(([key, professor], idx) => (
-        <LectureGroupSubSectionContents
-          name={professor}
-          code={key}
+    <CardWrapper
+      isSelected={isSelected}
+      ref={wrapperRef}
+      onClick={() => {
+        handleClickOutside;
+      }}>
+      <div
+        onClick={() => {
+          handleContentsClick('0');
+        }}>
+        <LectureGroupSubSectionTop
+          name={name}
+          code={code}
+          division={division}
+          selected={professorCode}
           type={`${type}`}
-          key={idx}
-          setProfessorCode={setProfessorCode}
-          professorCode={professorCode}
         />
+      </div>
+      {[...professorName].map(([key, professor], idx) => (
+        <div
+          key={idx}
+          onClick={() => {
+            handleContentsClick(key);
+          }}>
+          <LectureGroupSubSectionContents
+            name={professor}
+            code={key}
+            type={`${type}`}
+            professorCode={professorCode}
+          />
+        </div>
       ))}
     </CardWrapper>
   );

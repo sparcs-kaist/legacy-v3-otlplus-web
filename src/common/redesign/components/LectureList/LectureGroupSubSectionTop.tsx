@@ -5,7 +5,6 @@ interface LectureGroupSubSectionTopProps {
   code: string;
   division: string;
   type?: keyof typeof ContentsTypeInner;
-  setProfessorCode: React.Dispatch<React.SetStateAction<null | string>>;
   selected: null | string;
 }
 
@@ -70,7 +69,6 @@ const LectureGroupSubSectionTop: React.FC<LectureGroupSubSectionTopProps> = ({
   code,
   division,
   type = 'default',
-  setProfessorCode,
   selected,
 }) => {
   let ContentsChosenInner = ContentsTypeInner[type];
@@ -86,16 +84,8 @@ const LectureGroupSubSectionTop: React.FC<LectureGroupSubSectionTopProps> = ({
     }
   }
 
-  const handleOnclick = () => {
-    if (selected == '0') {
-      setProfessorCode(null);
-    } else {
-      setProfessorCode('0');
-    }
-  };
-
   return (
-    <ContentsChosenInner onClick={handleOnclick}>
+    <ContentsChosenInner>
       <TitleWrapper style={{ opacity: `${isCompleted || isDisabled ? 0.3 : 1}` }}>
         <div style={{ fontWeight: 700 }}>{name}</div>
         {code}

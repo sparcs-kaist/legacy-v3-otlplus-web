@@ -5,7 +5,6 @@ interface LectureGroupSubSectionContentsProps {
   name: string;
   code: string;
   type?: keyof typeof ContentsTypeInner;
-  setProfessorCode: React.Dispatch<React.SetStateAction<null | string>>;
   professorCode: string | null;
 }
 
@@ -79,12 +78,11 @@ const LectureGroupSubSectionContents: React.FC<LectureGroupSubSectionContentsPro
   name,
   code,
   type = 'default',
-  setProfessorCode,
   professorCode,
 }) => {
   let WrapperChosen = ContentsTypeInner[type];
   const isDisabled = type == 'disabled';
-  if (code == professorCode) {
+  if (code == professorCode || professorCode == '0') {
     if (type == 'default') {
       WrapperChosen = ContentsTypeInner['selectedDefault'];
     } else if (type == 'completed') {
@@ -97,16 +95,8 @@ const LectureGroupSubSectionContents: React.FC<LectureGroupSubSectionContentsPro
     console.log('clicked');
   };
 
-  const handleWrapperClick = () => {
-    if (professorCode == code) {
-      setProfessorCode(null);
-    } else {
-      setProfessorCode(code);
-    }
-  };
-
   return (
-    <WrapperChosen onClick={handleWrapperClick}>
+    <WrapperChosen>
       <ContentsInner>
         <TitleWrapper style={{ opacity: `${isDisabled ? 0.3 : 1}` }}>
           <div style={{ fontWeight: 700 }}>{code}</div>

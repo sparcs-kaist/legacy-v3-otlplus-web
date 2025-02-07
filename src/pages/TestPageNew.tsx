@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import LectureGroupList from '../common/redesign/components/LectureGroupList';
 import SearchArea from '@/common/redesign/components/SearchArea';
-import LectureGroupSubSection from '@/common/redesign/components/LectureList/LectureGroupSubSection';
 
 export type OptionProps = {
   nameList: string[];
@@ -17,6 +17,10 @@ export type LectureProps = {
 const TestPage = () => {
   const [lectureCode, setLectureCode] = useState<LectureProps | null>(null);
 
+  useEffect(() => {
+    console.log(lectureCode?.code, lectureCode?.professorCode);
+  }, [lectureCode]);
+
   return (
     <div
       style={{
@@ -24,31 +28,11 @@ const TestPage = () => {
         backgroundColor: 'white',
         display: 'flex',
         flexDirection: 'column',
+        gap: '20px',
+        width: '500px',
       }}>
       <SearchArea />
-      <LectureGroupSubSection
-        name={'Default'}
-        code={'SP101'}
-        division={'기필'}
-        selected={lectureCode}
-        setLectureCode={setLectureCode}
-      />
-      <LectureGroupSubSection
-        name={'Disabled'}
-        code={'SP102'}
-        division={'기필'}
-        type="disabled"
-        selected={lectureCode}
-        setLectureCode={setLectureCode}
-      />
-      <LectureGroupSubSection
-        name={'Completed'}
-        code={'SP103'}
-        division={'기필'}
-        type="completed"
-        selected={lectureCode}
-        setLectureCode={setLectureCode}
-      />
+      <LectureGroupList />
     </div>
   );
 };
