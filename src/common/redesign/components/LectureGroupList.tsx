@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import SearchArea from '@/common/redesign/components/SearchArea';
 import LectureGroupSubSection from '@/common/redesign/components/LectureList/LectureGroupSubSection';
 import styled from 'styled-components';
 import { ContentsTypeInner } from '@/common/redesign/components/LectureList/LectureGroupSubSectionContents';
