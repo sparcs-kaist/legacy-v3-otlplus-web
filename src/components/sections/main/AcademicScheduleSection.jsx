@@ -91,7 +91,7 @@ class AcademicScheduleSection extends Component {
           {getAcademicScheduleContent()}
           <div className={classNames('buttons')}>
             <a
-              href="https://ssogw6.kaist.ac.kr"
+              href="https://sugang.kaist.ac.kr"
               className={classNames('text-button')}
               target="_blank"
               rel="noopener noreferrer">
