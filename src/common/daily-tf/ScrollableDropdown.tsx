@@ -10,6 +10,7 @@ interface ScrollableDropdownProps {
   disabledOptions?: number[];
   setSelectedOption: React.Dispatch<React.SetStateAction<number>>;
   selectedOption: number;
+  isDetail?: boolean;
 }
 
 const SelectedWrapper = styled.div`
@@ -47,10 +48,16 @@ const DropdownWrapper = styled.div<{ isExpand: boolean }>`
   overflow: hidden;
 `;
 
-const OptionScroll = styled.div<{ top: number; left: number; width: number; zindex: number }>`
+const OptionScroll = styled.div<{
+  top: number;
+  left: number;
+  width: number;
+  zindex: number;
+  isDetail: boolean;
+}>`
   display: flex;
   flex-direction: column;
-  height: 100px;
+  height: ${(props) => (props.isDetail ? '100px' : '250px')};
   z-index: ${(props) => `${props.zindex}`};
   width: ${(props) => `${props.width}px`};
   position: absolute;
@@ -81,6 +88,7 @@ const ScrollableDropdown: React.FC<ScrollableDropdownProps> = ({
   disabledOptions = [],
   setSelectedOption,
   selectedOption,
+  isDetail = true,
 }) => {
   const [isExpand, setIsExpand] = useState(false);
 
@@ -148,7 +156,8 @@ const ScrollableDropdown: React.FC<ScrollableDropdownProps> = ({
           top={position.top}
           left={position.left}
           width={position.width}
-          zindex={zindex}>
+          zindex={zindex}
+          isDetail={isDetail}>
           {options.map((option, index) => {
             const disabled = disabledOptions.includes(index);
             const selected = selectedOption == index;

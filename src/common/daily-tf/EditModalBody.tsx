@@ -7,14 +7,21 @@ import ScrollableDropdown from '@/common/daily-tf/ScrollableDropdown';
 import Typography from './Typography';
 import { Info } from '@mui/icons-material';
 import Button from './Button';
-import { GridProps } from '@/pages/When2MeetPage';
+import { GridProps } from '@/pages/When2MeetDetailPage';
+
+import { MeetingGroup } from './interface/groupInfoType';
+import { TimeBlockDay } from './interface/timeBlockType';
+import { defaultGroupInfo } from './utils/defaultGroupInfo';
+import { useNavigate } from 'react-router';
+import { group } from 'console';
 
 /* TODO: 그리드 크기 default 값 설정 */
 
 interface EditModalBodyProps {
-  groupInfo: GridProps;
-  setGroupInfo: React.Dispatch<GridProps>;
+  groupInfo: MeetingGroup;
+  setGroupInfo: React.Dispatch<MeetingGroup>;
   onClose: () => void;
+  isDetail?: boolean;
 }
 
 const PageWrapper = styled.div`
@@ -28,12 +35,12 @@ const TextInputWrapper = styled.div`
   width: 40px;
 `;
 
-const RowWrapper = styled.div`
+const RowWrapper = styled.div<{ isDetail: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   width: auto;
-  gap: 50px;
+  gap: ${({ isDetail }) => (isDetail ? '50px' : '60px')};
 `;
 
 const InfoWrapper = styled.div`
@@ -43,11 +50,28 @@ const InfoWrapper = styled.div`
   align-items: center;
 `;
 
-const ColumnWrapper = styled.div`
+const CalendarWrapper = styled.div`
+  width: 240px;
+`;
+
+const ColumnWrapper = styled.div<{ isDetail: boolean }>`
+  display: flex;
+  flex-direction: column;
+  //justify-content: space-between;
+  gap: ${({ isDetail }) => (isDetail ? '10px' : '20px')};
+`;
+
+const InfoSelectWrapper = styled.div<{ isDetail: boolean }>`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ isDetail }) => (isDetail ? '30px' : '20px')};
+`;
+
+const RightColumnWrapper = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 10px;
 `;
 
 const DropdownWrapper = styled.div`
@@ -60,9 +84,17 @@ const TimeWrapper = styled.div`
   gap: 10px;
 `;
 
-const ButtonWrapper = styled.div`
-  width: 314px;
+const ButtonWrapper = styled.div<{ isDetail: boolean }>`
+  width: ${({ isDetail }) => (isDetail ? '314px' : '100%')};
   height: 48px;
+`;
+
+const ButtonRowWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 10px;
+  justify-content: flex-end;
 `;
 
 const SelectWrapper = styled.div`
@@ -79,17 +111,23 @@ const SelectItem = styled.div`
   display: flex;
 `;
 
-const EditModalBody: React.FC<EditModalBodyProps> = ({ groupInfo, setGroupInfo, onClose }) => {
-  const [selectedDate, setSelectedDate] = useState<Date[]>(groupInfo.dateArray!);
-  const [startTime, setStartTime] = useState<number>(groupInfo.startTime! - 8);
-  const [endTime, setEndTime] = useState<number>(groupInfo.endTime! - 8);
+const EditModalBody: React.FC<EditModalBodyProps> = ({
+  groupInfo,
+  setGroupInfo,
+  onClose,
+  isDetail = false,
+}) => {
+  const navigate = useNavigate();
+  const [selectedDate, setSelectedDate] = useState<Date[]>(groupInfo.days!);
+  const [startTime, setStartTime] = useState<number>(groupInfo.begin! - 8);
+  const [endTime, setEndTime] = useState<number>(groupInfo.end! - 8);
 
   const [isFirstOption, setIsFirstOption] = useState<boolean>(true);
 
   // TODO : 숫자만 가능하도록 추가
-  const [member, setMember] = useState(`${groupInfo.members}`);
+  const [member, setMember] = useState(`${groupInfo.maxMember}`);
 
-  const [name, setName] = useState(groupInfo.groupName);
+  const [name, setName] = useState(groupInfo.title);
 
   const handleChange = (newValue: string) => {
     setName(newValue);
@@ -99,15 +137,29 @@ const EditModalBody: React.FC<EditModalBodyProps> = ({ groupInfo, setGroupInfo, 
     setMember(newValue);
   };
 
+  const handleReset = () => {
+    setGroupInfo(defaultGroupInfo);
+  };
+
   const handleSubmit = () => {
-    const groupInfo: GridProps = {
-      members: parseInt(member, 10),
-      startTime: startTime + 8,
-      endTime: endTime + 8,
-      groupName: name,
-      dateArray: selectedDate.sort((a, b) => a.getTime() - b.getTime()),
+    const groupInfo: MeetingGroup = {
+      maxMember: parseInt(member, 10),
+      begin: startTime + 8,
+      end: endTime + 8,
+      title: name,
+      days: selectedDate.sort((a, b) => a.getTime() - b.getTime()),
+      id: 0,
+      year: 0,
+      semester: 0,
+      leaderUserProfileId: 0,
+      schedule: [],
+      members: [],
     };
     setGroupInfo(groupInfo);
+  };
+
+  const handleSubmit2 = () => {
+    navigate('/w2m/id');
   };
 
   const TimeIndex = (index: number) => {
@@ -125,8 +177,8 @@ const EditModalBody: React.FC<EditModalBodyProps> = ({ groupInfo, setGroupInfo, 
   return (
     <PageWrapper>
       <TextInput placeholder={'그룹 이름을 입력하세요'} value={name} handleChange={handleChange} />
-      <RowWrapper>
-        <ColumnWrapper>
+      <RowWrapper isDetail={isDetail}>
+        <ColumnWrapper isDetail={isDetail}>
           <SelectWrapper>
             <SelectItem>
               <Button
@@ -147,53 +199,74 @@ const EditModalBody: React.FC<EditModalBodyProps> = ({ groupInfo, setGroupInfo, 
               </Button>
             </SelectItem>
           </SelectWrapper>
-          <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+          {isDetail ? (
+            <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+          ) : (
+            <CalendarWrapper>
+              <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+            </CalendarWrapper>
+          )}
         </ColumnWrapper>
-        <ColumnWrapper>
-          <TimeWrapper>
-            <Typography type="Big">가능시간</Typography>
+        <RightColumnWrapper>
+          <InfoSelectWrapper isDetail={isDetail}>
+            <TimeWrapper>
+              <Typography type="Big">가능시간</Typography>
+              <InfoWrapper>
+                <DropdownWrapper>
+                  <ScrollableDropdown
+                    options={timeArray}
+                    zindex={20}
+                    disabledOptions={Array.from({ length: 19 - endTime }, (_, i) => 19 - i)}
+                    selectedOption={startTime}
+                    setSelectedOption={setStartTime}
+                    isDetail={isDetail}
+                  />
+                </DropdownWrapper>
+                <Typography type="Big">시 부터</Typography>
+              </InfoWrapper>
+              <InfoWrapper>
+                <DropdownWrapper>
+                  <ScrollableDropdown
+                    options={timeArray}
+                    disabledOptions={Array.from({ length: startTime }, (_, i) => i)}
+                    selectedOption={endTime}
+                    setSelectedOption={setEndTime}
+                    isDetail={isDetail}
+                  />
+                </DropdownWrapper>
+                <Typography type="Big">시 까지</Typography>
+              </InfoWrapper>
+            </TimeWrapper>
             <InfoWrapper>
-              <DropdownWrapper>
-                <ScrollableDropdown
-                  options={timeArray}
-                  zindex={20}
-                  disabledOptions={Array.from({ length: 19 - endTime }, (_, i) => 19 - i)}
-                  selectedOption={startTime}
-                  setSelectedOption={setStartTime}
-                />
-              </DropdownWrapper>
-              <Typography type="Big">시 부터</Typography>
+              <Typography type="Big">가능인원</Typography>
+              <TextInputWrapper>
+                <TextInput placeholder={''} value={member} handleChange={handleChange2} />
+              </TextInputWrapper>
+              <Typography type="Big">명</Typography>
             </InfoWrapper>
-            <InfoWrapper>
-              <DropdownWrapper>
-                <ScrollableDropdown
-                  options={timeArray}
-                  disabledOptions={Array.from({ length: startTime }, (_, i) => i)}
-                  selectedOption={endTime}
-                  setSelectedOption={setEndTime}
-                />
-              </DropdownWrapper>
-              <Typography type="Big">시 까지</Typography>
-            </InfoWrapper>
-          </TimeWrapper>
-          <InfoWrapper>
-            <Typography type="Big">가능인원</Typography>
-            <TextInputWrapper>
-              <TextInput placeholder={''} value={member} handleChange={handleChange2} />
-            </TextInputWrapper>
-            <Typography type="Big">명</Typography>
-          </InfoWrapper>
-          <ButtonWrapper>
-            <Button
-              type="selected"
-              onClick={() => {
-                handleSubmit();
-                onClose();
-              }}>
-              확인
-            </Button>
+          </InfoSelectWrapper>
+          <ButtonWrapper isDetail={isDetail}>
+            {isDetail ? (
+              <Button
+                type="selected"
+                onClick={() => {
+                  handleSubmit();
+                  onClose();
+                }}>
+                확인
+              </Button>
+            ) : (
+              <ButtonRowWrapper>
+                <Button type="default" onClick={handleReset} isFlexRow={false}>
+                  초기화
+                </Button>
+                <Button type="selected" onClick={handleSubmit2} isFlexRow={false}>
+                  모임만들기
+                </Button>
+              </ButtonRowWrapper>
+            )}
           </ButtonWrapper>
-        </ColumnWrapper>
+        </RightColumnWrapper>
       </RowWrapper>
     </PageWrapper>
   );
