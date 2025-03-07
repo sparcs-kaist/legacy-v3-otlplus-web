@@ -11,3 +11,45 @@ export function formatTimeblockToString(timeblock: TimeBlock): string {
     .replace(/ /g, '');
   return `${formattedDate} ${timeblock.startTime} - ${timeblock.endTime}`;
 }
+
+type ResultTuple = [Date, string, number, string];
+
+const backTo24 = (date: Date, time: string): ResultTuple => {
+  const [hourStr, minuteStr] = time.split(':');
+  let hour = parseInt(hourStr, 10);
+
+  const newDate = new Date(date);
+
+  if (hour >= 24) {
+    newDate.setDate(newDate.getDate() + 1);
+    hour -= 24;
+  }
+
+  const period = hour < 12 ? '오전' : '오후';
+  const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+
+  return [newDate, period, displayHour, minuteStr];
+};
+
+// 최종 일정 확정에 나오는 것처럼 format
+export const formatTimeBlockToStringWithDate = (timeblock: TimeBlock): string => {
+  const date = timeblock.day;
+  const startTime = timeblock.startTime;
+  const endTime = timeblock.endTime;
+
+  const [startDate, startPeriod, startHour, startMinute] = backTo24(date, startTime);
+  const [endDate, endPeriod, endHour, endMinute] = backTo24(date, endTime);
+
+  if (+startDate == +endDate) {
+    const formattedDate = `${startDate.getMonth() + 1}월 ${startDate.getDate()}일`;
+    return `${formattedDate} ${startPeriod} ${startHour}시 ${
+      startMinute == '30' ? `${startMinute}분` : ''
+    } - ${endPeriod} ${endHour}시 ${endMinute == '30' ? `${endMinute}분` : ''}`;
+  } else {
+    const startFormattedDate = `${startDate.getMonth() + 1}월 ${startDate.getDate()}일`;
+    const endFormattedDate = `${endDate.getMonth() + 1}월 ${endDate.getDate()}일`;
+    return `${startFormattedDate} ${startPeriod} ${startHour}시 ${
+      startMinute == '30' ? `${startMinute}분` : ''
+    } - ${endFormattedDate} ${endPeriod} ${endHour}시 ${endMinute == '30' ? `${endMinute}분` : ''}`;
+  }
+};

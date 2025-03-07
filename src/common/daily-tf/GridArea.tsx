@@ -88,15 +88,6 @@ const GridArea: React.FC<GridProps> = ({
 
   const arrowRef = useRef<HTMLDivElement>(null);
 
-  const [selectedArea, setSelectedArea] = useState<Map<number, boolean[]>>(
-    new Map(
-      Array.from({ length: tunedDateArray.length }, (_, rowIndex) => [
-        rowIndex,
-        Array((end - begin) * 2).fill(false),
-      ]),
-    ),
-  );
-
   useEffect(() => {
     let contents = 0;
     let startIndex = 0;
@@ -120,10 +111,6 @@ const GridArea: React.FC<GridProps> = ({
     }
     setPageEnd(Math.min(endIndex, tunedDateArray.length - 1));
   }, [page]);
-
-  const handleSubmit = () => {
-    setSetupArea(selectedArea);
-  };
 
   const generateDates = () => {
     const dates: string[] = [];
@@ -187,8 +174,8 @@ const GridArea: React.FC<GridProps> = ({
               coworkerArea={coworkerArea}
               cellHeight={24}
               cellWidth={80}
-              selectedArea={selectedArea}
-              setSelectedArea={setSelectedArea}
+              selectedArea={setupArea}
+              setSelectedArea={setSetupArea}
               tunedDateArray={tunedDateArray}
               title={title}
               parentRef={arrowRef}

@@ -101,6 +101,7 @@ const renderScheduleArea = (
           <div
             key={`${key}-${startIndex}`}
             style={{
+              display: 'flex',
               position: 'absolute',
               left: left,
               top: top,
@@ -110,6 +111,19 @@ const renderScheduleArea = (
               backgroundColor: color,
               pointerEvents: 'none',
               borderRadius: '2px',
+              textAlign: 'center',
+              color: 'white',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 12,
+              lineHeight: 1.25,
+              fontWeight: 700,
+              overflow: 'hidden',
+              padding: '4px',
+              flexWrap: 'wrap',
+              wordBreak: 'keep-all',
+              whiteSpace: 'normal',
+              overflowWrap: 'break-word',
             }}>
             {title}
           </div>,

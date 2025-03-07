@@ -2,19 +2,20 @@ import { MeetingSchedule } from '../interface/groupInfoType';
 import { TimeBlock } from '../interface/timeBlockType';
 
 // Grid index로 쓰고 있던 time을 API call을 위해 Timeblock으로 바꾼다 (MeetingSchedule을 반환함)
-export function formatGridtoTimeblock(
+// TODO: placeholder 고려해서 바꿔줘야 함!
+export function formatGroupTimeGridtoTimeblock(
   myTime: Map<number, boolean[]>,
   coworkerTime: Map<string, Map<number, boolean[]>>,
   begin: number,
   end: number,
-  days: Date[],
+  tunedDateArray: Date[],
   myName: string = 'casio',
 ): MeetingSchedule[] {
   const res: MeetingSchedule[] = [];
 
-  for (let i = 0; i < days.length; i++) {
+  for (let i = 0; i < tunedDateArray.length; i++) {
     for (let j = 0; j < end - begin + 1; j++) {
-      const timeBlock = formatIndextoTimeblock(i, j, begin, days);
+      const timeBlock = formatIndextoTimeblock(i, j, begin, tunedDateArray);
       const available_members: string[] = [];
       const unavailable_members: string[] = [];
 
@@ -45,14 +46,51 @@ export function formatGridtoTimeblock(
   return res;
 }
 
+// Grid가 Map으로 들어왔을 때, ture로 선택된 영역에 해당하는 Timeblock을 반환 (연속하면 하나의 Timeblock으로 저장)
+export function formatSelectedGridtoTimeblock(
+  target: Map<number, boolean[]>,
+  begin: number,
+  end: number,
+  tunedDateArray: Date[],
+): TimeBlock[] {
+  const res: TimeBlock[] = [];
+  let currentBlock: TimeBlock | null = null;
+
+  for (let i = 0; i < tunedDateArray.length; i++) {
+    for (let j = 0; j < (end - begin + 1) * 2; j++) {
+      const isSelected = target.get(i)?.[j] || false;
+
+      if (isSelected) {
+        const timeBlock = formatIndextoTimeblock(i, j, begin, tunedDateArray);
+
+        if (
+          currentBlock &&
+          currentBlock.day.getTime() === timeBlock.day.getTime() &&
+          currentBlock.endTime === timeBlock.startTime
+        ) {
+          currentBlock.endTime = timeBlock.endTime;
+        } else {
+          if (currentBlock) res.push(currentBlock);
+          currentBlock = timeBlock;
+        }
+      }
+    }
+    if (currentBlock) {
+      res.push(currentBlock);
+      currentBlock = null;
+    }
+  }
+  return res;
+}
+
 // row, col로부터 Timeblock을 반환함
 export function formatIndextoTimeblock(
   row: number,
   col: number,
   begin: number,
-  days: Date[],
+  tunedDateArray: Date[],
 ): TimeBlock {
-  const day = days[row];
+  const day = tunedDateArray[row];
   const timeIndex = col + (begin - 8) * 2;
   const startTime = `${8 + Math.floor(timeIndex / 2)}:${timeIndex % 2 == 0 ? '00' : '30'}`;
   const endTime = `${8 + Math.floor((timeIndex + 1) / 2)}:${

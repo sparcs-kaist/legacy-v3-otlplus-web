@@ -23,6 +23,17 @@ const Overlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  pointer-events: auto;
+`;
+
+const OverlayBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
 `;
 
 const ModalContainer = styled.div`
@@ -47,19 +58,23 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title = '' }) 
   if (!isOpen) return null;
 
   return ReactDOM.createPortal(
-    <Overlay>
-      <ModalContainer onClick={(e) => e.stopPropagation()}>
-        <HeaderWrapper>
-          <Typography type="BigBold">{title}</Typography>
-          <IconButton
-            onClick={onClose}
-            style={{ color: 'rgba(170, 170, 170, 1)', width: '16px', height: '18px' }}>
-            <CloseIcon />
-          </IconButton>
-        </HeaderWrapper>
-        {children}
-      </ModalContainer>
-    </Overlay>,
+    <>
+      <OverlayBackground />
+      <Overlay>
+        <ModalContainer onClick={(e) => e.stopPropagation()}>
+          <HeaderWrapper>
+            <Typography type="BigBold">{title}</Typography>
+            <IconButton
+              onClick={onClose}
+              style={{ color: 'rgba(170, 170, 170, 1)', width: '16px', height: '18px' }}>
+              <CloseIcon />
+            </IconButton>
+          </HeaderWrapper>
+          {children}
+        </ModalContainer>
+      </Overlay>
+      ,
+    </>,
     document.body, // 모달을 루트 DOM에 렌더링
   );
 };
