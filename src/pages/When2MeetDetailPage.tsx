@@ -19,6 +19,8 @@ import MemberChipWrapper from '@/common/daily-tf/MemberChip';
 import { MeetingGroup } from '@/common/daily-tf/interface/groupInfoType';
 import { formatGridtoTimeblock } from '@/common/daily-tf/utils/formatGridtoTimeblock';
 import { useLocation } from 'react-router-dom';
+import FlexWrapper from '@/common/daily-tf/FlexWrapper';
+import GridArea from '@/common/daily-tf/GridArea';
 
 /* TODO: 코드 정리 */
 
@@ -56,13 +58,19 @@ const EditButtonWrapper = styled.div`
   }
 `;
 
+const ButtonWrapper = styled.div`
+  flex: 1;
+  flex-shrink: 1;
+  display: flex;
+`;
+
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
   gap: 12px;
-  padding: 100px;
+  padding-bottom: 20px;
   overflow: scroll;
   height: 100vh;
   padding-top: 55px !important;
@@ -114,7 +122,7 @@ const MyAreaWrapper = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 12px;
-  width: 700px;
+  width: 750px;
   // height 제대로 고치기..
   min-height: 100%;
   align-items: center;
@@ -162,7 +170,7 @@ const GroupAreaWrapper = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 16px;
-  width: 700px;
+  width: 750px;
   min-height: 100%;
   align-items: center;
 `;
@@ -298,9 +306,14 @@ const When2MeetDetailPage: React.FC = () => {
   }
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
 
   const handelModalClose = () => {
     setIsModalOpen(false);
+    enableScroll();
+  };
+  const handelModalClose2 = () => {
+    setIsModalOpen2(false);
     enableScroll();
   };
   const [groupInfo, setGroupInfo] = useState<MeetingGroup>(defaultGroupInfo);
@@ -530,6 +543,31 @@ const When2MeetDetailPage: React.FC = () => {
             isDetail={true}
           />
         </Modal>
+        <Modal
+          isOpen={isModalOpen2}
+          onClose={handelModalClose2}
+          title={`${groupInfo.title} 일정 확정`}>
+          <GridArea
+            begin={groupInfo.begin}
+            end={groupInfo.end}
+            days={groupInfo.days}
+            cellWidth={cellWidth}
+            tunedDateArray={tunedDateArray}
+            placeholderIndex={placeholderIndex}
+            myArea={selectedArea}
+            maxMember={groupInfo.maxMember}
+            coworkerArea={mockCoworker}
+            title={groupInfo.title}
+          />
+          <FlexWrapper direction="row" gap={18}>
+            <ButtonWrapper>
+              <Button type="default">일정 삭제</Button>
+            </ButtonWrapper>
+            <ButtonWrapper>
+              <Button type="selected">일정 확정</Button>
+            </ButtonWrapper>
+          </FlexWrapper>
+        </Modal>
         <ArrowGrid>
           {page > 0 ? (
             <Arrow
@@ -568,7 +606,7 @@ const When2MeetDetailPage: React.FC = () => {
                 m={pageEnd - pageStart + 1}
                 cellHeight={cellHeight}
                 cellWidth={cellWidth}
-                isModal={isModalOpen}
+                isModal={isModalOpen || isModalOpen2}
                 placeholderIndex={placeholderIndex}
                 pageEnd={pageEnd}
                 pageStart={pageStart}
@@ -598,6 +636,8 @@ const When2MeetDetailPage: React.FC = () => {
             type="selected"
             onClick={() => {
               // 일단 가라로 넣어뒀음
+              setIsModalOpen2(true);
+              disableScroll();
               formatGridtoTimeblock(
                 selectedArea,
                 mockCoworker,
@@ -647,7 +687,7 @@ const When2MeetDetailPage: React.FC = () => {
                 m={pageEnd - pageStart + 1}
                 cellHeight={cellHeight}
                 cellWidth={cellWidth}
-                isModal={isModalOpen}
+                isModal={isModalOpen || isModalOpen2}
                 placeholderIndex={placeholderIndex}
                 pageStart={pageStart}
                 pageEnd={pageEnd}

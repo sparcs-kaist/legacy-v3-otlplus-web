@@ -7,6 +7,7 @@ import ReactDOM from 'react-dom';
 interface ArrowProps {
   handleOnClick: () => void;
   isForward?: boolean;
+  hoverEvent?: boolean;
 }
 
 const ArrowWrapper = styled.div`
@@ -56,7 +57,7 @@ const HoverWrapper = styled.div<{ top: number; left: number }>`
   align-items: center;
 `;
 
-const Arrow: React.FC<ArrowProps> = ({ handleOnClick, isForward = true }) => {
+const Arrow: React.FC<ArrowProps> = ({ handleOnClick, isForward = true, hoverEvent = true }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -79,6 +80,7 @@ const Arrow: React.FC<ArrowProps> = ({ handleOnClick, isForward = true }) => {
       onMouseLeave={() => setIsHovered(false)}
       ref={arrowRef}>
       {isHovered &&
+        hoverEvent &&
         ReactDOM.createPortal(
           <HoverWrapper top={position.top} left={position.left}>
             <HoverTextWrapper>표시되지 않은 날짜가 있어요!</HoverTextWrapper>

@@ -19,7 +19,7 @@ const PageWrapper = styled.div`
   justify-content: center;
   align-items: flex-start;
   gap: 12px;
-  padding: 100px;
+  padding-bottom: 20px;
   overflow: scroll;
   padding-top: 55px !important;
   height: 100vh;
