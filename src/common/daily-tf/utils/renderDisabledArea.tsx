@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { DisabledAreaType } from './disabledAreaType';
+import { DisabledAreaType } from '../interface/disabledAreaType';
 import Typography from '../Typography';
 
 const calcLeft = (

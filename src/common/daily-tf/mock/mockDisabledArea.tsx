@@ -1,4 +1,4 @@
-import { DisabledAreaType } from '../utils/disabledAreaType';
+import { DisabledAreaType } from '../interface/disabledAreaType';
 
 const getRandomInt = (idx: number): number => {
   return Math.floor(Math.random() * (idx - 1));

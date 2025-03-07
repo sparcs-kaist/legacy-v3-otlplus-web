@@ -1,5 +1,6 @@
 'use client';
 
+import { highlighted } from '@/sass/App.module.scss';
 import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 
@@ -41,6 +42,15 @@ const ButtonSelectedInner = styled(ButtonInner)`
   }
 `;
 
+const ButtonHighlightedInner = styled(ButtonInner)`
+  color: ${({ theme }) => theme.colors.Background.Block.highlight};
+  background: ${({ theme }) => theme.colors.Highlight.default};
+  cursor: pointer;
+  &:hover {
+    background: ${({ theme }) => theme.colors.Highlight.dark};
+  }
+`;
+
 const ButtonDisabledInner = styled(ButtonInner)`
   color: ${({ theme }) => theme.colors.Text.placeholder};
   background: ${({ theme }) => theme.colors.Background.Button.default};
@@ -51,6 +61,7 @@ const ButtonTypeInner = {
   default: ButtonDefaultInner,
   disabled: ButtonDisabledInner,
   selected: ButtonSelectedInner,
+  highlighted: ButtonHighlightedInner,
 };
 
 const ButtonWithTextInner = styled.div`

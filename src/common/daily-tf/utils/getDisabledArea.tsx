@@ -3,7 +3,7 @@ import { MeetingResult } from '../interface/groupInfoType';
 import { PersonalBlock } from '../interface/personalType';
 import { TimeBlock } from '../interface/timeBlockType';
 import { LectureSummary, TimetableSummary } from '../interface/timetableType';
-import { DisabledAreaType } from './disabledAreaType';
+import { DisabledAreaType } from '../interface/disabledAreaType';
 
 export function timeToTimeIndex(time: string): number {
   const [hour, minute] = time.split(' : ');

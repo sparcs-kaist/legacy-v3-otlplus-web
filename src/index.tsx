@@ -147,7 +147,7 @@ const router = createBrowserRouter([
       },
       { path: 'timetable', element: <TimetablePage /> },
       { path: 'w2m', element: <When2MeetPage /> },
-      { path: 'w2m/id', element: <When2MeetDetailPage /> },
+      { path: 'w2m/:id', element: <When2MeetDetailPage /> },
       { path: 'timetable/syllabus', element: <SyllabusPage /> },
       { path: 'write-reviews', element: <WriteReviewsPage /> },
       { path: 'planner', element: <PlannerPage /> },

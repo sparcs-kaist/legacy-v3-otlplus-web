@@ -11,7 +11,7 @@ import Typography from '@/common/daily-tf/Typography';
 import TextInput from '@/common/daily-tf/TextInputArea';
 import getFormattedDate from '@/common/daily-tf/utils/getFormattedDate';
 import generateMockCoworkerList from '@/common/daily-tf/mock/mockCoworker';
-import { DisabledAreaType } from '@/common/daily-tf/utils/disabledAreaType';
+import { DisabledAreaType } from '@/common/daily-tf/interface/disabledAreaType';
 import generateMockDisabledArea from '@/common/daily-tf/mock/mockDisabledArea';
 import { formatDisabledArea } from '@/common/daily-tf/utils/formatDisabledArea';
 import { checkIfAnyTrue } from '@/common/daily-tf/utils/checkIfAnyTrue';
@@ -60,11 +60,12 @@ const PageWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   padding: 100px;
   overflow: scroll;
   height: 100vh;
+  padding-top: 55px !important;
 `;
 
 const DateWrapper = styled.div<{ width: number }>`
@@ -113,7 +114,7 @@ const MyAreaWrapper = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 12px;
-  width: 800px;
+  width: 700px;
   // height 제대로 고치기..
   min-height: 100%;
   align-items: center;
@@ -161,7 +162,7 @@ const GroupAreaWrapper = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 16px;
-  width: 800px;
+  width: 700px;
   min-height: 100%;
   align-items: center;
 `;
@@ -235,31 +236,23 @@ const ColorScale: React.FC<ColorScaleProps> = ({ count }) => {
   );
 };
 
-const When2MeetDetailPage: React.FC<MeetingGroup> = ({
-  // 테스트 용으로 그냥 넣어둔 값이에용
-  days = [new Date('2025-01-24'), new Date('2025-01-25'), new Date('2025-01-28')],
-  begin = 8,
-  end = 27,
-  title = '테스트 그룹',
-  maxMember = 5,
-}) => {
+const When2MeetDetailPage: React.FC = () => {
   const [prevSelectedDate, setPrevSelectedDate] = useState<Map<Date, number[]>>(new Map());
-  const location = useLocation();
 
   // API 연결 후 첫 값을 defaultGroupInfo에 넣어둔다
   // 수정할 때마다 매번 API를 보내는 거 X, 계속 로컬에 저장했다가 마지막 순간의 변화를 DB에 저장하기
   const defaultGroupInfo: MeetingGroup = {
     id: 0,
-    title: title,
+    title: '테스트 그룹',
     members: [],
-    days: days,
-    begin: begin,
-    end: end,
+    days: [new Date('2025-01-24'), new Date('2025-01-25'), new Date('2025-01-28')],
+    begin: 8,
+    end: 27,
     year: 0,
     semester: 0,
     leaderUserProfileId: 0,
     schedule: [],
-    maxMember: maxMember,
+    maxMember: 5,
   };
 
   const cellHeight = 24;

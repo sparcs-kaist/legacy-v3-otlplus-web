@@ -1,4 +1,4 @@
-import { DisabledAreaType } from './disabledAreaType';
+import { DisabledAreaType } from '../interface/disabledAreaType';
 
 export function formatDisabledArea(
   target: Map<number, DisabledAreaType[]>,

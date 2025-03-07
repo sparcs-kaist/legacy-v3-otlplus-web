@@ -25,8 +25,8 @@ export type MeetingMember = {
 
 export type MeetingSchedule = {
   timeBlock: TimeBlock;
-  availableMembers: [];
-  unavailableMembers: MeetingMember[];
+  availableMembers: string[];
+  unavailableMembers: string[];
 };
 
 export type MeetingResult = {
