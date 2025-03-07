@@ -1,7 +1,7 @@
 import Arrow from '@/common/daily-tf/Arrow';
 import styled from 'styled-components';
 import FlexWrapper from '@/common/daily-tf/FlexWrapper';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import getFormattedDate from '@/common/daily-tf/utils/getFormattedDate';
 import React from 'react';
 import ScheduleSetupGrid from './ScheduleSetupGrid';
@@ -13,7 +13,7 @@ const PageWrapper = styled.div`
   justify-content: center;
   width: 100%;
   flex: 1;
-  overflow: auto; /* ✅ SectionWrapper만 스크롤 */
+  overflow: auto;
   max-height: 70vh;
 `;
 
@@ -62,6 +62,8 @@ interface GridProps {
   maxMember: number;
   coworkerArea: Map<string, Map<number, boolean[]>>;
   title: string;
+  setupArea: Map<number, boolean[]>;
+  setSetupArea: React.Dispatch<React.SetStateAction<Map<number, boolean[]>>>;
 }
 
 const GridArea: React.FC<GridProps> = ({
@@ -74,6 +76,8 @@ const GridArea: React.FC<GridProps> = ({
   myArea,
   coworkerArea,
   title,
+  setupArea,
+  setSetupArea,
 }) => {
   const [page, setPage] = useState<number>(0);
   const maxPage = Math.ceil(days.length / 7) - 1;
@@ -81,6 +85,8 @@ const GridArea: React.FC<GridProps> = ({
   const [pageStart, setPageStart] = useState<number>(0);
   const [pageEnd, setPageEnd] = useState<number>(tunedDateArray.length - 1);
   const placeholderDate = new Date('2005-11-21');
+
+  const arrowRef = useRef<HTMLDivElement>(null);
 
   const [selectedArea, setSelectedArea] = useState<Map<number, boolean[]>>(
     new Map(
@@ -115,6 +121,10 @@ const GridArea: React.FC<GridProps> = ({
     setPageEnd(Math.min(endIndex, tunedDateArray.length - 1));
   }, [page]);
 
+  const handleSubmit = () => {
+    setSetupArea(selectedArea);
+  };
+
   const generateDates = () => {
     const dates: string[] = [];
     for (let i = pageStart; i <= pageEnd; i++) {
@@ -137,7 +147,7 @@ const GridArea: React.FC<GridProps> = ({
   }, [pageStart, pageEnd]);
 
   return (
-    <ArrowGrid>
+    <ArrowGrid ref={arrowRef}>
       {page > 0 ? (
         <Arrow
           handleOnClick={() => {
@@ -181,6 +191,7 @@ const GridArea: React.FC<GridProps> = ({
               setSelectedArea={setSelectedArea}
               tunedDateArray={tunedDateArray}
               title={title}
+              parentRef={arrowRef}
             />
           </FlexWrapper>
         </SectionWrapper>

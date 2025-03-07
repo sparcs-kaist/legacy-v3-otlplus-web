@@ -343,6 +343,15 @@ const When2MeetDetailPage: React.FC = () => {
   const parentRef = useRef<HTMLDivElement>(null);
   const [parentSize, setParentSize] = useState({ width: 0, height: 0 });
 
+  const [setupArea, setSetupArea] = useState<Map<number, boolean[]>>(
+    new Map(
+      Array.from({ length: tunedDateArray.length }, (_, rowIndex) => [
+        rowIndex,
+        Array((groupInfo.end - groupInfo.begin) * 2).fill(false),
+      ]),
+    ),
+  );
+
   useEffect(() => {
     const updateParentWidth = () => {
       if (parentRef.current) {
@@ -558,6 +567,8 @@ const When2MeetDetailPage: React.FC = () => {
             maxMember={groupInfo.maxMember}
             coworkerArea={mockCoworker}
             title={groupInfo.title}
+            setupArea={setupArea}
+            setSetupArea={setSetupArea}
           />
           <FlexWrapper direction="row" gap={18}>
             <ButtonWrapper>

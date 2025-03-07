@@ -26,6 +26,7 @@ interface GridProps {
   setSelectedArea: React.Dispatch<React.SetStateAction<Map<number, boolean[]>>>;
   tunedDateArray: Date[];
   title: string;
+  parentRef: React.RefObject<HTMLDivElement | null>;
 }
 
 // test
@@ -49,6 +50,7 @@ const ScheduleSetupGrid: React.FC<GridProps> = ({
   setSelectedArea,
   tunedDateArray,
   title,
+  parentRef,
 }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const worker = [...coworkerArea.keys(), myName];
@@ -210,11 +212,17 @@ const ScheduleSetupGrid: React.FC<GridProps> = ({
 
     if (gridRef.current) {
       const gridRect = gridRef.current.getBoundingClientRect();
+      const parendRect = parentRef.current?.getBoundingClientRect();
+
       const isInside =
         mouseX >= gridRect.left &&
         mouseX <= gridRect.left + gridRect.width &&
         mouseY >= gridRect.top &&
-        mouseY <= gridRect.top + gridRect.height;
+        mouseY <= gridRect.top + gridRect.height &&
+        mouseX >= parendRect!.left &&
+        mouseX <= parendRect!.left + parendRect!.width &&
+        mouseY >= parendRect!.top &&
+        mouseY <= parendRect!.top + parendRect!.height;
 
       setIsMouseInsideGrid(isInside);
 
