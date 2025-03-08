@@ -65,7 +65,7 @@ export function formatSelectedGridtoTimeblock(
 
         if (
           currentBlock &&
-          currentBlock.day.getTime() === timeBlock.day.getTime() &&
+          +currentBlock.day === +timeBlock.day &&
           currentBlock.endTime === timeBlock.startTime
         ) {
           currentBlock.endTime = timeBlock.endTime;
@@ -97,5 +97,11 @@ export function formatIndextoTimeblock(
     (timeIndex + 1) % 2 == 0 ? '00' : '30'
   }`;
 
-  return { day, timeIndex, startTime, endTime };
+  return {
+    day,
+    timeIndex,
+    startTime,
+    endTime,
+    duration: 1,
+  };
 }

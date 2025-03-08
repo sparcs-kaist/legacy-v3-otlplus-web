@@ -1,6 +1,5 @@
 'use client';
 
-import { highlighted } from '@/sass/App.module.scss';
 import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 

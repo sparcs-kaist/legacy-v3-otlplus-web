@@ -66,7 +66,7 @@ interface GridProps {
   setSetupArea: React.Dispatch<React.SetStateAction<Map<number, boolean[]>>>;
 }
 
-const GridArea: React.FC<GridProps> = ({
+const ScheduleSetupModalBody: React.FC<GridProps> = ({
   begin,
   end,
   days,
@@ -197,4 +197,4 @@ const GridArea: React.FC<GridProps> = ({
   );
 };
 
-export default GridArea;
+export default ScheduleSetupModalBody;

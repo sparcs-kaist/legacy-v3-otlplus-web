@@ -118,7 +118,7 @@ const EditModalBody: React.FC<EditModalBodyProps> = ({
   isDetail = false,
 }) => {
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState<Date[]>(groupInfo.days!);
+  const [selectedDate, setSelectedDate] = useState<Date[]>(groupInfo.days! as Date[]);
   const [startTime, setStartTime] = useState<number>(groupInfo.begin! - 8);
   const [endTime, setEndTime] = useState<number>(groupInfo.end! - 8);
 

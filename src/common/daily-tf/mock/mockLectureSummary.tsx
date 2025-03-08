@@ -1,3 +1,4 @@
+import { WeekdayEnum } from '../enum/weekdayEnum';
 import { LectureSummary } from '../interface/timetableType';
 
 const mockLectureSummaries: LectureSummary[] = [
@@ -12,14 +13,14 @@ const mockLectureSummaries: LectureSummary[] = [
     classroom_en: 'B102',
     timeBlocks: [
       {
-        day: new Date('2025-03-09'),
+        day: WeekdayEnum.Mon,
         timeIndex: 4, // 10:00 ~ 12:00
         startTime: '10:00',
         endTime: '12:00',
         duration: 4,
       },
       {
-        day: new Date('2025-03-11'),
+        day: WeekdayEnum.Wed,
         timeIndex: 10, // 14:00 ~ 16:00
         startTime: '14:00',
         endTime: '16:00',
@@ -38,7 +39,7 @@ const mockLectureSummaries: LectureSummary[] = [
     classroom_en: 'A103',
     timeBlocks: [
       {
-        day: new Date('2025-03-10'),
+        day: WeekdayEnum.Thu,
         timeIndex: 12,
         startTime: '16:00',
         endTime: '18:00',
@@ -57,14 +58,14 @@ const mockLectureSummaries: LectureSummary[] = [
     classroom_en: 'C204',
     timeBlocks: [
       {
-        day: new Date('2025-03-12'),
+        day: WeekdayEnum.Sat,
         timeIndex: 0,
         startTime: '08:00',
         endTime: '10:00',
         duration: 4,
       },
       {
-        day: new Date('2025-03-13'),
+        day: WeekdayEnum.Mon,
         timeIndex: 8,
         startTime: '12:00',
         endTime: '14:00',

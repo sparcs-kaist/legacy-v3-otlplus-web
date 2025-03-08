@@ -1,3 +1,5 @@
+import CustomTimeTableGrid from '@/common/daily-tf/CustomTimeTableGrid';
+import Icon from '@/common/daily-tf/Icon';
 import LectureTile from '@/common/daily-tf/LectureTile';
 import mockLectureSummaries from '@/common/daily-tf/mock/mockLectureSummary';
 import styled from 'styled-components';
@@ -21,17 +23,16 @@ const ContentsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 12px;
-  width: 288px;
+  width: 950px;
   min-height: 100%;
+  align-items: center;
 `;
 
 const FriendPage: React.FC = () => {
   return (
     <PageWrapper>
       <ContentsWrapper>
-        <LectureTile
-          lecture={mockLectureSummaries[0]}
-          timeBlock={mockLectureSummaries[0].timeBlocks[0]}></LectureTile>
+        <CustomTimeTableGrid lectureSummary={mockLectureSummaries}></CustomTimeTableGrid>
       </ContentsWrapper>
     </PageWrapper>
   );

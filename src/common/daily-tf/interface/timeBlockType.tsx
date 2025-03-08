@@ -1,6 +1,6 @@
 import { WeekdayEnum } from '../enum/weekdayEnum';
 
-export type TimeBlockDay = Date;
+export type TimeBlockDay = Date | WeekdayEnum;
 
 export type TimeBlock = {
   day: TimeBlockDay;

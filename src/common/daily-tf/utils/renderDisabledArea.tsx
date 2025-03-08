@@ -22,7 +22,6 @@ const calcLeft = (
   return res;
 };
 
-// 표시할 영역에 대한 정보를 전달 받아 디자인에 맞게 표시
 const renderDisabledArea = (
   disabledArea: Map<number, DisabledAreaType[]>,
   cellHeight: number,
@@ -36,7 +35,7 @@ const renderDisabledArea = (
   const rectangles: JSX.Element[] = [];
   disabledArea.forEach((value, key) => {
     if (!placeholderIndex.includes(key + pageStart)) {
-      value.map((val, index) => {
+      value.map((val, _) => {
         const startIndex = val.startIndex;
         const endIndex = val.endIndex;
 

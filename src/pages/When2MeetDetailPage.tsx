@@ -22,7 +22,7 @@ import {
   formatSelectedGridtoTimeblock,
 } from '@/common/daily-tf/utils/formatGridtoTimeblock';
 import FlexWrapper from '@/common/daily-tf/FlexWrapper';
-import GridArea from '@/common/daily-tf/GridArea';
+import ScheduleSetupModalBody from '@/common/daily-tf/ScheduleSetupModalBody';
 import { TimeBlock } from '@/common/daily-tf/interface/timeBlockType';
 import { formatTimeBlockToStringWithDate } from '@/common/daily-tf/utils/formatTimeblockToString';
 
@@ -347,7 +347,7 @@ const When2MeetDetailPage: React.FC = () => {
   };
   const [groupInfo, setGroupInfo] = useState<MeetingGroup>(defaultGroupInfo);
 
-  const tunedDateArray = insertMissingDates(groupInfo.days);
+  const tunedDateArray = insertMissingDates(groupInfo.days as Date[]);
 
   const m: number = tunedDateArray.length;
   const n: number = (groupInfo.end - groupInfo.begin) * 2;
@@ -597,10 +597,10 @@ const When2MeetDetailPage: React.FC = () => {
           isOpen={isModalOpen2}
           onClose={handelModalClose2}
           title={`${groupInfo.title} 일정 확정`}>
-          <GridArea
+          <ScheduleSetupModalBody
             begin={groupInfo.begin}
             end={groupInfo.end}
-            days={groupInfo.days}
+            days={groupInfo.days as Date[]}
             cellWidth={cellWidth}
             tunedDateArray={tunedDateArray}
             placeholderIndex={placeholderIndex}
@@ -727,7 +727,7 @@ const When2MeetDetailPage: React.FC = () => {
                 mockCoworker,
                 groupInfo.begin,
                 groupInfo.end,
-                groupInfo.days,
+                groupInfo.days as Date[],
               );
             }}>
             일정 확정
