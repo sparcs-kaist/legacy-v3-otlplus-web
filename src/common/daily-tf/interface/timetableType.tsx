@@ -20,6 +20,7 @@ export type TimetableResponse2 = {
 
 export type LectureSummary = {
   id: number; //lecture.id
+  course_id: number; // 색상 mapping용
 
   title: string;
   title_en: string;

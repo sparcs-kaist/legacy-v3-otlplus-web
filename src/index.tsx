@@ -38,6 +38,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import When2MeetDetailPage from './pages/When2MeetDetailPage';
 import When2MeetPage from './pages/When2MeetPage';
+import FriendPage from './pages/FriendPage';
 
 declare global {
   interface Window {
@@ -147,6 +148,7 @@ const router = createBrowserRouter([
       },
       { path: 'timetable', element: <TimetablePage /> },
       { path: 'w2m', element: <When2MeetPage /> },
+      { path: 'friend', element: <FriendPage /> },
       { path: 'w2m/:id', element: <When2MeetDetailPage /> },
       { path: 'timetable/syllabus', element: <SyllabusPage /> },
       { path: 'write-reviews', element: <WriteReviewsPage /> },
