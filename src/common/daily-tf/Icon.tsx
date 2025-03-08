@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import styled, { css } from 'styled-components';
+import * as MuiIcons from '@mui/icons-material';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 interface IconProps {
   type: string;
@@ -10,29 +11,33 @@ interface IconProps {
   color?: string;
 }
 
-const IconInner = styled.div<{
-  size: number;
-  clickable: boolean;
-}>`
-  display: flex;
-  font-size: ${({ size }) => size}px;
-  color: ${({ color }) => color || 'black'};
-  ${({ clickable }) =>
-    clickable &&
-    css`
-      cursor: pointer;
-    `}
-`;
+const Icon: React.FC<IconProps> = ({ type, size, onClick = undefined, color = 'inherit' }) => {
+  const IconComponent = MuiIcons[type as keyof typeof MuiIcons];
 
-const Icon: React.FC<IconProps> = ({ type, size, onClick = undefined, color = 'black' }) => {
-  const IconComponent = React.lazy(
-    () => import(`@mui/icons-material/${type.charAt(0).toUpperCase() + type.slice(1)}`),
-  );
+  if (!IconComponent) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          cursor: onClick ? 'pointer' : 'default',
+          color: color,
+          fontSize: `${size}px`,
+        }}>
+        <ErrorOutlineIcon />
+      </div>
+    );
+  }
 
   return (
-    <IconInner size={size} clickable={!!onClick} color={color} onClick={onClick}>
-      <IconComponent fontSize="inherit" />
-    </IconInner>
+    <div
+      style={{
+        display: 'flex',
+        cursor: onClick ? 'pointer' : 'default',
+        color: color,
+        fontSize: `${size}px`,
+      }}>
+      <IconComponent fontSize="inherit" onClick={onClick} />
+    </div>
   );
 };
 

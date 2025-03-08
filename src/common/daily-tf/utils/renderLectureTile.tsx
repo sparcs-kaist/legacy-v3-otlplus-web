@@ -1,6 +1,4 @@
-import { JSX } from 'react';
-import { DisabledAreaType } from '../interface/disabledAreaType';
-import Typography from '../Typography';
+import { JSX, useRef } from 'react';
 import { LectureSummary } from '../interface/timetableType';
 import { TimeBlock } from '../interface/timeBlockType';
 import { WeekdayEnum } from '../enum/weekdayEnum';
@@ -15,7 +13,11 @@ const renderLectureTile = (
   setSelected: React.Dispatch<React.SetStateAction<LectureSummary | null>>,
   hover: LectureSummary | null,
   setHover: React.Dispatch<React.SetStateAction<LectureSummary | null>>,
+  holding: boolean,
+  setHolding: React.Dispatch<React.SetStateAction<boolean>>,
+  dragging: boolean,
 ) => {
+  const gridRef = useRef<HTMLDivElement>(null);
   const rectangles: JSX.Element[] = [];
 
   for (let i = 0; i < lectureSummary.length; i++) {
@@ -33,6 +35,7 @@ const renderLectureTile = (
 
       rectangles.push(
         <div
+          ref={gridRef}
           style={{
             position: 'absolute',
             left: left,
@@ -44,7 +47,10 @@ const renderLectureTile = (
             setSelected(lecture);
           }}
           onMouseEnter={() => {
-            setHover(lecture);
+            if (!dragging) {
+              setHover(lecture);
+            }
+            setHolding(true);
           }}
           onMouseLeave={() => {
             setHover(null);
@@ -55,6 +61,7 @@ const renderLectureTile = (
             cellWidth={cellWidth}
             isSelected={isSelected}
             isHovered={isHovered}
+            cellHeight={cellHeight}
           />
         </div>,
       );

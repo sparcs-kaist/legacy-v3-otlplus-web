@@ -1,13 +1,19 @@
 import renderGrid from '@/common/daily-tf/utils/renderGrid';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { JSX, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import FlexWrapper from './FlexWrapper';
 import renderLectureTile from './utils/renderLectureTile';
 import { LectureSummary } from './interface/timetableType';
+import { checkAnyOver24 } from './utils/checkAnyOver24';
+import getColumnIndex from './utils/getColumnIndex';
+import renderTargetArea from './utils/renderTargetArea';
+import { TimeBlock } from './interface/timeBlockType';
+import { WeekdayEnum } from './enum/weekdayEnum';
+import { formatTimeindexToString } from './utils/formatTimeindexToString';
+import { formatTimeAreaToString } from './utils/formatTimeblockToString';
 
 interface GridProps {
   cellWidth?: number;
-  cellHeight?: number;
   lectureSummary: LectureSummary[];
 }
 
@@ -16,13 +22,17 @@ const SectionWrapper = styled.div`
   flex-direction: row;
   gap: 5px;
   align-items: center;
+  height: 100%;
 `;
 
-const TimeWrapper = styled.div`
-  margin-top: 15px;
+const TimeWrapper = styled.div<{ cellHeight: number }>`
+  margin-top: 19px;
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
-  gap: 37px;
+  height: 100%;
+  justify-content: space-evenly;
+  gap: ${({ cellHeight }) => `${cellHeight * 2 - 11}px`};
   font-size: 8px;
   line-height: 11px;
 `;
@@ -36,24 +46,108 @@ const DateWrapper = styled.div<{ width: number }>`
   text-align: center;
 `;
 
-const CustomTimeTableGrid: React.FC<GridProps> = ({
-  cellHeight = 24,
-  cellWidth = 120,
-  lectureSummary,
-}) => {
+const CustomTimeTableGrid: React.FC<GridProps> = ({ cellWidth = 120, lectureSummary }) => {
   const colPadding = 5;
-  const n = 38;
   const m = 7;
   const begin = 8;
-  const end = 27;
   const gridRef = useRef<HTMLDivElement>(null);
   const dateHeader = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
   const [selected, setSelected] = useState<LectureSummary | null>(null);
   const [hover, setHover] = useState<LectureSummary | null>(null);
 
+  const isAnyOver24 = checkAnyOver24(lectureSummary);
+  const n = isAnyOver24 ? 38 : 32;
+  const end = isAnyOver24 ? 27 : 24;
+  const cellHeight = isAnyOver24 ? 27 : 32;
+
+  const [dragging, setDragging] = useState<boolean>(false);
+  const [startRow, setStartRow] = useState<number | null>(null);
+  const [lastRow, setLastRow] = useState<number | null>(null);
+  const [col, setCol] = useState<number | null>(null);
+  const [holding, setHolding] = useState<boolean>(false);
+
+  const [timeArea, setTimeArea] = useState<TimeBlock | null>(null);
+
+  const [draggingArea, setDraggingArea] = useState<Map<number, boolean[]>>(
+    new Map(Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(null)])),
+  );
+
+  const handleMouseDown = (event: React.MouseEvent) => {
+    if (gridRef.current) {
+      const gridRect = gridRef.current.getBoundingClientRect();
+      const mouseX = event.clientX - gridRect.left;
+      const mouseY = event.clientY - gridRect.top;
+      const row = Math.floor(mouseY / cellHeight);
+      const col = getColumnIndex(mouseX, m, [], 0, cellWidth, colPadding, 0);
+      if (row >= 0 && row < n && col >= 0 && col < m) {
+        setDragging(true);
+        setStartRow(row);
+        setLastRow(row);
+        setCol(col);
+        setSelected(null);
+      }
+    }
+  };
+
+  const handleMouseMove = (event: React.MouseEvent) => {
+    if (dragging && gridRef.current) {
+      const gridRect = gridRef.current.getBoundingClientRect();
+      const mouseY = event.clientY - gridRect.top;
+      const row = Math.floor(mouseY / cellHeight);
+      if (row >= 0 && row < n && col! >= 0 && col! < m) {
+        if (row !== lastRow) {
+          setLastRow(row);
+        }
+      }
+    }
+  };
+
+  const handleMouseUp = () => {
+    setDraggingArea(
+      new Map(Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(null)])),
+    );
+    if (startRow != null && lastRow != null && col != null) {
+      const beginRow = Math.min(startRow, lastRow);
+      const endRow = Math.max(startRow, lastRow);
+      // 어차피 startTime, endTime은 없앨 예정!
+      const timeBlock: TimeBlock = {
+        day: col + 1,
+        timeIndex: beginRow,
+        duration: endRow - beginRow + 1,
+        startTime: '',
+        endTime: '',
+      };
+      setTimeArea(timeBlock);
+    }
+    setStartRow(null);
+    setLastRow(null);
+    setDragging(false);
+    setHolding(false);
+  };
+
+  const getArea = (startRow: number, endRow: number, col: number): Map<number, boolean[]> => {
+    const result = new Map(
+      Array.from({ length: m }, (_, rowIndex) => [rowIndex, Array(n).fill(null)]),
+    );
+    for (let j = startRow; j < endRow + 1; j++) {
+      result.get(col)![j] = true;
+    }
+
+    return result;
+  };
+
+  useLayoutEffect(() => {
+    if (gridRef.current && dragging && !holding) {
+      const _startRow = Math.min(startRow!, lastRow!);
+      const _endRow = Math.max(startRow!, lastRow!);
+      const targetArea = getArea(_startRow, _endRow, col!);
+      setDraggingArea(targetArea);
+    }
+  }, [lastRow, startRow]);
+
   return (
     <SectionWrapper>
-      <TimeWrapper>
+      <TimeWrapper cellHeight={cellHeight}>
         {Array.from({ length: end - begin + 1 }, (_, index) => index + begin).map((number) => (
           <div key={number}>{number % 12 || 12}</div>
         ))}
@@ -79,8 +173,23 @@ const CustomTimeTableGrid: React.FC<GridProps> = ({
           }}
           onClick={() => {
             setSelected(null);
-          }}>
+          }}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}>
           {renderGrid(n, m, cellWidth, cellHeight, colPadding, [], 10, 0)}
+          {renderTargetArea(
+            true,
+            draggingArea,
+            'rgba(237, 140, 156, 0.5)',
+            cellHeight,
+            cellWidth,
+            2,
+            colPadding,
+            [],
+            0,
+            0,
+          )}
           {renderLectureTile(
             lectureSummary,
             cellWidth,
@@ -90,6 +199,9 @@ const CustomTimeTableGrid: React.FC<GridProps> = ({
             setSelected,
             hover,
             setHover,
+            holding,
+            setHolding,
+            dragging,
           )}
         </div>
       </FlexWrapper>

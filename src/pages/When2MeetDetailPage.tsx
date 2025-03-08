@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import MyTimeGrid from '@/common/daily-tf/myTimeGrid';
+import MyTimeGrid from '@/common/daily-tf/MyTimeGrid';
 import styled from 'styled-components';
-import GroupTimeGrid from '@/common/daily-tf/groupTimeGrid';
+import GroupTimeGrid from '@/common/daily-tf/GroupTimeGrid';
 import Modal from '@/common/daily-tf/Modal';
 import EditModalBody from '@/common/daily-tf/EditModalBody';
 import Arrow from '@/common/daily-tf/Arrow';

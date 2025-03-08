@@ -46,12 +46,13 @@ const TileWrapper = styled.div<{
   cellWidth: number;
   isSelected: boolean;
   isHighlighted: boolean;
+  cellHeight: number;
 }>`
   display: flex;
   flex-direction: column;
   padding: 4px 6px;
   width: ${({ cellWidth }) => `${cellWidth}px`};
-  height: ${({ duration }) => `${duration * 24 - 4}px`};
+  height: ${({ duration, cellHeight }) => `${duration * cellHeight - 4}px`};
   margin-bottom: 2px;
   margin-top: 2px;
   justify-content: center;
@@ -83,7 +84,7 @@ const DescWrapper = styled.span<{ isHighlighted: boolean }>`
   line-height: ${({ theme }) => `${theme.fonts.Small.lineHeight}px`};
   font-weight: ${({ theme }) => theme.fonts.Small.fontWeight};
   color: ${({ isHighlighted }) =>
-    isHighlighted ? 'rgba(245, 245, 245, 0.6)' : 'rgba(102, 102, 102, 0.6)'};
+    isHighlighted ? 'rgba(255, 255, 255, 0.6)' : 'rgba(102, 102, 102, 0.6)'};
   word-wrap: break-word;
   display: inline-block;
   word-break: break-word;
@@ -94,9 +95,10 @@ const LectureTile: React.FC<{
   lecture: LectureSummary;
   timeBlock: TimeBlock;
   cellWidth: number;
+  cellHeight: number;
   isSelected?: boolean;
   isHovered?: boolean;
-}> = ({ lecture, timeBlock, cellWidth, isSelected = false, isHovered = false }) => {
+}> = ({ lecture, timeBlock, cellWidth, cellHeight, isSelected = false, isHovered = false }) => {
   const isHighlighted = isSelected || isHovered;
 
   return (
@@ -105,7 +107,8 @@ const LectureTile: React.FC<{
       duration={timeBlock.duration}
       cellWidth={cellWidth}
       isSelected={isSelected}
-      isHighlighted={isHighlighted}>
+      isHighlighted={isHighlighted}
+      cellHeight={cellHeight}>
       <TitleWrapper isHighlighted={isHighlighted}>{lecture.title}</TitleWrapper>
       <DescWrapper isHighlighted={isHighlighted}>{lecture.professor_name}</DescWrapper>
       <DescWrapper isHighlighted={isHighlighted}>{lecture.classroom}</DescWrapper>

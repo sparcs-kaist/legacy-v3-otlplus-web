@@ -1,5 +1,7 @@
 import { WeekdayEnum, weekdayToKorean } from '../enum/weekdayEnum';
 import { TimeBlock, TimeBlockDay } from '../interface/timeBlockType';
+import { formatTimeindexToString } from './formatTimeindexToString';
+import { weekdayEnKorMap } from './WeekdayKorEnMap';
 
 export function formatTimeblockToString(timeblock: TimeBlock): string {
   if (timeblock.day instanceof Date) {
@@ -83,3 +85,12 @@ export const formatTimeBlockToStringWithDate = (timeblock: TimeBlock): string =>
     }
   }
 };
+
+// timetable에서 시간 filter 위함
+export function formatTimeAreaToString(timeBlock: TimeBlock): string {
+  const eng = WeekdayEnum[timeBlock.day as WeekdayEnum];
+
+  return `${weekdayEnKorMap.get(eng)} ${formatTimeindexToString(
+    timeBlock.timeIndex,
+  )} - ${formatTimeindexToString(timeBlock.timeIndex + timeBlock.duration)}`;
+}
