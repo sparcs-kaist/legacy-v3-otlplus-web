@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import MyTimeGrid from '@/common/daily-tf/MyTimeGrid';
 import styled from 'styled-components';
-import GroupTimeGrid from '@/common/daily-tf/GroupTimeGrid';
+
 import Modal from '@/common/daily-tf/Modal';
 import EditModalBody from '@/common/daily-tf/EditModalBody';
 import Arrow from '@/common/daily-tf/Arrow';
@@ -16,15 +15,19 @@ import generateMockDisabledArea from '@/common/daily-tf/mock/mockDisabledArea';
 import { formatDisabledArea } from '@/common/daily-tf/utils/formatDisabledArea';
 import { checkIfAnyTrue } from '@/common/daily-tf/utils/checkIfAnyTrue';
 import MemberChipWrapper from '@/common/daily-tf/MemberChip';
-import { MeetingGroup } from '@/common/daily-tf/interface/groupInfoType';
+import { MeetingGroup } from '@/common/daily-tf/interface/Group';
 import {
   formatGroupTimeGridtoTimeblock,
   formatSelectedGridtoTimeblock,
 } from '@/common/daily-tf/utils/formatGridtoTimeblock';
 import FlexWrapper from '@/common/daily-tf/FlexWrapper';
 import ScheduleSetupModalBody from '@/common/daily-tf/ScheduleSetupModalBody';
-import { TimeBlock } from '@/common/daily-tf/interface/timeBlockType';
+
 import { formatTimeBlockToStringWithDate } from '@/common/daily-tf/utils/formatTimeblockToString';
+
+import GroupTimeGrid from '@/common/daily-tf/groupTimeGrid';
+import MyTimeGrid from '@/common/daily-tf/MyTimeGrid';
+import TimeBlock from '@/common/daily-tf/interface/Timeblock';
 
 /* TODO: 코드 정리 */
 

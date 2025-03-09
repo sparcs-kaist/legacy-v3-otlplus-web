@@ -1,24 +1,23 @@
-import { MeetingResult } from './groupInfoType';
-import { PersonalBlock } from './personalType';
-import { TimeBlock } from './timeBlockType';
+import { MeetingResult } from './Group';
+import type PersonalBlock from './Personal';
+import type TimeBlock from './Timeblock';
 
-export type TimetableSummary = {
+export interface TimetableSummary {
   id: number | null; // null 이면 학사시간표
   arrange_order: number; // 학사시간표이면 0
   lectures: LectureSummary[];
   personals: PersonalBlock[];
   meetings: MeetingResult[];
-};
-
-export type TimetableResponse2 = {
+}
+export interface TimetableResponse2 {
   id: number;
   lectures: LectureDetail2[];
   personals: PersonalBlock[];
   meetings: MeetingResult[];
   arrange_order: number;
-};
+}
 
-export type LectureSummary = {
+export interface LectureSummary {
   id: number; //lecture.id
   course_id: number; // 색상 mapping용
 
@@ -30,10 +29,10 @@ export type LectureSummary = {
   classroom_en: string;
 
   timeBlocks: TimeBlock[];
-};
+}
 
-export type LectureDetail2 = {
+export interface LectureDetail2 {
   // 원래 detail
 
   timeBlocks: TimeBlock[];
-};
+}

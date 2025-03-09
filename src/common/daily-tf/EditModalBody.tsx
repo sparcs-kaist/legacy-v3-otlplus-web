@@ -1,19 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import Modal from '@/common/daily-tf/Modal';
 import Calendar from '@/common/daily-tf/Calendar';
 import TextInput from '@/common/daily-tf/TextInputArea';
 import ScrollableDropdown from '@/common/daily-tf/ScrollableDropdown';
 import Typography from './Typography';
-import { Info } from '@mui/icons-material';
 import Button from './Button';
-import { GridProps } from '@/pages/When2MeetDetailPage';
 
-import { MeetingGroup } from './interface/groupInfoType';
-import { TimeBlockDay } from './interface/timeBlockType';
+import { MeetingGroup } from './interface/Group';
 import { defaultGroupInfo } from './utils/defaultGroupInfo';
 import { useNavigate } from 'react-router';
-import { group } from 'console';
 
 /* TODO: 그리드 크기 default 값 설정 */
 

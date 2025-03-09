@@ -9,7 +9,6 @@ import getFormattedDate from './utils/getFormattedDate';
 import HoverContainer from './HoverContainer';
 import { DisabledAreaType } from './interface/disabledAreaType';
 import renderDisabledArea from './utils/renderDisabledArea';
-import { TimeBlock } from './interface/timeBlockType';
 
 interface GridProps {
   n?: number; // 세로 크기

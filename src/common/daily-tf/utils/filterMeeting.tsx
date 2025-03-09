@@ -1,4 +1,4 @@
-import { MeetingGroup } from '../interface/groupInfoType';
+import { MeetingGroup } from '../interface/Group';
 
 export function filterMeeting(groupMeetingList: MeetingGroup[]): Map<string, MeetingGroup[]> {
   const pendingGroup: MeetingGroup[] = []; // 참여 대기 모임

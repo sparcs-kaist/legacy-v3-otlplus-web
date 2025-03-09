@@ -1,4 +1,4 @@
-import { MeetingGroup } from '../interface/groupInfoType';
+import { MeetingGroup } from '../interface/Group';
 
 const mockMeetingGroups: MeetingGroup[] = [
   {

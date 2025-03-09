@@ -12,8 +12,8 @@ const StyledDividerColumn = styled.div`
   background-color: ${({ theme }) => theme.colors.Line.divider};
 `;
 
-const Divider: React.FC<{ direction?: 'column' | 'row' }> = ({ direction = 'row' }) => {
+const StyledDivider: React.FC<{ direction?: 'column' | 'row' }> = ({ direction = 'row' }) => {
   return direction == 'row' ? <StyledDividerRow /> : <StyledDividerColumn />;
 };
 
-export default Divider;
+export default StyledDivider;

@@ -1,6 +1,6 @@
-import { TimeBlock } from './timeBlockType';
+import type TimeBlock from './Timeblock';
 
-export type PersonalBlock = {
+export default interface PersonalBlock {
   id: number;
   year: number;
   semester: number;
@@ -11,4 +11,4 @@ export type PersonalBlock = {
   place: string | null; // 장소
   description: string | null; // 설명
   //color: ColorEnum;
-};
+}

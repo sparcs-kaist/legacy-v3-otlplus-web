@@ -1,9 +1,10 @@
 import { styled } from 'styled-components';
-import { MeetingGroup } from './interface/groupInfoType';
+
 import Typography from './Typography';
 import FlexWrapper from './FlexWrapper';
 import { formatTimeblockToString } from './utils/formatTimeblockToString';
 import Button from './Button';
+import { MeetingGroup } from './interface/Group';
 
 const CardWrapper = styled.div`
   display: flex;

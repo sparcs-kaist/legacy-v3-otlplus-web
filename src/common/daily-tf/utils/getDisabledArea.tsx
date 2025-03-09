@@ -1,9 +1,8 @@
-import { func } from 'prop-types';
-import { MeetingResult } from '../interface/groupInfoType';
-import { PersonalBlock } from '../interface/personalType';
-import { TimeBlock } from '../interface/timeBlockType';
-import { LectureSummary, TimetableSummary } from '../interface/timetableType';
+import { MeetingResult } from '../interface/Group';
+
+import { LectureSummary } from '../interface/Timetable';
 import { DisabledAreaType } from '../interface/disabledAreaType';
+import PersonalBlock from '../interface/Personal';
 
 export function timeToTimeIndex(time: string): number {
   const [hour, minute] = time.split(' : ');
@@ -19,7 +18,7 @@ function lectureSummaryToDisabledArea(target: LectureSummary[]): DisabledAreaTyp
   for (let i = 0; i < target.length; i++) {
     const lecture = target[i];
     const timeBlockList = lecture.timeBlocks;
-    timeBlockList.forEach((val, idx) => {
+    timeBlockList.forEach((val, _) => {
       const startIndex = timeToTimeIndex(val.startTime);
       const endIndex = timeToTimeIndex(val.endTime);
       const title = lecture.title;
@@ -44,7 +43,7 @@ function personalAndMeetingToDisabledArea(
   for (let i = 0; i < target.length; i++) {
     const personal = target[i];
     const timeBlockList = personal.timeBlocks;
-    timeBlockList.forEach((val, idx) => {
+    timeBlockList.forEach((val, _) => {
       const startIndex = timeToTimeIndex(val.startTime);
       const endIndex = timeToTimeIndex(val.endTime);
       const title = personal.title;

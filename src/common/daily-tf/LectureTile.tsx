@@ -1,7 +1,7 @@
 import { CSSProperties } from 'react';
 import styled from 'styled-components';
-import { LectureSummary } from './interface/timetableType';
-import { TimeBlock } from './interface/timeBlockType';
+import { LectureSummary } from './interface/Timetable';
+import TimeBlock from './interface/Timeblock';
 
 // tile Color를 mapping 해주는 부분
 export const colorMap: Array<CSSProperties['color']> = [

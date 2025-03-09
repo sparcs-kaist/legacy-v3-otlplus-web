@@ -1,4 +1,4 @@
-import { MeetingGroup } from '../interface/groupInfoType';
+import { MeetingGroup } from '../interface/Group';
 
 export const defaultGroupInfo: MeetingGroup = {
   title: '',

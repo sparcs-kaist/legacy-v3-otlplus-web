@@ -1,5 +1,5 @@
-import { MeetingSchedule } from '../interface/groupInfoType';
-import { TimeBlock } from '../interface/timeBlockType';
+import { MeetingSchedule } from '../interface/Group';
+import TimeBlock from '../interface/Timeblock';
 
 // Grid index로 쓰고 있던 time을 API call을 위해 Timeblock으로 바꾼다 (MeetingSchedule을 반환함)
 // TODO: placeholder 고려해서 바꿔줘야 함!

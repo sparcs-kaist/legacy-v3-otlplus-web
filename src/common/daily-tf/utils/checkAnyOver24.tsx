@@ -1,7 +1,8 @@
-import { MeetingResult } from '../interface/groupInfoType';
-import { PersonalBlock } from '../interface/personalType';
-import { TimeBlock } from '../interface/timeBlockType';
-import { LectureSummary } from '../interface/timetableType';
+import { MeetingResult } from '../interface/Group';
+import PersonalBlock from '../interface/Personal';
+import TimeBlock from '../interface/Timeblock';
+
+import { LectureSummary } from '../interface/Timetable';
 
 export function checkAnyOver24(
   schedule: LectureSummary[] | MeetingResult[] | PersonalBlock[],

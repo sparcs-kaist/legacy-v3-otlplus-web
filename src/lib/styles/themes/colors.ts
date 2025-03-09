@@ -1,6 +1,6 @@
 // TODO : Planner 쪽 color system 추가하기
 
-const colors = {
+export const colors = {
   Background: {
     Block: {
       default: '#F5F5F5',

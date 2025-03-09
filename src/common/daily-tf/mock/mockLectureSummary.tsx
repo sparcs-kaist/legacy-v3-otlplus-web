@@ -1,13 +1,13 @@
 import { WeekdayEnum } from '../enum/weekdayEnum';
-import { LectureSummary } from '../interface/timetableType';
+import { LectureSummary } from '../interface/Timetable';
 
 const mockLectureSummaries: LectureSummary[] = [
   {
     id: 1,
-    course_id: 101,
-    title: '컴퓨터 공학 개론',
-    title_en: 'Introduction to Computer Science',
-    professor_name: '김철수',
+    course_id: 3678,
+    title: '화학 및 생물 제품디자인',
+    title_en: 'Chemical and Biological Product Design',
+    professor_name: '장용근',
     professor_name_en: 'Chulsoo Kim',
     classroom: '(E2) 산업경영학동 1225',
     classroom_en: 'B102',
@@ -30,13 +30,13 @@ const mockLectureSummaries: LectureSummary[] = [
   },
   {
     id: 2,
-    course_id: 102,
-    title: '알고리즘',
-    title_en: 'Algorithms',
-    professor_name: '이영희, 박지훈',
+    course_id: 295,
+    title: '공정 및 제품 디자인',
+    title_en: 'Techniques of Process and Product Design',
+    professor_name: '이재우, 장용근',
     professor_name_en: 'Younghee Lee, Jihoon Park',
-    classroom: 'A103',
-    classroom_en: 'A103',
+    classroom: '(W1-3) 응용공학동 (2501-1호) 세미나실',
+    classroom_en: '(W1-3) Applied Enginnering B/D (2501-1) Seminar Room',
     timeBlocks: [
       {
         day: WeekdayEnum.Thu,
@@ -49,13 +49,13 @@ const mockLectureSummaries: LectureSummary[] = [
   },
   {
     id: 3,
-    course_id: 103,
-    title: '인공지능 기초',
-    title_en: 'Introduction to AI',
-    professor_name: '조민수',
+    course_id: 1599,
+    title: '생명화학공학 디자인 프로젝트',
+    title_en: 'Chemical and Biomolecular Engineering Capstone Design Project',
+    professor_name: '리섕',
     professor_name_en: 'Minsu Cho',
-    classroom: 'C204',
-    classroom_en: 'C204',
+    classroom: '(W1-1) 응용공학동 2122',
+    classroom_en: '(W1-1) Applied Enginnering B/D 2122',
     timeBlocks: [
       {
         day: WeekdayEnum.Sat,

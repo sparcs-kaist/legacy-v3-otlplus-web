@@ -8,11 +8,18 @@ type ButtonProps = {
   children?: React.ReactNode;
   isFlexColumn?: boolean;
   isFlexRow?: boolean;
+  paddingLeft?: number;
+  paddingTop?: number;
 } & HTMLAttributes<HTMLDivElement>;
 
-const ButtonInner = styled.div<{ isFlexColumn: boolean; isFlexRow: boolean }>`
+const ButtonInner = styled.div<{
+  isFlexColumn: boolean;
+  isFlexRow: boolean;
+  paddingLeft: number;
+  paddingTop: number;
+}>`
   display: inline-flex;
-  padding: 9px 20px;
+  padding: ${(props) => `${props.paddingTop}px ${props.paddingLeft}px`};
   justify-content: center;
   width: ${(props) => (props.isFlexRow ? '100%' : 'fit-content')};
   height: ${(props) => (props.isFlexColumn ? '100%' : 'fit-content')};
@@ -24,42 +31,52 @@ const ButtonInner = styled.div<{ isFlexColumn: boolean; isFlexRow: boolean }>`
 `;
 
 const ButtonDefaultInner = styled(ButtonInner)`
-  color: ${({ theme }) => theme.colors.Text.placeholder};
-  background: ${({ theme }) => theme.colors.Background.Button.default};
+  color: #aaaaaa;
+  background: #f5f5f5;
   cursor: pointer;
   &:hover {
-    background: ${({ theme }) => theme.colors.Background.Button.dark};
+    background: #ebebeb;
   }
 `;
 
 const ButtonSelectedInner = styled(ButtonInner)`
-  color: ${({ theme }) => theme.colors.Highlight.default};
-  background: ${({ theme }) => theme.colors.Background.Button.highlight};
+  color: #e54c65;
+  background: #f9f0f0;
   cursor: pointer;
   &:hover {
-    background: ${({ theme }) => theme.colors.Background.Button.highlightDark};
-  }
-`;
-
-const ButtonHighlightedInner = styled(ButtonInner)`
-  color: ${({ theme }) => theme.colors.Background.Block.highlight};
-  background: ${({ theme }) => theme.colors.Highlight.default};
-  cursor: pointer;
-  &:hover {
-    background: ${({ theme }) => theme.colors.Highlight.dark};
+    background: #fae6e6;
   }
 `;
 
 const ButtonDisabledInner = styled(ButtonInner)`
-  color: ${({ theme }) => theme.colors.Text.placeholder};
-  background: ${({ theme }) => theme.colors.Background.Button.default};
+  color: #aaaaaa;
+  background: #f5f5f5;
   cursor: not-allowed;
+`;
+
+const ButtonDarkInner = styled(ButtonInner)`
+  color: #555555;
+  background: #ebebeb;
+  cursor: pointer;
+  &:hover {
+    background: #e1e1e1;
+  }
+`;
+
+const ButtonHighlightedInner = styled(ButtonInner)`
+  color: white;
+  background: #e54c65;
+  cursor: pointer;
+  &:hover {
+    background: #963246;
+  }
 `;
 
 const ButtonTypeInner = {
   default: ButtonDefaultInner,
   disabled: ButtonDisabledInner,
   selected: ButtonSelectedInner,
+  dark: ButtonDarkInner,
   highlighted: ButtonHighlightedInner,
 };
 
@@ -78,9 +95,11 @@ const ButtonWithChildren = (children: React.ReactNode) => (
 
 const Button = ({
   type = 'default',
-  isFlexRow = true,
-  isFlexColumn = true,
+  isFlexRow = false,
+  isFlexColumn = false,
   children = undefined,
+  paddingLeft = 24,
+  paddingTop = 9,
   ...divProps
 }: ButtonProps) => {
   const ButtonChosenInner = ButtonTypeInner[type];
@@ -94,7 +113,9 @@ const Button = ({
       {...divProps}
       onClick={type === 'disabled' ? undefined : divProps.onClick}
       isFlexRow={isFlexRow}
-      isFlexColumn={isFlexColumn}>
+      isFlexColumn={isFlexColumn}
+      paddingTop={paddingTop}
+      paddingLeft={paddingLeft}>
       <ButtonContent />
     </ButtonChosenInner>
   );

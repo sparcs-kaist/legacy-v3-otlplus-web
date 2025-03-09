@@ -1,4 +1,5 @@
-import { TimeBlock, TimeBlockDay } from './timeBlockType';
+import type TimeBlock from './Timeblock';
+import { TimeBlockDay } from './Timeblock';
 
 export type MeetingGroup = {
   id: number;
@@ -10,8 +11,8 @@ export type MeetingGroup = {
   title: string;
   leaderUserProfileId: number;
   schedule: MeetingSchedule[];
-  maxMember: number;
   members: MeetingMember[];
+  maxMember: number;
   result?: MeetingResult;
 };
 

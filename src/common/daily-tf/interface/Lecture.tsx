@@ -1,0 +1,72 @@
+import { SemesterEnum } from '../enum/semesterEnum';
+import { NestedProfessor, Professor } from './Professor';
+import type TimeBlock from './Timeblock';
+
+export default interface Lecture {
+  id: number;
+  title: string;
+  title_en: string;
+  course: number;
+  old_code: string;
+  class_no: string;
+  year: number;
+  semester: SemesterEnum;
+  code: string;
+  department: number;
+  department_code: string;
+  department_name: string;
+  department_name_en: string;
+  type: string;
+  type_en: string;
+  limit: number;
+  num_people: number;
+  is_english: boolean;
+  num_classes: number;
+  num_labs: number;
+  credit: number;
+  credit_au: number;
+  common_title: string;
+  common_title_en: string;
+  class_title: string;
+  class_title_en: string;
+  review_total_weight: number;
+  professors: Professor[];
+  grade: number;
+  load: number;
+  speech: number;
+  classtimes: TimeBlock[];
+  examtimes: TimeBlock[];
+  classroom: string;
+  classroom_en: string;
+}
+
+export interface NestedLecture {
+  id: number;
+  title: string;
+  title_en: string;
+  course: number;
+  old_code: string;
+  class_no: string;
+  year: number;
+  semester: SemesterEnum;
+  code: string;
+  department: number;
+  department_code: string;
+  department_name: string;
+  department_name_en: string;
+  type: string;
+  type_en: string;
+  limit: number;
+  num_people: number;
+  is_english: boolean;
+  num_classes: number;
+  num_labs: number;
+  credit: number;
+  credit_au: number;
+  common_title: string;
+  common_title_en: string;
+  class_title: string;
+  class_title_en: string;
+  review_total_weight: number;
+  professors: NestedProfessor[];
+}

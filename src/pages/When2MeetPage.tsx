@@ -1,4 +1,4 @@
-import Divider from '@/common/daily-tf/Divider';
+import StyledDivider from '@/common/daily-tf/StyledDivider';
 import EditModalBody from '@/common/daily-tf/EditModalBody';
 import PlaceholderComponenet from '@/common/daily-tf/Placeholder';
 import TextInput from '@/common/daily-tf/TextInputArea';
@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 import { GridProps } from './When2MeetDetailPage';
-import { MeetingGroup } from '@/common/daily-tf/interface/groupInfoType';
+import { MeetingGroup } from '@/common/daily-tf/interface/Group';
 import { defaultGroupInfo } from '@/common/daily-tf/utils/defaultGroupInfo';
 import Typography from '@/common/daily-tf/Typography';
 import { filterMeeting } from '@/common/daily-tf/utils/filterMeeting';
@@ -61,14 +61,14 @@ const When2MeetPage: React.FC = () => {
       <ContentsContainer>
         <ContentsWrapper>
           <TitleWrapper>모임 만들기</TitleWrapper>
-          <Divider />
+          <StyledDivider />
           <EditModalBody
             groupInfo={groupInfo}
             setGroupInfo={setGroupInfo}
             onClose={() => {}}
             isDetail={false}
           />
-          <Divider />
+          <StyledDivider />
           {setUpGroup!.length > 0 && (
             <>
               <Typography type="BigBold">다가오는 모임</Typography>
