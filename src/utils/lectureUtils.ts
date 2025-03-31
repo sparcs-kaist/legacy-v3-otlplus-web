@@ -127,8 +127,8 @@ export const getSyllabusUrl = (lecture: Lecture) => {
   const payload = {
     syy: String(lecture.year),
     smtDivCd: String(lecture.semester),
-    subjtCd: lecture.code,
-    syllabusOpenYn: '1',
+    subjtCd: lecture.old_code,
+    syllabusOpenYn: '0',
   };
   const encodedLecture = btoa(JSON.stringify(payload));
   return `https://erp.kaist.ac.kr/com/lgin/SsoCtr/initExtPageWork.do?link=estblSubjt&params=${encodedLecture}`;
