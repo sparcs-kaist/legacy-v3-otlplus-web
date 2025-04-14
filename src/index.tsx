@@ -39,6 +39,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import When2MeetDetailPage from './pages/When2MeetDetailPage';
 import When2MeetPage from './pages/When2MeetPage';
 import FriendPage from './pages/FriendPage';
+import LayoutTestPage from './pages/LayoutTestPage';
 
 declare global {
   interface Window {
@@ -159,6 +160,7 @@ const router = createBrowserRouter([
       { path: 'licenses', element: <LicensePage /> },
       { path: 'privacy', element: <PrivacyPage /> },
       { path: 'test', element: <TestPage /> },
+      { path: 'layout', element: <LayoutTestPage /> },
       { path: 'example', element: <ExamplePage /> },
       { path: 'error/:message', element: <ErrorPage /> },
       { path: '*', element: <Navigate to="/" /> },

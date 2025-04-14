@@ -58,7 +58,7 @@ const mockLectureSummaries: LectureSummary[] = [
     classroom_en: '(W1-1) Applied Enginnering B/D 2122',
     timeBlocks: [
       {
-        day: WeekdayEnum.Sat,
+        day: WeekdayEnum.Fri,
         timeIndex: 0,
         startTime: '08:00',
         endTime: '10:00',

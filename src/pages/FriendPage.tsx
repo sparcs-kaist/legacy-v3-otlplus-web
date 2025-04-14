@@ -21,8 +21,9 @@ const PageWrapper = styled.div`
   gap: 12px;
   padding-bottom: 20px;
   overflow: scroll;
-  padding-top: 55px !important;
+  padding-top: 55px;
   height: 100vh;
+  width: 100%;
 `;
 
 const ContentsWrapper = styled.div`
@@ -41,8 +42,6 @@ const SearchArreaWrapper = styled.div`
   display: flex;
   flex-direction: row;
   border-radius: 12px;
-  width: fit-content;
-  height: 100%;
   align-items: flex-start;
   gap: 12px;
 `;
@@ -59,14 +58,14 @@ const Block = styled.div`
   display: flex;
   flex-grow: 1;
   // 뒤에 100% 맞추려고 가라로 넣어두기
-  height: 0px;
+  height: fit-content;
   background-color: white;
   align-items: center;
   justify-content: flex-start;
   border-top-right-radius: 12px;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
-  padding: 20px;
+  padding: 16px;
   flex-direction: row;
   gap: 30px;
 `;
@@ -94,14 +93,13 @@ const ListCard = styled.div`
 
 const InfoArea = styled.div`
   display: flex;
-
   flex-grow: 1;
   width: 250px;
   height: 100%;
 `;
 
 const LectureInfoArea = styled.div`
-  width: 420px;
+  width: 380px;
   height: 100%;
   display: flex;
   flex-direction: column;

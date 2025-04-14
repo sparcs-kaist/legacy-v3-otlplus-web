@@ -29,7 +29,7 @@ const SectionWrapper = styled.div`
 `;
 
 const TimeWrapper = styled.div<{ cellHeight: number }>`
-  padding-top: 19px;
+  padding-top: 15px;
   display: flex;
   flex-grow: 1;
   flex-direction: column;
@@ -59,14 +59,14 @@ const CustomTimeTableGrid: React.FC<GridProps> = ({
   setSelected,
 }) => {
   const colPadding = 5;
-  const m = 7;
+  const m = 5;
   const begin = 8;
   const gridRef = useRef<HTMLDivElement>(null);
-  const dateHeader = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+  const dateHeader = ['월요일', '화요일', '수요일', '목요일', '금요일'];
   const isAnyOver24 = checkAnyOver24(lectureSummary);
   const n = isAnyOver24 ? 38 : 32;
   const end = isAnyOver24 ? 27 : 24;
-  const cellHeight = isAnyOver24 ? 27 : 32;
+  const cellHeight = isAnyOver24 ? 25 : 29.5;
 
   const [dragging, setDragging] = useState<boolean>(false);
   const [startRow, setStartRow] = useState<number | null>(null);
