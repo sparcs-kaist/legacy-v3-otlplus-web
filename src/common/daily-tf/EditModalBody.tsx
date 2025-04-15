@@ -252,10 +252,10 @@ const EditModalBody: React.FC<EditModalBodyProps> = ({
               </Button>
             ) : (
               <ButtonRowWrapper>
-                <Button type="default" onClick={handleReset} isFlexRow={false}>
+                <Button type="default" onClick={handleReset} $isFlexRow={false}>
                   초기화
                 </Button>
-                <Button type="selected" onClick={handleSubmit2} isFlexRow={false}>
+                <Button type="selected" onClick={handleSubmit2} $isFlexRow={false}>
                   모임만들기
                 </Button>
               </ButtonRowWrapper>

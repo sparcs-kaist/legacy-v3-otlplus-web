@@ -51,20 +51,20 @@ const MeetingCard: React.FC<{ group: MeetingGroup }> = ({ group }) => {
       </FlexWrapper>
       <FlexWrapper direction="row" gap={4}>
         {isSetUp ? (
-          <Button type="default" isFlexRow={false} isFlexColumn={false} onClick={() => {}}>
+          <Button type="default" $isFlexRow={false} $isFlexColumn={false} onClick={() => {}}>
             일정 삭제
           </Button>
         ) : (
           <>
-            <Button type="default" isFlexRow={false} isFlexColumn={false} onClick={() => {}}>
+            <Button type="default" $isFlexRow={false} $isFlexColumn={false} onClick={() => {}}>
               링크 복사
             </Button>
             {isLeader && isReady ? (
-              <Button type="highlighted" isFlexRow={false} isFlexColumn={false}>
+              <Button type="highlighted" $isFlexRow={false} $isFlexColumn={false}>
                 일정 확정
               </Button>
             ) : (
-              <Button type="selected" isFlexRow={false} isFlexColumn={false}>
+              <Button type="selected" $isFlexRow={false} $isFlexColumn={false}>
                 일정 수정
               </Button>
             )}

@@ -6,23 +6,23 @@ import styled from 'styled-components';
 type ButtonProps = {
   type?: keyof typeof ButtonTypeInner;
   children?: React.ReactNode;
-  isFlexColumn?: boolean;
-  isFlexRow?: boolean;
-  paddingLeft?: number;
-  paddingTop?: number;
+  $isFlexColumn?: boolean;
+  $isFlexRow?: boolean;
+  $paddingLeft?: number;
+  $paddingTop?: number;
 } & HTMLAttributes<HTMLDivElement>;
 
 const ButtonInner = styled.div<{
-  isFlexColumn: boolean;
-  isFlexRow: boolean;
-  paddingLeft: number;
-  paddingTop: number;
+  $isFlexColumn: boolean;
+  $isFlexRow: boolean;
+  $paddingLeft: number;
+  $paddingTop: number;
 }>`
   display: inline-flex;
-  padding: ${(props) => `${props.paddingTop}px ${props.paddingLeft}px`};
+  padding: ${(props) => `${props.$paddingTop}px ${props.$paddingLeft}px`};
   justify-content: center;
-  width: ${(props) => (props.isFlexRow ? '100%' : 'fit-content')};
-  height: ${(props) => (props.isFlexColumn ? '100%' : 'fit-content')};
+  width: ${(props) => (props.$isFlexRow ? '100%' : 'fit-content')};
+  height: ${(props) => (props.$isFlexColumn ? '100%' : 'fit-content')};
   align-items: center;
   border-radius: 6px;
   font-size: 14px;
@@ -95,11 +95,11 @@ const ButtonWithChildren = (children: React.ReactNode) => (
 
 const Button = ({
   type = 'default',
-  isFlexRow = false,
-  isFlexColumn = false,
+  $isFlexRow: isFlexRow = false,
+  $isFlexColumn: isFlexColumn = false,
   children = undefined,
-  paddingLeft = 24,
-  paddingTop = 9,
+  $paddingLeft: paddingLeft = 24,
+  $paddingTop: paddingTop = 9,
   ...divProps
 }: ButtonProps) => {
   const ButtonChosenInner = ButtonTypeInner[type];
@@ -112,10 +112,10 @@ const Button = ({
     <ButtonChosenInner
       {...divProps}
       onClick={type === 'disabled' ? undefined : divProps.onClick}
-      isFlexRow={isFlexRow}
-      isFlexColumn={isFlexColumn}
-      paddingTop={paddingTop}
-      paddingLeft={paddingLeft}>
+      $isFlexRow={isFlexRow}
+      $isFlexColumn={isFlexColumn}
+      $paddingTop={paddingTop}
+      $paddingLeft={paddingLeft}>
       <ButtonContent />
     </ButtonChosenInner>
   );

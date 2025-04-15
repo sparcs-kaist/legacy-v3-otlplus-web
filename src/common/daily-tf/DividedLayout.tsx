@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   padding-bottom: 12px;
   min-height: 100dvh;
   overflow: auto;
-  gap: 20px;
+  gap: 12px;
   justify-content: center;
 `;
 

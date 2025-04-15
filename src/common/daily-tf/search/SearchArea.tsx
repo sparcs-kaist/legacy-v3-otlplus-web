@@ -33,8 +33,6 @@ const PageWrapper = styled.div`
   border-radius: 6px;
   display: flex;
   flex-direction: column;
-  padding: 11px;
-  padding-bottom: 0px !important;
   gap: 20px;
 `;
 
@@ -239,7 +237,7 @@ const SearchArea: React.FC<SearchAreaProps> = ({ timeFilter, setTimeFilter }) =>
               setValue(newValue);
             }}
             onKeyDown={handleKeyDown}
-            placeholderColor={`${open ? 'black' : '#E54C65'}`}
+            $placeholderColor={`${open ? 'black' : '#E54C65'}`}
           />
           <span
             style={{
@@ -307,10 +305,10 @@ const SearchArea: React.FC<SearchAreaProps> = ({ timeFilter, setTimeFilter }) =>
               </div>
             </OptionAreaWrapper>
             <ButtonArea>
-              <Button paddingLeft={10} paddingTop={7} onClick={handleReset}>
+              <Button $paddingLeft={10} $paddingTop={7} onClick={handleReset}>
                 취소
               </Button>
-              <Button type="selected" paddingLeft={10} paddingTop={7} onClick={handleSubmit}>
+              <Button type="selected" $paddingLeft={10} $paddingTop={7} onClick={handleSubmit}>
                 검색
               </Button>
             </ButtonArea>

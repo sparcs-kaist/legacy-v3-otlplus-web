@@ -6,9 +6,9 @@ export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   errorMessage?: string;
   disabled?: boolean;
   value?: string;
-  placeholderColor?: string;
+  $placeholderColor?: string;
   handleChange?: (value: string) => void;
-  setErrorStatus?: (hasError: boolean) => void;
+  setErrorStatus?: ($hasError: boolean) => void;
 }
 
 const errorBorderStyle = css`
@@ -19,7 +19,7 @@ const disabledStyle = css`
   background-color: rgba(245, 245, 245, 1);
 `;
 
-const Input = styled.input<TextInputProps & { hasError: boolean }>`
+const Input = styled.input<TextInputProps & { $hasError: boolean }>`
   display: block;
   width: 100%;
   outline: none;
@@ -28,11 +28,11 @@ const Input = styled.input<TextInputProps & { hasError: boolean }>`
   line-height: 17.5px;
   color: rgba(51, 51, 51, 1);
   &::placeholder {
-    color: ${({ placeholderColor }) => placeholderColor || '#aaaaaa'};
+    color: ${({ $placeholderColor: placeholderColor }) => placeholderColor || '#aaaaaa'};
   }
 
   ${({ disabled }) => disabled && disabledStyle}
-  ${({ hasError }) => hasError && errorBorderStyle}
+  ${({ $hasError: hasError }) => hasError && errorBorderStyle}
 `;
 
 const InputWrapper = styled.div`
@@ -58,7 +58,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       value = '',
       handleChange = () => {},
       setErrorStatus = () => {},
-      placeholderColor,
+      $placeholderColor: placeholderColor,
       ...props
     },
     ref,
@@ -79,11 +79,11 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           <Input
             ref={ref}
             placeholder={placeholder}
-            hasError={!!errorMessage}
+            $hasError={!!errorMessage}
             disabled={disabled}
             value={value}
             onChange={handleValueChange}
-            placeholderColor={placeholderColor}
+            $placeholderColor={placeholderColor}
             {...props}
           />
         </InputContainer>

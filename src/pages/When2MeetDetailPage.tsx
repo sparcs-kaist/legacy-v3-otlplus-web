@@ -581,7 +581,7 @@ const When2MeetDetailPage: React.FC = () => {
                 handleChange={handleChangeName}></TextInput>
             </TextInputWrapper>
           </InfoContent>
-          <Button type="selected" isFlexColumn={false} isFlexRow={false}>
+          <Button type="selected" $isFlexColumn={false} $isFlexRow={false}>
             {/* TODO : 로그인 되어 있으면 disabled, 확인 버튼 클릭 시 API 보내서 시간표 조회 */}
             조회
           </Button>
@@ -719,7 +719,7 @@ const When2MeetDetailPage: React.FC = () => {
         <TilteWrapper>
           <TitleTextWrapper>Group’s Availibility</TitleTextWrapper>
           <Button
-            isFlexRow={false}
+            $isFlexRow={false}
             type="selected"
             onClick={() => {
               // 일단 가라로 넣어뒀음

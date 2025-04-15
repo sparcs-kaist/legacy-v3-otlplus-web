@@ -27,7 +27,6 @@ const PageWrapper = styled.div`
 `;
 
 const ContentsWrapper = styled.div`
-  //background-color: white;
   display: flex;
   flex-direction: column;
   border-radius: 12px;
