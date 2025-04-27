@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { default as mockReviews } from '@/dummy/reviews';
 import Divider from '../Divider';
 import LectureFriendList from './lecture/LectureFriendList';
+import ReviewTile from './review/ReviewTile';
 
 interface LectureInfoAreaProps {
   lecture: Lecture | null;
@@ -51,13 +52,9 @@ const LectureInfoAreaContents: React.FC<LectureInfoAreaProps> = ({ lecture }) =>
       <LectureFriendList lecture={lecture!} />
       <Divider direction="row" />
       <ListWrapper>
-        <MockTile />
-        <MockTile />
-        <MockTile />
-        <MockTile />
-        <MockTile />
-        <MockTile />
-        <MockTile />
+        {reviews.map((val, idx) => (
+          <ReviewTile review={val} isDictionary={false} key={idx} />
+        ))}
       </ListWrapper>
     </ContentWrapper>
   );

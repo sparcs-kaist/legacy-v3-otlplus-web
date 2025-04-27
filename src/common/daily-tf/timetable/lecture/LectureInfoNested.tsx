@@ -25,7 +25,7 @@ const TextButtonWrapper = styled.div`
 
 const GradeRowWrapper = styled.div`
   width: 100%;
-  padding: 10px 100px;
+  padding: 10px 70px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -43,6 +43,8 @@ const GradeWrapper = styled.div`
   flex-direction: column;
   gap: -3px;
   align-items: center;
+  width: 60px;
+  overflow: visible;
 `;
 
 const LectureInfoNested: React.FC<{ lecture: Lecture }> = ({ lecture }) => {

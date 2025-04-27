@@ -12,6 +12,9 @@ import mockLectureSummaries from '@/common/daily-tf/mock/mockLectureSummary';
 
 const ContentRight = styled.div`
   width: 990px;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const RightTopWrapper = styled.div`
@@ -25,10 +28,9 @@ const RightTopWrapper = styled.div`
 const TimetableSubsectionWrapper = styled.div`
   display: flex;
   flex-grow: 1;
-  // 뒤에 100% 맞추려고 가라로 넣어두기
   height: fit-content;
   background-color: white;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
   border-top-right-radius: 12px;
   border-bottom-left-radius: 12px;
@@ -48,7 +50,7 @@ const LayoutTestPage: React.FC = () => {
   return (
     <DividedLayoutRight>
       <LectureSearchSubsection
-        hovered={lectures[0]}
+        hovered={hovered}
         selected={selected}
         timeFilter={timeFilter}
         setTimeFilter={setTimeFilter}

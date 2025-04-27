@@ -1,5 +1,5 @@
 import renderGrid from '@/common/daily-tf/utils/renderGrid';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import FlexWrapper from './FlexWrapper';
 import renderLectureTile from './utils/renderLectureTile';
@@ -66,7 +66,23 @@ const CustomTimeTableGrid: React.FC<GridProps> = ({
   const isAnyOver24 = checkAnyOver24(lectureSummary);
   const n = isAnyOver24 ? 38 : 32;
   const end = isAnyOver24 ? 27 : 24;
-  const cellHeight = isAnyOver24 ? 25 : 29.5;
+  const [cellHeight, setCellHeight] = useState(isAnyOver24 ? 22 : 25);
+
+  // 전체 셀 크기를 반응형으로 조정하는 부분
+  useEffect(() => {
+    const handleResize = () => {
+      const fullHeight = window.innerHeight - 55 - 20 - 32 - 35.5 - 30; // 대충 스크롤이 안 넘어가게 맞춰준 거...
+      const cellHeightUnscroll = isAnyOver24 ? fullHeight / 38 : fullHeight / 32;
+      setCellHeight(
+        isAnyOver24 ? Math.max(cellHeightUnscroll, 22) : Math.max(cellHeightUnscroll, 25),
+      );
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const [dragging, setDragging] = useState<boolean>(false);
   const [startRow, setStartRow] = useState<number | null>(null);
@@ -187,7 +203,7 @@ const CustomTimeTableGrid: React.FC<GridProps> = ({
           {renderTargetArea(
             true,
             draggingArea,
-            'rgba(237, 140, 156, 0.5)',
+            'rgba(229, 76, 101, 0.5)',
             cellHeight,
             cellWidth,
             2,

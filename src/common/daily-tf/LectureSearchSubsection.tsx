@@ -32,7 +32,7 @@ const LectureSearchSubsection: React.FC<LectureInfoAreaProps> = ({
     <AreaWrapper>
       <LectureSearchArea timeFilter={timeFilter} setTimeFilter={setTimeFilter} />
       <Divider />
-      <LectureInfoArea lecture={hovered ?? selected ?? null}></LectureInfoArea>
+      <LectureInfoArea lecture={selected ?? hovered ?? null}></LectureInfoArea>
     </AreaWrapper>
   );
 };

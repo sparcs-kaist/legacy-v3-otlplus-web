@@ -10,6 +10,10 @@ const Wrapper = styled.div`
   border-radius: 16px;
   color: ${({ theme }) => theme.colors.Text.light};
   cursor: default;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.Background.Block.dark};
+  }
 `;
 
 const FriendChip: React.FC<{ friend: Friend }> = ({ friend }) => {
