@@ -23,7 +23,7 @@ const AcademicInfoSubSection = () => {
           { name: t('ui.attribute.studentId'), info: user.student_id },
           {
             name: t('ui.attribute.major'),
-            info: user.majors.map((d) => translate(d, 'name')).join(', '),
+            info: user.departments.map((d) => translate(d, 'name')).join(', '),
           },
         ]}
       />
