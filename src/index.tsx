@@ -134,10 +134,14 @@ const reduxStore = createStore(rootReducer, composeEnhancers());
 const queryClient = new QueryClient();
 
 Sentry.init({
-  dsn: 'https://03fc615df05d22a8bc947336d043d755@sentry.sparcs.org/4',
+  dsn: import.meta.env.VITE_SENTRY_DSN,
   integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
   tracesSampleRate: 1.0,
-  tracePropagationTargets: ['localhost', /^https:\/\/otl\.sparcs\.org\/api/],
+  tracePropagationTargets: [
+    'localhost',
+    /^https:\/\/otl\.sparcs\.org\/api/,
+    /^https:\/\/otl\.kaist\.ac\.kr\/api/,
+  ],
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
 });
