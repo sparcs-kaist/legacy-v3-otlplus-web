@@ -19,7 +19,7 @@ test('renders TimetableTile', async () => {
       isDimmed={false}
       isTemp={false}
       isSimple={false}
-      deleteLecture={function (_): void {
+      deleteLecture={function (_: any): void {
         throw new Error('Function not implemented.');
       }}
     />,

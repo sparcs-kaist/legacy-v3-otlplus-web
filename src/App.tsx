@@ -11,7 +11,16 @@ import CampaignPopupImage from '@/features/campaign/components/popup/CampaignPop
 import PopupMenu from '@/features/campaign/components/popup/PopupMenu';
 import { setIsPortrait, setSemesters, setTracks, setUser } from '@/redux/actions/common';
 
+import { ThemeProvider } from 'styled-components';
+import colors from './lib/styles/themes/colors';
+import fonts from './lib/styles/themes/fonts';
+
 const App: React.FC = () => {
+  const Theme = {
+    colors,
+    fonts,
+  };
+
   const dispatch = useDispatch();
   const location = useLocation();
   const [popupOpen, setPopupOpen] = useState(localStorage.getItem(STORAGE_KEY) !== CAMPAIGN_KEY);
@@ -102,30 +111,32 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Header />
-      <Outlet />
-      <section>
-        <BannerPopup popupOpen={popupOpen} setPopupOpen={setPopupOpen}>
-          <CampaignPopupImage closePopup={() => setPopupOpen(false)} />
-          <PopupMenu
-            onClose={() => {
-              ReactGA.event({
-                category: 'Campaign',
-                action: 'popup-close',
-              });
-              setPopupOpen(false);
-            }}
-            onDoNotShow={() => {
-              ReactGA.event({
-                category: 'Campaign',
-                action: 'popup-do-not-show',
-              });
-              setDoNotShow(true);
-              setPopupOpen(false);
-            }}
-          />
-        </BannerPopup>
-      </section>
+      <ThemeProvider theme={Theme}>
+        <Header />
+        <Outlet />
+        <section>
+          <BannerPopup popupOpen={popupOpen} setPopupOpen={setPopupOpen}>
+            <CampaignPopupImage closePopup={() => setPopupOpen(false)} />
+            <PopupMenu
+              onClose={() => {
+                ReactGA.event({
+                  category: 'Campaign',
+                  action: 'popup-close',
+                });
+                setPopupOpen(false);
+              }}
+              onDoNotShow={() => {
+                ReactGA.event({
+                  category: 'Campaign',
+                  action: 'popup-do-not-show',
+                });
+                setDoNotShow(true);
+                setPopupOpen(false);
+              }}
+            />
+          </BannerPopup>
+        </section>
+      </ThemeProvider>
     </>
   );
 };

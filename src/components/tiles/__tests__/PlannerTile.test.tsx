@@ -27,7 +27,7 @@ test('renders PlannerTile', async () => {
       isHighlighted={false}
       isDimmed={false}
       isSimple={false}
-      deleteLecture={(_) => {
+      deleteLecture={(_: any) => {
         throw new Error('Function not implemented.');
       }}
     />,

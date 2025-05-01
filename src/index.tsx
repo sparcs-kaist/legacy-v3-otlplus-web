@@ -26,6 +26,7 @@ import EventBannerPage from '@/pages/EventBannerPage';
 import CreditPage from '@/pages/CreditPage';
 import LicensePage from '@/pages/LicensePage';
 import PrivacyPage from '@/pages/PrivacyPage';
+import ExamplePage from '@/pages/ExamplePage';
 import TestPage from '@/pages/TestPage';
 import ErrorPage from '@/pages/ErrorPage';
 import rootReducer from '@/redux';
@@ -35,6 +36,8 @@ import ko from '@/translations/translation.ko.json';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import When2MeetDetailPage from './pages/When2MeetDetailPage';
+import When2MeetPage from './pages/When2MeetPage';
 
 declare global {
   interface Window {
@@ -143,6 +146,8 @@ const router = createBrowserRouter([
         element: <DictionaryPage />,
       },
       { path: 'timetable', element: <TimetablePage /> },
+      { path: 'w2m', element: <When2MeetPage /> },
+      { path: 'w2m/:id', element: <When2MeetDetailPage /> },
       { path: 'timetable/syllabus', element: <SyllabusPage /> },
       { path: 'write-reviews', element: <WriteReviewsPage /> },
       { path: 'planner', element: <PlannerPage /> },
@@ -152,6 +157,7 @@ const router = createBrowserRouter([
       { path: 'licenses', element: <LicensePage /> },
       { path: 'privacy', element: <PrivacyPage /> },
       { path: 'test', element: <TestPage /> },
+      { path: 'example', element: <ExamplePage /> },
       { path: 'error/:message', element: <ErrorPage /> },
       { path: '*', element: <Navigate to="/" /> },
     ],
