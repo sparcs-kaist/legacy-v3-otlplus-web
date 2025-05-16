@@ -29,6 +29,7 @@ import PrivacyPage from '@/pages/PrivacyPage';
 import ExamplePage from '@/pages/ExamplePage';
 import TestPage from '@/pages/TestPage';
 import ErrorPage from '@/pages/ErrorPage';
+import LoginSuccessHandler from '@/pages/LoginSuccessHandler';
 import rootReducer from '@/redux';
 import registerServiceWorker from '@/registerServiceWorker';
 import en from '@/translations/translation.en.json';
@@ -159,6 +160,7 @@ const router = createBrowserRouter([
       { path: 'test', element: <TestPage /> },
       { path: 'example', element: <ExamplePage /> },
       { path: 'error/:message', element: <ErrorPage /> },
+      { path: 'login/success', element: <LoginSuccessHandler /> },
       { path: '*', element: <Navigate to="/" /> },
     ],
   },
