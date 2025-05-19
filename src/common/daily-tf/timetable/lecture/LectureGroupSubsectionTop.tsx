@@ -1,5 +1,4 @@
 import Typography from '@/common/daily-tf/Typography';
-import FlexWrapper from '@/common/daily-tf/FlexWrapper';
 import styled from 'styled-components';
 
 interface LectureGroupSubsectionTopProps {
@@ -61,7 +60,7 @@ const LectureGroupSubsectionTop: React.FC<LectureGroupSubsectionTopProps> = ({
       {completedCourse ? (
         <Typography type="Small">수강완료</Typography>
       ) : (
-        <Typography type="Normal" color="Highlight.default" onClick={() => {}}>
+        <Typography type="Normal" color="Highlight.default">
           {type}
         </Typography>
       )}

@@ -51,14 +51,6 @@ const TextWrapper = styled.div`
   }
 `;
 
-const IconsWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 6px;
-  align-items: center;
-  padding: 0 0 0 6px;
-`;
-
 const LectureGroupSubsectionBottom: React.FC<LectureGroupSubsectionBottomProps> = ({
   classNumber,
   lectureName,
@@ -75,15 +67,15 @@ const LectureGroupSubsectionBottom: React.FC<LectureGroupSubsectionBottomProps> 
           <Typography type="NormalBold">{classNumber}</Typography>
           <Typography type="Normal">{lectureName}</Typography>
         </TextWrapper>
-        <IconsWrapper>
+        <FlexWrapper gap={6} direction="row" padding="0 0 0 6px">
           <Icon
             type={isWishlisted ? 'Favorite' : 'FavoriteBorder'}
             size={15}
             color={isWishlisted ? '#E54C65' : '#333333'}
             onClick={() => {}}
           />
-          <Icon type="Add" size={13} color={isAdded ? '#AAAAAA' : '#000000'} onClick={() => {}} />
-        </IconsWrapper>
+          <Icon type="Add" size={15} color={isAdded ? '#AAAAAA' : '#000000'} onClick={() => {}} />
+        </FlexWrapper>
       </ContentsWrapper>
     </SectionWrapper>
   );
