@@ -12,6 +12,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { compose, legacy_createStore as createStore } from 'redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import * as Sentry from '@sentry/react';
 
 import App from '@/App';
 import { API_URL, TRACKING_ID } from '@/const';
@@ -135,6 +136,19 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const reduxStore = createStore(rootReducer, composeEnhancers());
 
 const queryClient = new QueryClient();
+
+Sentry.init({
+  dsn: import.meta.env.VITE_SENTRY_DSN,
+  integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
+  tracesSampleRate: 1.0,
+  tracePropagationTargets: [
+    'localhost',
+    /^https:\/\/otl\.sparcs\.org\/api/,
+    /^https:\/\/otl\.kaist\.ac\.kr\/api/,
+  ],
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
+});
 
 const router = createBrowserRouter([
   {
