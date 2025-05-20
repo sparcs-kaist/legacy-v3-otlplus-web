@@ -7,7 +7,9 @@ import Lecture from './interface/Lecture';
 
 interface LectureInfoAreaProps {
   hovered: null | Lecture;
+  setHovered: React.Dispatch<React.SetStateAction<Lecture | null>>;
   selected: null | Lecture;
+  setSelected: React.Dispatch<React.SetStateAction<Lecture | null>>;
   timeFilter: null | TimeBlock;
   setTimeFilter: React.Dispatch<React.SetStateAction<TimeBlock | null>>;
 }
@@ -24,13 +26,22 @@ const AreaWrapper = styled.div`
 
 const LectureSearchSubsection: React.FC<LectureInfoAreaProps> = ({
   hovered,
+  setHovered,
   selected,
+  setSelected,
   timeFilter,
   setTimeFilter,
 }) => {
   return (
     <AreaWrapper>
-      <LectureSearchArea timeFilter={timeFilter} setTimeFilter={setTimeFilter} />
+      <LectureSearchArea
+        timeFilter={timeFilter}
+        setTimeFilter={setTimeFilter}
+        hoveredLecture={hovered}
+        setHoveredLecture={setHovered}
+        selectedLecture={selected}
+        setSelectedLecture={setSelected}
+      />
       <Divider />
       <LectureInfoArea lecture={selected ?? hovered ?? null}></LectureInfoArea>
     </AreaWrapper>

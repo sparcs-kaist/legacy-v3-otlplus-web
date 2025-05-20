@@ -7,7 +7,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 interface IconProps {
   type: string;
   size: number;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   color?: string;
 }
 
@@ -35,8 +35,9 @@ const Icon: React.FC<IconProps> = ({ type, size, onClick = undefined, color = 'i
         cursor: onClick ? 'pointer' : 'default',
         color: color,
         fontSize: `${size}px`,
-      }}>
-      <IconComponent fontSize="inherit" onClick={onClick} />
+      }}
+      onClick={onClick}>
+      <IconComponent fontSize="inherit" />
     </div>
   );
 };

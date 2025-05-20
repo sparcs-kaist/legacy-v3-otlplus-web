@@ -2,11 +2,13 @@ import styled from 'styled-components';
 import FlexWrapper from '@/common/daily-tf/FlexWrapper';
 import Typography from '@/common/daily-tf/Typography';
 import Icon from '@/common/daily-tf/Icon';
+import React from 'react';
 
 interface LectureGroupSubsectionBottomProps {
   classNumber: string;
   lectureName: string;
   isWishlisted: boolean;
+  setWishlist: () => void;
   isAdded: boolean;
   isSelected: boolean;
 }
@@ -56,6 +58,7 @@ const LectureGroupSubsectionBottom: React.FC<LectureGroupSubsectionBottomProps> 
   lectureName,
   isSelected,
   isWishlisted,
+  setWishlist,
   isAdded,
 }) => {
   const SectionWrapper = isSelected ? SectionSelected : SectionDefault;
@@ -72,9 +75,19 @@ const LectureGroupSubsectionBottom: React.FC<LectureGroupSubsectionBottomProps> 
             type={isWishlisted ? 'Favorite' : 'FavoriteBorder'}
             size={15}
             color={isWishlisted ? '#E54C65' : '#333333'}
-            onClick={() => {}}
+            onClick={(e) => {
+              e.stopPropagation();
+              setWishlist();
+            }}
           />
-          <Icon type="Add" size={15} color={isAdded ? '#AAAAAA' : '#000000'} onClick={() => {}} />
+          <Icon
+            type="Add"
+            size={15}
+            color={isAdded ? '#AAAAAA' : '#000000'}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          />
         </FlexWrapper>
       </ContentsWrapper>
     </SectionWrapper>

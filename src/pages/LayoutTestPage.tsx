@@ -4,7 +4,6 @@ import { useState } from 'react';
 import TimeBlock from '@/common/daily-tf/interface/Timeblock';
 import DividedLayoutRight from '@/common/daily-tf/DividedLayoutRight';
 import Lecture from '@/common/daily-tf/interface/Lecture';
-import lectures from '@/dummy/lectures';
 import TabButtonRow from '@/common/daily-tf/TabButtonRow';
 import Button from '@/common/daily-tf/Button';
 import CustomTimeTableGrid from '@/common/daily-tf/CustomTimeTableGrid';
@@ -51,7 +50,9 @@ const LayoutTestPage: React.FC = () => {
     <DividedLayoutRight>
       <LectureSearchSubsection
         hovered={hovered}
+        setHovered={setHovered}
         selected={selected}
+        setSelected={setSelected}
         timeFilter={timeFilter}
         setTimeFilter={setTimeFilter}
       />
