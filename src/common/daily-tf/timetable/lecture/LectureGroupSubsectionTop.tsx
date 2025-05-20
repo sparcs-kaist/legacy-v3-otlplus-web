@@ -48,7 +48,7 @@ const LectureGroupSubsectionTop: React.FC<LectureGroupSubsectionTopProps> = ({
   const titleTextColor = completedCourse ? 'Text.placeholder' : 'Text.default';
 
   return (
-    <SectionWrapper>
+    <SectionWrapper onClick={(e) => e.stopPropagation()}>
       <TitleWrapper>
         <Typography type="NormalBold" color={titleTextColor}>
           {name}
