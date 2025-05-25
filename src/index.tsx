@@ -33,6 +33,7 @@ import rootReducer from '@/redux';
 import registerServiceWorker from '@/registerServiceWorker';
 import en from '@/translations/translation.en.json';
 import ko from '@/translations/translation.ko.json';
+import LabPage from '@/pages/LabPage';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -164,6 +165,7 @@ const router = createBrowserRouter([
       { path: 'example', element: <ExamplePage /> },
       { path: 'error/:message', element: <ErrorPage /> },
       { path: '*', element: <Navigate to="/" /> },
+      { path: 'lab', element: <LabPage /> },
     ],
   },
 ]);
