@@ -14,12 +14,12 @@ import CourseListTabs from '../components/sections/dictionary/courselist/CourseL
 
 import { reset as resetCourseFocus, setCourseFocus } from '../redux/actions/dictionary/courseFocus';
 import {
-  reset as resetList,
-  setSelectedListCode,
-  setListCourses,
   clearSearchListCourses,
+  reset as resetList,
+  setListCourses,
+  setSelectedListCode,
 } from '../redux/actions/dictionary/list';
-import { reset as resetSearch, closeSearch } from '../redux/actions/dictionary/search';
+import { closeSearch, reset as resetSearch } from '../redux/actions/dictionary/search';
 import { performSearchCourses } from '../common/commonOperations';
 import { parseQueryString } from '@/common/utils/parseQueryString';
 
@@ -55,11 +55,11 @@ class DictionaryPage extends Component {
       setSelectedListCodeDispatch(startTab);
     }
 
-    if (startSearchKeyword && startSearchKeyword.trim()) {
+    if (startSearchKeyword && startSearchKeyword.toString().trim()) {
       const LIMIT = 150;
 
       const option = {
-        keyword: startSearchKeyword.trim(),
+        keyword: startSearchKeyword.toString().trim(),
       };
       const beforeRequest = () => {
         closeSearchDispatch();
@@ -73,7 +73,10 @@ class DictionaryPage extends Component {
         setListCoursesDispatch(CourseListCode.SEARCH, courses);
       };
       performSearchCourses(option, LIMIT, beforeRequest, afterResponse);
-    } else if (startSearchKeyword !== undefined && startSearchKeyword.trim().length === 0) {
+    } else if (
+      startSearchKeyword !== undefined &&
+      startSearchKeyword.toString().trim().length === 0
+    ) {
       // eslint-disable-next-line no-alert
       alert(t('ui.message.blankSearchKeyword'));
       // eslint-disable-next-line no-useless-return
