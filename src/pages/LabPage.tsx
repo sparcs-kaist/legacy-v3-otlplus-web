@@ -2,6 +2,7 @@ import React, { useState, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { UilHeart, UilSuitcase, UilAngleDown, UilSearch } from '@iconscout/react-unicons';
 import PlaceholderComponenet from '@/common/daily-tf/Placeholder';
+import LabModal from '@/components/LabModal';
 
 // ─── Page Wrapper ─────────────────────────────────────────────────────────────
 const PageWrapper = styled.div`
@@ -359,90 +360,94 @@ const LabPage: React.FC = () => {
   const [interestMode, setInterestMode] = useState(false);
   const [leftKeyword, setLeftKeyword] = useState('');
   const [centralKeyword, setCentralKeyword] = useState('');
+  const [showModal, setShowModal] = useState(true);
 
   return (
-    <PageWrapper>
-      <ContentsContainer>
-        <SidebarWrapper>
-          <SidebarOption>
-            <UilHeart width="16" height="16" /> 찜한 연구실
-          </SidebarOption>
-          <SidebarOption>
-            <UilSuitcase width="16" height="16" /> 전공 학과 연구실
-          </SidebarOption>
-          <SidebarOption>
-            <UilSuitcase width="16" height="16" /> 부전공 학과 연구실
-          </SidebarOption>
-          <SidebarDivider />
-          <SidebarInterestTitle>관심 분야</SidebarInterestTitle>
-          {!interestMode ? (
-            <SidebarInterest>
-              <Description>관심 분야를 설정하고 연구실 추천을 받아보세요</Description>
-              <InterestStartButton onClick={() => setInterestMode(true)}>
-                시작하기
-              </InterestStartButton>
-            </SidebarInterest>
-          ) : (
-            <SidebarInterest>
-              <LeftSearchBarWrapper>
-                <LeftSearchBar>
-                  <LeftSearchIcon />
-                  <LeftSearchInput
-                    placeholder="키워드를 입력하세요"
-                    value={leftKeyword}
-                    onChange={(e) => setLeftKeyword(e.target.value)}
-                  />
-                </LeftSearchBar>
-              </LeftSearchBarWrapper>
-              <FlexRow>
-                <CancelButton onClick={() => setInterestMode(false)}>취소</CancelButton>
-                <SaveButton>저장</SaveButton>
-              </FlexRow>
-            </SidebarInterest>
-          )}
-        </SidebarWrapper>
+    <>
+      {showModal && <LabModal onClose={() => setShowModal(false)} />}
+      <PageWrapper>
+        <ContentsContainer>
+          <SidebarWrapper>
+            <SidebarOption>
+              <UilHeart width="16" height="16" /> 찜한 연구실
+            </SidebarOption>
+            <SidebarOption>
+              <UilSuitcase width="16" height="16" /> 전공 학과 연구실
+            </SidebarOption>
+            <SidebarOption>
+              <UilSuitcase width="16" height="16" /> 부전공 학과 연구실
+            </SidebarOption>
+            <SidebarDivider />
+            <SidebarInterestTitle>관심 분야</SidebarInterestTitle>
+            {!interestMode ? (
+              <SidebarInterest>
+                <Description>관심 분야를 설정하고 연구실 추천을 받아보세요</Description>
+                <InterestStartButton onClick={() => setInterestMode(true)}>
+                  시작하기
+                </InterestStartButton>
+              </SidebarInterest>
+            ) : (
+              <SidebarInterest>
+                <LeftSearchBarWrapper>
+                  <LeftSearchBar>
+                    <LeftSearchIcon />
+                    <LeftSearchInput
+                      placeholder="키워드를 입력하세요"
+                      value={leftKeyword}
+                      onChange={(e) => setLeftKeyword(e.target.value)}
+                    />
+                  </LeftSearchBar>
+                </LeftSearchBarWrapper>
+                <FlexRow>
+                  <CancelButton onClick={() => setInterestMode(false)}>취소</CancelButton>
+                  <SaveButton>저장</SaveButton>
+                </FlexRow>
+              </SidebarInterest>
+            )}
+          </SidebarWrapper>
 
-        <MainWrapper>
-          <CentralSearchBar>
-            <DepartmentSelect>
-              <DeptLeft>
-                <DeptIcon />
-                학과
-              </DeptLeft>
-              <DeptArrow />
-            </DepartmentSelect>
-            <CentralSearchInput
-              placeholder="키워드, 교수명 등으로 검색해보세요"
-              value={centralKeyword}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setCentralKeyword(e.target.value)}
-            />
-            <CentralSearchIcon />
-          </CentralSearchBar>
+          <MainWrapper>
+            <CentralSearchBar>
+              <DepartmentSelect>
+                <DeptLeft>
+                  <DeptIcon />
+                  학과
+                </DeptLeft>
+                <DeptArrow />
+              </DepartmentSelect>
+              <CentralSearchInput
+                placeholder="키워드, 교수명 등으로 검색해보세요"
+                value={centralKeyword}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setCentralKeyword(e.target.value)}
+              />
+              <CentralSearchIcon />
+            </CentralSearchBar>
 
-          <CustomScItem>
-            <PlaceholderComponenet />
-          </CustomScItem>
-        </MainWrapper>
+            <CustomScItem>
+              <PlaceholderComponenet />
+            </CustomScItem>
+          </MainWrapper>
 
-        <RightSection>
-          <RightTitle>
-            함께 보는 <span>AI추천 연구실</span>
-          </RightTitle>
-          {[1, 2, 3, 4].map((i) => (
-            <ResearchCard key={i}>
-              <ResearchHeader>
-                <ResearchTitle>연구실명</ResearchTitle>
-                <HeartIcon />
-              </ResearchHeader>
-              <ResearchBody>
-                <ResearchProf>담당교수</ResearchProf>
-                <ResearchTags>#분야 #분야 #분야</ResearchTags>
-              </ResearchBody>
-            </ResearchCard>
-          ))}
-        </RightSection>
-      </ContentsContainer>
-    </PageWrapper>
+          <RightSection>
+            <RightTitle>
+              함께 보는 <span>AI추천 연구실</span>
+            </RightTitle>
+            {[1, 2, 3, 4].map((i) => (
+              <ResearchCard key={i}>
+                <ResearchHeader>
+                  <ResearchTitle>연구실명</ResearchTitle>
+                  <HeartIcon />
+                </ResearchHeader>
+                <ResearchBody>
+                  <ResearchProf>담당교수</ResearchProf>
+                  <ResearchTags>#분야 #분야 #분야</ResearchTags>
+                </ResearchBody>
+              </ResearchCard>
+            ))}
+          </RightSection>
+        </ContentsContainer>
+      </PageWrapper>
+    </>
   );
 };
 
