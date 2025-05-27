@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import PropTypes, { bool } from 'prop-types';
 import axios from 'axios';
 import { range } from 'lodash';
-
+import { Link } from 'react-router-dom';
 import { ZaboEmbed } from 'zabo-embed';
 
 import { appBoundClassNames as classNames } from '../common/boundClassNames';
@@ -271,6 +271,8 @@ class MainPage extends Component {
                 <span onClick={() => this._fetchFeeds(this._getPrevDate())}>
                   {t('ui.button.loadMore')}
                 </span>
+              ) : import.meta.env.VITE_DEV_MODE === 'true' ? (
+                <Link to="/developer-login">{t('ui.button.signInWithSso')}</Link>
               ) : (
                 <>
                   <a href={`/session/login/?next=${window.location.href}`}>
