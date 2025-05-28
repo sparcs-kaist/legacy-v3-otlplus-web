@@ -62,6 +62,11 @@ axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.baseURL = API_URL;
 axios.defaults.withCredentials = true;
 
+const devStudentId = localStorage.getItem('devStudentId');
+if (devStudentId) {
+  axios.defaults.headers.common['X-AUTH-SID'] = devStudentId;
+}
+
 axios.defaults.paramsSerializer = (params) => Qs.stringify(params, { arrayFormat: 'repeat' });
 axios.interceptors.request.use(
   (config) => {

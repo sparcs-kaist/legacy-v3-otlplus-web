@@ -12,6 +12,7 @@ const DeveloperLoginPage = () => {
       localStorage.setItem('devStudentId', studentId);
       axios.defaults.headers.common['X-AUTH-SID'] = studentId;
       navigate('/', { replace: true });
+      window.location.reload();
     } else {
       alert('학번을 입력해주세요.');
     }
@@ -22,7 +23,7 @@ const DeveloperLoginPage = () => {
       <div className={classNames('page-grid', 'page-grid--full')}>
         <div className={classNames('section')}>
           <div className={classNames('subsection', 'subsection--developer-login')}>
-            <div className={classNames('title')}>개발자 로그인</div>
+            <div className={classNames('title')}>Dev 로그인</div>
             <div className={classNames('input-group')}>
               <input
                 type="text"
